@@ -15,8 +15,10 @@ app.use(express.static(__dirname));
 
 /* ---------------------- MONGODB ATLAS CONNECTION ---------------------- */
 
-// MongoDB Atlas Connection String (Updated for your cluster)
-mongoose.connect("mongodb://shehrozkhawaja22_db_user:SK22102002@cluster0.knwmnxu.mongodb.net:27017/mystore?ssl=true&retryWrites=true&w=majority")
+// MongoDB Atlas Connection String
+const MONGODB_URI = "mongodb+srv://shehrozkhawaja22_db_user:SK22102002@cluster0.knwmnxu.mongodb.net/mystore";
+
+mongoose.connect(MONGODB_URI)
 .then(() => {
   console.log("✅ MongoDB Atlas Connected Successfully!");
   createDefaultAdmin();
@@ -393,9 +395,9 @@ app.get("/api/payments", async(req, res) => {
 
 /* ---------------------- START SERVER ---------------------- */
 
-app.listen(PORT, () => {
-  console.log(`\n🚀 Server running at http://localhost:${PORT}`);
-  console.log(`📊 Admin Dashboard: http://localhost:${PORT}/admin`);
-  console.log(`🛒 Store Frontend: http://localhost:${PORT}`);
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`\n🚀 Server running at http://0.0.0.0:${PORT}`);
+  console.log(`📊 Admin Dashboard: http://0.0.0.0:${PORT}/admin`);
+  console.log(`🛒 Store Frontend: http://0.0.0.0:${PORT}`);
   console.log(`🗄️  MongoDB Atlas Connected\n`);
 });
