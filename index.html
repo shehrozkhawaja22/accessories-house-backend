@@ -786,8 +786,10 @@
   </footer>
 
   <script>
-    const API_BASE = 'https://your-backend-name.onrender.com/api';
-        let products = [];
+    // CORRECTED API_BASE - Using your Railway backend URL
+    const API_BASE = 'https://accessories-house-backend-production-b7a8.up.railway.app/api';
+    
+    let products = [];
     let cart = [], recentlyViewed = [], compareList = [], currentCategory = 'all';
     let selectedPaymentMethod = null;
     let currentAuthMode = 'login';
