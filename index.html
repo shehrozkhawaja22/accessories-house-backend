@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
   <title>The Accessories House | Industrial Tech Collective</title>
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;700;800&family=Barlow:wght@300;400;600&display=swap" rel="stylesheet">
   <style>
@@ -1523,6 +1523,139 @@
       
       .hero-title {
         font-size: 3rem;
+      }
+    }
+
+    /* ========== MOBILE CUTTING FIX ========== */
+    
+    /* Force all content to stay within screen bounds */
+    @media screen and (max-width: 768px) {
+      body, html {
+        overflow-x: hidden;
+        width: 100%;
+        max-width: 100%;
+      }
+      
+      .container, .nav-container, .hero-inner, .featured-strip, .recent-section, footer .container {
+        overflow-x: hidden;
+        width: 100%;
+        max-width: 100%;
+        padding-left: 15px;
+        padding-right: 15px;
+      }
+      
+      .hero-fullwidth {
+        width: 100%;
+        overflow-x: hidden;
+      }
+      
+      .featured-grid, .products-grid, .cat-grid, .footer-grid, .promise-inner {
+        width: 100%;
+        max-width: 100%;
+      }
+      
+      .product-card, .feat-card, .cat-card {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+      }
+      
+      img {
+        max-width: 100%;
+        height: auto;
+      }
+      
+      .mega-menu {
+        position: fixed;
+        top: auto;
+        left: 0;
+        right: 0;
+        width: 100%;
+        max-width: 100%;
+        z-index: 1001;
+      }
+      
+      .auth-buttons {
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      
+      .nav-links {
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      
+      .logo-text {
+        font-size: 0.9rem;
+        white-space: normal;
+        text-align: center;
+      }
+      
+      .shop-layout {
+        grid-template-columns: 1fr;
+      }
+      
+      .filter-sidebar {
+        position: relative;
+        top: 0;
+      }
+      
+      p, h1, h2, h3, h4, .hero-desc, .hero-title, .section-title {
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+      }
+      
+      #priceRange {
+        width: 100%;
+        max-width: 100%;
+      }
+      
+      #cartSidebar {
+        width: 100%;
+        max-width: 100%;
+      }
+      
+      .modal-content {
+        width: 95%;
+        margin: 10px;
+        max-width: 95%;
+      }
+      
+      .payment-modal-content {
+        width: 95%;
+        margin: 10px;
+        padding: 20px;
+      }
+      
+      #about .container div:last-child {
+        width: 100%;
+        max-width: 100%;
+        overflow: hidden;
+      }
+      
+      #about img {
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+      }
+      
+      #contact .container > div {
+        grid-template-columns: 1fr;
+      }
+      
+      .promise-band {
+        width: 100%;
+        overflow-x: hidden;
+      }
+      
+      .hero-stats {
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      
+      .btn-primary, .btn-ghost, .btn {
+        white-space: normal;
+        word-break: keep-all;
       }
     }
   </style>
