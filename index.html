@@ -2029,6 +2029,155 @@
     .cat-card:hover img {
       transform: scale(1.1);
     }
+
+    /* ========== PRODUCT GALLERY STYLES ========== */
+    
+    /* Product Gallery Container */
+    .product-gallery {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      height: 100%;
+    }
+    
+    .main-image-container {
+      position: relative;
+      overflow: hidden;
+      border-radius: 12px;
+      background: #000;
+      cursor: zoom-in;
+    }
+    
+    .main-image {
+      width: 100%;
+      height: 350px;
+      object-fit: contain;
+      transition: transform 0.3s ease;
+    }
+    
+    .main-image:hover {
+      transform: scale(1.05);
+    }
+    
+    .thumbnail-list {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 10px;
+    }
+    
+    .thumbnail {
+      width: 70px;
+      height: 70px;
+      border-radius: 8px;
+      overflow: hidden;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: all 0.2s;
+      background: var(--bg-panel);
+    }
+    
+    .thumbnail img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .thumbnail.active {
+      border-color: var(--gold);
+      box-shadow: 0 0 8px rgba(212,160,23,0.5);
+    }
+    
+    .thumbnail:hover {
+      border-color: var(--gold);
+      transform: translateY(-2px);
+    }
+    
+    /* Modal gallery styles */
+    .modal-gallery {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      height: 100%;
+    }
+    
+    .modal-main-image {
+      width: 100%;
+      height: 400px;
+      object-fit: contain;
+      background: #000;
+      border-radius: 8px;
+    }
+    
+    .modal-thumbnails {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    
+    .modal-thumbnail {
+      width: 60px;
+      height: 60px;
+      border-radius: 6px;
+      overflow: hidden;
+      cursor: pointer;
+      border: 2px solid var(--border);
+      transition: all 0.2s;
+    }
+    
+    .modal-thumbnail img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .modal-thumbnail.active {
+      border-color: var(--gold);
+    }
+    
+    .modal-thumbnail:hover {
+      border-color: var(--gold);
+      transform: translateY(-2px);
+    }
+    
+    /* Gallery indicator badge on product cards */
+    .gallery-badge {
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+      background: rgba(0,0,0,0.7);
+      color: var(--gold);
+      font-size: 10px;
+      padding: 3px 8px;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      z-index: 10;
+    }
+    
+    /* Mobile responsive for gallery */
+    @media screen and (max-width: 768px) {
+      .main-image {
+        height: 250px;
+      }
+      
+      .thumbnail {
+        width: 50px;
+        height: 50px;
+      }
+      
+      .modal-main-image {
+        height: 250px;
+      }
+      
+      .modal-thumbnail {
+        width: 45px;
+        height: 45px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -2089,12 +2238,24 @@
     </div>
   </div>
 
-  <!-- PRODUCT MODAL -->
+  <!-- PRODUCT MODAL with Gallery -->
   <div class="modal-overlay" id="productModal">
-    <div class="modal-content">
-      <span class="close-modal" onclick="closeModal()">&times;</span>
-      <div class="modal-img-container"><img id="modalMainImg" src="" alt="Product"></div>
-      <div style="padding:50px;"><h2 id="modalTitle" style="font-family:'Barlow Condensed';font-size:3.5rem;line-height:1;"></h2><div id="modalRating" style="color:var(--gold);margin:15px 0;"></div><p id="modalPrice" style="font-size:2.5rem;font-weight:800;margin-bottom:25px;"></p><p id="modalSpecs" style="color:var(--text-dim);font-size:15px;margin-bottom:30px;"></p><div style="background:rgba(197,163,87,0.08);padding:20px;border-left:3px solid var(--gold);margin-bottom:30px;"><h5 style="font-size:11px;letter-spacing:1px;color:var(--gold);margin-bottom:10px;">BUNDLE SAVINGS</h5><p style="font-size:13px;">Add "Industrial Coiled Cable" for only +₨35</p></div><button class="btn" id="modalAddToCartBtn">ADD TO CART</button></div>
+    <div class="modal-content" style="grid-template-columns: 1fr 1fr;">
+      <div class="modal-gallery">
+        <img id="modalMainImg" class="modal-main-image" src="" alt="Product">
+        <div class="modal-thumbnails" id="modalThumbnails"></div>
+      </div>
+      <div style="padding:40px;">
+        <h2 id="modalTitle" style="font-family:'Barlow Condensed';font-size:2.5rem;line-height:1.2;"></h2>
+        <div id="modalRating" style="color:var(--gold);margin:15px 0;"></div>
+        <p id="modalPrice" style="font-size:2rem;font-weight:800;margin-bottom:20px;"></p>
+        <p id="modalSpecs" style="color:var(--text-dim);font-size:14px;margin-bottom:25px;line-height:1.6;"></p>
+        <div style="background:rgba(197,163,87,0.08);padding:20px;border-left:3px solid var(--gold);margin-bottom:30px;">
+          <h5 style="font-size:11px;letter-spacing:1px;color:var(--gold);margin-bottom:10px;">BUNDLE SAVINGS</h5>
+          <p style="font-size:13px;">Add "Industrial Coiled Cable" for only +₨35</p>
+        </div>
+        <button class="btn" id="modalAddToCartBtn" style="padding:14px;">ADD TO CART</button>
+      </div>
     </div>
   </div>
 
@@ -2176,6 +2337,10 @@
     let selectedPaymentMethod = null;
     let currentAuthMode = 'login';
     let loggedInUser = null;
+    
+    // Gallery variables
+    let currentProductImages = [];
+    let currentImageIndex = 0;
 
     // Auth Functions - Enhanced with Email & Contact Number
     function openAuthModal(mode) {
@@ -2328,11 +2493,70 @@
 
     function getProductImage(p) { 
       let imgUrl = p.image || p.img || '';
+      // If main image exists, use it; otherwise try first additional image
+      if (!imgUrl && p.images && p.images.length > 0) {
+        imgUrl = p.images[0];
+      }
       // Fallback for broken images
       if (imgUrl.includes('img.sanishtech.com') || !imgUrl) {
         imgUrl = 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=400';
       }
       return imgUrl;
+    }
+
+    // Gallery function to change modal image
+    function changeModalImage(index) {
+      if (index >= 0 && index < currentProductImages.length) {
+        currentImageIndex = index;
+        document.getElementById('modalMainImg').src = currentProductImages[index];
+        // Update active thumbnail styling
+        document.querySelectorAll('.modal-thumbnail').forEach((thumb, i) => {
+          if (i === index) thumb.classList.add('active');
+          else thumb.classList.remove('active');
+        });
+      }
+    }
+
+    // Updated openModal with gallery support
+    function openModal(id) {
+      const p = products.find(x => x._id === id || x.id === id);
+      if (!p) return;
+      
+      // Build image array (main image + additional images)
+      currentProductImages = [p.image || p.img || ''];
+      if (p.images && Array.isArray(p.images) && p.images.length > 0) {
+        currentProductImages = [...currentProductImages, ...p.images];
+      }
+      currentImageIndex = 0;
+      
+      document.getElementById('modalTitle').innerText = p.name;
+      document.getElementById('modalPrice').innerText = `₨${p.price}`;
+      document.getElementById('modalMainImg').src = currentProductImages[0];
+      document.getElementById('modalSpecs').innerText = p.specs || 'No specifications available';
+      document.getElementById('modalRating').innerHTML = '★'.repeat(p.rating || 5) + '☆'.repeat(5-(p.rating || 5));
+      
+      // Render thumbnails
+      const thumbContainer = document.getElementById('modalThumbnails');
+      if (currentProductImages.length > 1) {
+        thumbContainer.innerHTML = currentProductImages.map((img, idx) => `
+          <div class="modal-thumbnail ${idx === 0 ? 'active' : ''}" onclick="changeModalImage(${idx})">
+            <img src="${img}" alt="Thumbnail ${idx + 1}" onerror="this.src='https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=400'">
+          </div>
+        `).join('');
+      } else {
+        thumbContainer.innerHTML = '';
+      }
+      
+      document.getElementById('modalAddToCartBtn').onclick = () => { addToCart(p._id || p.id); closeModal(); };
+      document.getElementById('productModal').style.display = 'flex';
+      
+      // Add to recently viewed
+      if (!recentlyViewed.find(x => x._id === id || x.id === id)) {
+        recentlyViewed.unshift(p);
+        if (recentlyViewed.length > 4) recentlyViewed.pop();
+        renderProducts('recentGrid', recentlyViewed);
+        document.getElementById('recentSection').style.display = 'block';
+      }
     }
 
     async function loadProducts() {
@@ -2422,14 +2646,47 @@
       const list = products.slice(0, 4);
       const container = document.getElementById('featuredGrid');
       if (list.length === 0) { container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-dim);">No products available</div>'; return; }
-      container.innerHTML = list.map(p => `<div class="feat-card" onclick="openModal('${p._id || p.id}')"><div class="feat-card-img">${p.fast ? '<span class="feat-card-badge">PRIME</span>' : ''}<img src="${getProductImage(p)}" alt="${p.name}" onerror="this.src='https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=400'"></div><div class="feat-card-body"><div class="feat-card-cat">${(p.category || '').toUpperCase()}</div><div class="feat-card-name">${p.name}</div><div class="feat-card-stars">${'★'.repeat(p.rating || 5)}${'☆'.repeat(5-(p.rating || 5))}</div><div class="feat-card-price">₨${p.price}</div><button class="feat-card-btn" onclick="event.stopPropagation(); addToCart('${p._id || p.id}')">ADD TO CART</button></div></div>`).join('');
+      container.innerHTML = list.map(p => {
+        const hasGallery = (p.images && p.images.length > 0);
+        return `<div class="feat-card" onclick="openModal('${p._id || p.id}')">
+          <div class="feat-card-img">
+            ${p.fast ? '<span class="feat-card-badge">PRIME</span>' : ''}
+            <img src="${getProductImage(p)}" alt="${p.name}" onerror="this.src='https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=400'">
+            ${hasGallery ? '<span class="gallery-badge">📷 +' + p.images.length + '</span>' : ''}
+          </div>
+          <div class="feat-card-body">
+            <div class="feat-card-cat">${(p.category || '').toUpperCase()}</div>
+            <div class="feat-card-name">${p.name}</div>
+            <div class="feat-card-stars">${'★'.repeat(p.rating || 5)}${'☆'.repeat(5-(p.rating || 5))}</div>
+            <div class="feat-card-price">₨${p.price}</div>
+            <button class="feat-card-btn" onclick="event.stopPropagation(); addToCart('${p._id || p.id}')">ADD TO CART</button>
+          </div>
+        </div>`;
+      }).join('');
     }
 
     function renderProducts(targetId, list) {
       const container = document.getElementById(targetId);
       if (!container) return;
       if (list.length === 0) { container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-dim);">No products found</div>'; return; }
-      container.innerHTML = list.map(p => `<div class="product-card" onclick="openModal('${p._id || p.id}')">${p.fast ? '<div class="delivery-tag">PRIME DISPATCH</div>' : ''}<div class="card-img"><img src="${getProductImage(p)}" alt="${p.name}" onerror="this.src='https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=400'"></div><div style="display:flex;justify-content:space-between;align-items:center;"><h3 style="font-family:'Barlow Condensed';font-size:1.4rem;">${p.name}</h3><input type="checkbox" onclick="event.stopPropagation(); toggleCompare('${p._id || p.id}')"></div><p style="color:var(--text-dim);font-size:12px;">${p.brand || 'The Accessories House'} // ${(p.category || '').toUpperCase()}</p><div style="color:var(--gold);font-size:11px;">${'★'.repeat(p.rating || 5)}${'☆'.repeat(5-(p.rating || 5))}</div><p style="font-size:1.5rem;font-weight:800;margin:15px 0;">₨${p.price}</p><button class="btn" style="margin-top:15px;font-size:12px;" onclick="event.stopPropagation(); addToCart('${p._id || p.id}')">ADD TO CART</button></div>`).join('');
+      container.innerHTML = list.map(p => {
+        const hasGallery = (p.images && p.images.length > 0);
+        return `<div class="product-card" onclick="openModal('${p._id || p.id}')">
+          ${p.fast ? '<div class="delivery-tag">PRIME DISPATCH</div>' : ''}
+          <div class="card-img">
+            <img src="${getProductImage(p)}" alt="${p.name}" onerror="this.src='https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=400'">
+            ${hasGallery ? '<span class="gallery-badge">📷 +' + p.images.length + '</span>' : ''}
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <h3 style="font-family:'Barlow Condensed';font-size:1.4rem;">${p.name}</h3>
+            <input type="checkbox" onclick="event.stopPropagation(); toggleCompare('${p._id || p.id}')">
+          </div>
+          <p style="color:var(--text-dim);font-size:12px;">${p.brand || 'The Accessories House'} // ${(p.category || '').toUpperCase()}</p>
+          <div style="color:var(--gold);font-size:11px;">${'★'.repeat(p.rating || 5)}${'☆'.repeat(5-(p.rating || 5))}</div>
+          <p style="font-size:1.5rem;font-weight:800;margin:15px 0;">₨${p.price}</p>
+          <button class="btn" style="margin-top:15px;font-size:12px;" onclick="event.stopPropagation(); addToCart('${p._id || p.id}')">ADD TO CART</button>
+        </div>`;
+      }).join('');
     }
 
     function applyShopFilters() {
@@ -2449,7 +2706,6 @@
 
     function quickFilter(cat) { currentCategory = cat; document.getElementById('shopTitle').innerText = `${cat.toUpperCase()} MODULES`; document.getElementById('shopBreadcrumb').innerText = cat.toUpperCase(); navigateTo('shop'); applyShopFilters(); }
     function handleSearch(e) { const query = e.target.value.toLowerCase(); const catFilter = document.getElementById('searchCategory').value; let results = products.filter(p => (p.name.toLowerCase().includes(query) || (p.specs && p.specs.toLowerCase().includes(query))) && (catFilter === 'all' || (p.category || '') === catFilter)); navigateTo('shop'); renderProducts('shopGrid', results); }
-    function openModal(id) { const p = products.find(x => x._id === id || x.id === id); if (!p) return; document.getElementById('modalTitle').innerText = p.name; document.getElementById('modalPrice').innerText = `₨${p.price}`; document.getElementById('modalMainImg').src = getProductImage(p); document.getElementById('modalSpecs').innerText = p.specs || 'No specifications available'; document.getElementById('modalRating').innerHTML = '★'.repeat(p.rating || 5) + '☆'.repeat(5-(p.rating || 5)); document.getElementById('modalAddToCartBtn').onclick = () => { addToCart(p._id || p.id); closeModal(); }; document.getElementById('productModal').style.display = 'flex'; if (!recentlyViewed.find(x => x._id === id || x.id === id)) { recentlyViewed.unshift(p); if (recentlyViewed.length > 4) recentlyViewed.pop(); renderProducts('recentGrid', recentlyViewed); document.getElementById('recentSection').style.display = 'block'; } }
     function closeModal() { document.getElementById('productModal').style.display = 'none'; }
     function toggleCart() { document.getElementById('cartSidebar').classList.toggle('open'); }
     function addToCart(id) { const product = products.find(x => x._id === id || x.id === id); if (product) { cart.push(product); updateCartUI(); if (!document.getElementById('cartSidebar').classList.contains('open')) toggleCart(); } }
