@@ -2292,10 +2292,17 @@
         <div class="payment-method-btn" onclick="selectPaymentMethod('bank')">🏦 Bank Transfer</div>
       </div>
       <div id="cardPayment" class="payment-details">
-        <div class="card-input-group"><label>Card Number</label><input type="text" id="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19"></div>
-        <div class="card-row"><div class="card-input-group"><label>Expiry Date</label><input type="text" id="cardExpiry" placeholder="MM/YY"></div><div class="card-input-group"><label>CVV</label><input type="password" id="cardCvv" placeholder="123" maxlength="4"></div></div>
-        <div class="card-input-group"><label>Cardholder Name</label><input type="text" id="cardName" placeholder="As per card"></div>
-      </div>
+  <div class="bank-highlight">
+    <strong>🔒 CARD PAYMENTS SETTLE DIRECTLY TO:</strong><br/>
+    Bank: Standard Chartered Bank (Pakistan)<br/>
+    Account Title: Shayan Tahir<br/>
+    Account Number: 01039362001<br/>
+    IBAN: PK72SCBL0000001039362001
+  </div>
+  <div class="card-input-group"><label>Card Number</label><input type="text" id="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19"></div>
+  <div class="card-row"><div class="card-input-group"><label>Expiry Date</label><input type="text" id="cardExpiry" placeholder="MM/YY"></div><div class="card-input-group"><label>CVV</label><input type="password" id="cardCvv" placeholder="123" maxlength="4"></div></div>
+  <div class="card-input-group"><label>Cardholder Name</label><input type="text" id="cardName" placeholder="As per card"></div>
+</div>
       <div id="jazzcashPayment" class="payment-details"><div class="pk-payment-info"><div class="qr-code">📱</div><p style="margin:10px 0;"><strong>JazzCash Account Details:</strong></p><p>Account Number: <strong>0300 1234567</strong></p><p>Account Title: <strong>The Accessories House</strong></p><p style="margin-top:15px;font-size:12px;">After payment, enter transaction ID:</p><input type="text" id="jazzcashTransactionId" placeholder="Transaction ID" style="width:100%;margin-top:10px;padding:8px;background:var(--bg-deep);border:1px solid var(--border);color:white;"></div></div>
       <div id="easypaisaPayment" class="payment-details"><div class="pk-payment-info"><div class="qr-code">📱</div><p style="margin:10px 0;"><strong>EasyPaisa Account Details:</strong></p><p>Account Number: <strong>0345 7654321</strong></p><p>Account Title: <strong>The Accessories House</strong></p><p style="margin-top:15px;font-size:12px;">After payment, enter transaction ID:</p><input type="text" id="easypaisaTransactionId" placeholder="Transaction ID" style="width:100%;margin-top:10px;padding:8px;background:var(--bg-deep);border:1px solid var(--border);color:white;"></div></div>
       <div id="bankPayment" class="payment-details"><div class="pk-payment-info"><p style="margin:10px 0;"><strong>Bank Account Details:</strong></p><p>Bank: <strong>Standard Chartered</strong></p><p>Account Number: <strong>01039362001</strong></p><p>IBAN: <strong>PK72SCBL0000001039362001</strong></p><p>Account Title: <strong>Shayan Tahir</strong></p><p style="margin-top:15px;font-size:12px;">After transfer, enter reference number:</p><input type="text" id="bankReference" placeholder="Transaction Reference" style="width:100%;margin-top:10px;padding:8px;background:var(--bg-deep);border:1px solid var(--border);color:white;"></div></div>
