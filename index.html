@@ -2635,7 +2635,7 @@
         thumbContainer.innerHTML = '';
       }
       
-      document.getElementById('modalAddToCartBtn').onclick = () => { addToCart(p._id || p.id); closeModal(); };
+      document.getElementById('modalAddToCartBtn').onclick = () => { addToCart(p._id || p.id); closeModal(); }; document.getElementById('modalBuyNowBtn').onclick = () => { closeModal(); buyNowDirect(p._id || p.id); };
       document.getElementById('productModal').style.display = 'flex';
       
       // Add to recently viewed
