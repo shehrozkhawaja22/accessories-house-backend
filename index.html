@@ -1983,6 +1983,60 @@
         font-size: 10px;
       }
     }
+
+    /* ========== IMAGE ZOOM ON HOVER EFFECT ========== */
+    
+    /* Product image container - needed for zoom effect */
+    .card-img, .feat-card-img {
+      position: relative;
+      overflow: hidden;
+      cursor: crosshair;
+    }
+
+    /* The image that will zoom */
+    .card-img img, .feat-card-img img {
+      transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform-origin: center center;
+    }
+
+    /* Zoom effect on hover */
+    .card-img:hover img, .feat-card-img:hover img {
+      transform: scale(1.2);
+    }
+
+    /* For product modal image */
+    .modal-img-container {
+      position: relative;
+      overflow: hidden;
+      cursor: zoom-in;
+    }
+
+    .modal-img-container img {
+      transition: transform 0.3s ease-out;
+      transform-origin: center center;
+    }
+
+    .modal-img-container:hover img {
+      transform: scale(1.5);
+    }
+
+    /* For category cards */
+    .cat-card img {
+      transition: transform 0.4s ease-out;
+    }
+
+    .cat-card:hover img {
+      transform: scale(1.1);
+    }
+
+    /* Smooth zoom for all product images */
+    .product-card .card-img,
+    .feat-card .feat-card-img {
+      overflow: hidden;
+    }
   </style>
 </head>
 <body>
