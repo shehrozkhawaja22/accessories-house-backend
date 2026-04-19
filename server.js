@@ -11,10 +11,16 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(express.static(__dirname));
 
-// Use environment variable for MongoDB connection (Railway will provide this)
-const MONGODB_URI = process.env.MONGODB_URI || "mongodb+srv://shehrozkhawaja22_db_user:SK22102002@cluster0.knwmnxu.mongodb.net/mystore";
+// Use Standard connection string (non-SRV) to avoid DNS issues in Pakistan
+// The Standard connection uses IP-based addressing instead of DNS
+const MONGODB_URI = process.env.MONGODB_URI || "mongodb://shehrozkhawaja22_db_user:SK22102002@cluster0.knwmnxu.mongodb.net:27017/mystore?ssl=true&retryWrites=true&w=majority&authSource=admin";
 
-mongoose.connect(MONGODB_URI)
+mongoose.connect(MONGODB_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  serverSelectionTimeoutMS: 30000,
+  socketTimeoutMS: 45000,
+})
 .then(() => {
   console.log("✅ MongoDB Atlas Connected Successfully!");
   createDefaultAdmin();
@@ -26,7 +32,7 @@ const ProductSchema = new mongoose.Schema({
   name: String, 
   price: Number, 
   image: String,  // Main product image URL
-  images: { type: [String], default: [] },  // ADDED: Array of additional gallery images
+  images: { type: [String], default: [] },  // Array of additional gallery images
   category: String,
   stock: { type: Number, default: 10 }, 
   rating: { type: Number, default: 5 },
