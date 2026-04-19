@@ -571,8 +571,29 @@
     }
     .modal-img-container { height: 100%; background: #000; overflow: hidden; }
     .modal-img-container img { width: 100%; height: 100%; object-fit: cover; }
-    .close-modal { position: absolute; top: 25px; right: 25px; font-size: 30px; cursor: pointer; color: var(--text-dim); transition: 0.2s; z-index: 10; }
-    .close-modal:hover { color: white; }
+    .close-modal {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      font-size: 28px;
+      cursor: pointer;
+      color: var(--text-dim);
+      transition: 0.2s;
+      z-index: 20;
+      background: rgba(0,0,0,0.6);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(4px);
+    }
+    .close-modal:hover {
+      color: white;
+      background: rgba(212,160,23,0.9);
+      transform: scale(1.05);
+    }
 
     .success-wrap { text-align: center; padding: 100px 0; max-width: 600px; margin: 0 auto; }
     .track-card { background: var(--bg-panel); border: 1px dashed var(--gold); padding: 40px; margin: 40px 0; }
@@ -2238,9 +2259,10 @@
     </div>
   </div>
 
-  <!-- PRODUCT MODAL with Gallery -->
+  <!-- PRODUCT MODAL with Gallery and Close Button -->
   <div class="modal-overlay" id="productModal">
     <div class="modal-content" style="grid-template-columns: 1fr 1fr;">
+      <span class="close-modal" onclick="closeModal()">&times;</span>
       <div class="modal-gallery">
         <img id="modalMainImg" class="modal-main-image" src="" alt="Product">
         <div class="modal-thumbnails" id="modalThumbnails"></div>
@@ -2491,6 +2513,13 @@
       await loadCategories();
     });
 
+    // Close modal when clicking outside
+    document.getElementById('productModal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeModal();
+      }
+    });
+
     function getProductImage(p) { 
       let imgUrl = p.image || p.img || '';
       // If main image exists, use it; otherwise try first additional image
@@ -2515,6 +2544,10 @@
           else thumb.classList.remove('active');
         });
       }
+    }
+
+    function closeModal() { 
+      document.getElementById('productModal').style.display = 'none'; 
     }
 
     // Updated openModal with gallery support
@@ -2706,7 +2739,6 @@
 
     function quickFilter(cat) { currentCategory = cat; document.getElementById('shopTitle').innerText = `${cat.toUpperCase()} MODULES`; document.getElementById('shopBreadcrumb').innerText = cat.toUpperCase(); navigateTo('shop'); applyShopFilters(); }
     function handleSearch(e) { const query = e.target.value.toLowerCase(); const catFilter = document.getElementById('searchCategory').value; let results = products.filter(p => (p.name.toLowerCase().includes(query) || (p.specs && p.specs.toLowerCase().includes(query))) && (catFilter === 'all' || (p.category || '') === catFilter)); navigateTo('shop'); renderProducts('shopGrid', results); }
-    function closeModal() { document.getElementById('productModal').style.display = 'none'; }
     function toggleCart() { document.getElementById('cartSidebar').classList.toggle('open'); }
     function addToCart(id) { const product = products.find(x => x._id === id || x.id === id); if (product) { cart.push(product); updateCartUI(); if (!document.getElementById('cartSidebar').classList.contains('open')) toggleCart(); } }
     function updateCartUI() { document.getElementById('cartCount').innerText = cart.length; document.getElementById('cartItemsList').innerHTML = cart.map((p,i) => `<div class="cart-item"><div class="cart-item-info"><h4>${p.name}</h4><p>₨${p.price}</p></div><span style="color:var(--red);cursor:pointer;font-size:12px;font-weight:700;" onclick="removeFromCart(${i})">REMOVE</span></div>`).join(''); document.getElementById('cartTotalPrice').innerText = `₨${cart.reduce((s,p) => s+p.price, 0)}`; }
