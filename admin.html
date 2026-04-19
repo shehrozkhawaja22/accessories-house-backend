@@ -1038,7 +1038,7 @@
             </div>
             <span class="stat-trend up" id="revenueTrend">+12%</span>
           </div>
-          <div class="stat-value" id="totalRevenue">$0</div>
+          <div class="stat-value" id="totalRevenue">₨0</div>
           <div class="stat-label">Total Revenue</div>
         </div>
         <div class="stat-card">
@@ -1199,8 +1199,8 @@
                   <input type="text" class="form-control" id="pName" placeholder="e.g. Redragon K552 Kumara" required/>
                 </div>
                 <div class="form-group">
-                  <label class="form-label">Price ($)</label>
-                  <input type="number" class="form-control" id="pPrice" placeholder="e.g. 35" min="0" step="0.01" required/>
+                  <label class="form-label">Price (₨)</label>
+                  <input type="number" class="form-control" id="pPrice" placeholder="e.g. 3500" min="0" step="0.01" required/>
                 </div>
                 <div class="form-group">
                   <label class="form-label">Category</label>
@@ -1221,7 +1221,7 @@
                   <input type="text" class="form-control" id="pBrand" placeholder="e.g. The Accessories House" value="The Accessories House" required/>
                 </div>
 
-                <!-- ✅ FIX: Image URL field — stores as `image` to match backend schema -->
+                <!-- Image URL field -->
                 <div class="form-group full">
                   <label class="form-label">Image URL</label>
                   <input type="url" class="form-control" id="pImage"
@@ -1415,12 +1415,11 @@
           <input type="text" class="form-control" id="editName"/>
         </div>
         <div class="form-group">
-          <label class="form-label">Price ($)</label>
+          <label class="form-label">Price (₨)</label>
           <input type="number" class="form-control" id="editPrice" min="0" step="0.01"/>
         </div>
         <div class="form-group">
           <label class="form-label">Category</label>
-          <!-- ✅ FIX: Edit modal now dynamically loads categories from DB -->
           <select class="form-control" id="editCat"></select>
         </div>
         <div class="form-group">
@@ -1452,7 +1451,6 @@
           </select>
         </div>
         <div class="form-group full">
-          <!-- ✅ FIX: saveEdit() now calls PUT /api/products/:id -->
           <button class="btn-submit" onclick="saveEdit()">Save Changes</button>
         </div>
       </div>
@@ -1491,9 +1489,6 @@
   <span id="toastMsg">Action completed</span>
 </div>
 
-<!-- ══════════════════════════════════════════════════════
-     JAVASCRIPT
-══════════════════════════════════════════════════════ -->
 <script>
   const API_BASE = 'https://accessories-house-backend-production-b7a8.up.railway.app/api';
 
@@ -1559,7 +1554,7 @@
         alert(data.message || 'Invalid credentials');
       }
     } catch(err) {
-      alert('Cannot connect to server. Make sure the backend is running on port 3000.');
+      alert('Cannot connect to server. Make sure the backend is running.');
     }
   }
 
@@ -1595,7 +1590,6 @@
       document.getElementById('totalProducts').textContent  = products.length;
       document.getElementById('productCountBig').textContent = products.length;
 
-      // Update category filter dropdown in products page
       const cats = [...new Set(products.map(p => p.category).filter(Boolean))];
       const catFilter = document.getElementById('catFilter');
       catFilter.innerHTML = '<option value="">All Categories</option>' +
@@ -1674,7 +1668,6 @@
     `).join('');
   }
 
-  /* ✅ FIX: Populate ALL category dropdowns from real DB data */
   function populateCategoryDropdowns() {
     const options = '<option value="" disabled>Select category</option>' +
       dbCategories.map(c => `<option value="${c.name}">${c.name}</option>`).join('');
@@ -1720,8 +1713,7 @@
   }
 
   /* ─────────────────────────────────────────
-     ✅ FIX: handleAddProduct uses `image` (not `img`)
-             to match the backend ProductSchema
+     ADD PRODUCT (uses `image` to match backend schema)
   ───────────────────────────────────────── */
   async function handleAddProduct(e) {
     e.preventDefault();
@@ -1732,7 +1724,7 @@
       stock:    parseInt(document.getElementById('pStock').value),
       rating:   parseInt(document.getElementById('pRating').value),
       brand:    document.getElementById('pBrand').value.trim(),
-      image:    document.getElementById('pImage').value.trim(),   // ✅ KEY FIX
+      image:    document.getElementById('pImage').value.trim(),
       specs:    document.getElementById('pSpecs').value.trim(),
       fast:     document.getElementById('pFast').value === 'true'
     };
@@ -1759,9 +1751,6 @@
     }
   }
 
-  /* ─────────────────────────────────────────
-     DELETE PRODUCT
-  ───────────────────────────────────────── */
   async function deleteProduct(id) {
     if (!confirm('Permanently delete this product?')) return;
     try {
@@ -1782,9 +1771,6 @@
     }
   }
 
-  /* ─────────────────────────────────────────
-     EDIT MODAL
-  ───────────────────────────────────────── */
   function openEdit(id) {
     const p = products.find(x => x._id === id);
     if (!p) return;
@@ -1797,12 +1783,10 @@
     document.getElementById('editSpecs').value = p.specs   || '';
     document.getElementById('editFast').value  = p.fast ? 'true' : 'false';
 
-    // Image — support both field names for legacy data
     const imgUrl = p.image || p.img || '';
     document.getElementById('editImage').value = imgUrl;
     previewImage(imgUrl, 'editImgPreview');
 
-    // Populate categories then set current value
     populateCategoryDropdowns();
     setTimeout(() => {
       document.getElementById('editCat').value = p.category || '';
@@ -1816,10 +1800,6 @@
     editingId = null;
   }
 
-  /* ─────────────────────────────────────────
-     ✅ FIX: saveEdit calls PUT /api/products/:id
-             and saves `image` (not `img`)
-  ───────────────────────────────────────── */
   async function saveEdit() {
     if (!editingId) return;
     const p = products.find(x => x._id === editingId);
@@ -1832,7 +1812,7 @@
       category: document.getElementById('editCat').value,
       stock:    parseInt(document.getElementById('editStock').value),
       rating:   parseInt(document.getElementById('editRating').value),
-      image:    document.getElementById('editImage').value.trim(),   // ✅ KEY FIX
+      image:    document.getElementById('editImage').value.trim(),
       specs:    document.getElementById('editSpecs').value.trim(),
       fast:     document.getElementById('editFast').value === 'true'
     };
@@ -1845,7 +1825,6 @@
       });
       if (res.ok) {
         const saved = await res.json();
-        // Update local array
         const idx = products.findIndex(x => x._id === editingId);
         if (idx > -1) products[idx] = saved;
         closeModal();
@@ -1861,9 +1840,6 @@
     }
   }
 
-  /* ─────────────────────────────────────────
-     IMAGE PREVIEW HELPER
-  ───────────────────────────────────────── */
   function previewImage(url, containerId) {
     const box = document.getElementById(containerId);
     if (!box) return;
@@ -1877,9 +1853,6 @@
     }
   }
 
-  /* ─────────────────────────────────────────
-     RENDER: PRODUCTS TABLE
-  ───────────────────────────────────────── */
   function renderTable(filter = '', cat = '') {
     const body = document.getElementById('tableBody');
     const filtered = products.filter(p => {
@@ -1921,9 +1894,9 @@
                 <div class="product-sku">ID: ${p._id ? p._id.slice(-6) : 'N/A'}</div>
               </div>
             </div>
-          </td>
+           </div>
           <td><span style="font-family:'Playfair Display',serif;font-weight:700;color:var(--gold-deep);">
-            $${p.price || 0}</span></td>
+            ₨${p.price || 0}</span></td>
           <td><span class="badge badge-gold">${p.category || 'Uncategorized'}</span></td>
           <td style="text-align:center;font-weight:600;">${p.stock || 0}</td>
           <td>${stockBadge}</td>
@@ -1939,7 +1912,7 @@
                 <path d="M10 11v6M14 11v6M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>
               </button>
             </div>
-          </td>
+           </div>
         </tr>`;
     }).join('');
   }
@@ -1951,9 +1924,6 @@
     );
   }
 
-  /* ─────────────────────────────────────────
-     RENDER: INVENTORY
-  ───────────────────────────────────────── */
   function renderInventory() {
     const body = document.getElementById('inventoryTableBody');
     if (!body) return;
@@ -1975,7 +1945,7 @@
             <div class="product-thumb" style="width:36px;height:36px;">
               ${imgUrl ? `<img src="${imgUrl}" alt="${p.name||''}" onerror="this.style.display='none'">` : ''}
             </div>
-          </td>
+           </div>
           <td><span class="badge badge-gold">${p.category || '—'}</span></td>
           <td style="color:var(--text-light);font-size:13px;">${p.brand || '—'}</td>
           <td style="font-weight:700;text-align:center;">${p.stock || 0}</td>
@@ -1985,14 +1955,11 @@
               <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
               <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
             </button>
-          </td>
+           </div>
         </tr>`;
     }).join('');
   }
 
-  /* ─────────────────────────────────────────
-     RENDER: ORDERS
-  ───────────────────────────────────────── */
   function renderOrders() {
     const body         = document.getElementById('ordersTableBody');
     const statusFilter = document.getElementById('orderStatusFilter')?.value || '';
@@ -2015,7 +1982,7 @@
           <td>${o.name || 'Guest'}</td>
           <td style="color:var(--text-light);font-size:12px;">${o.email || '—'}</td>
           <td style="text-align:center;">${o.items ? o.items.length : 0}</td>
-          <td style="font-family:'Playfair Display',serif;font-weight:700;">$${o.total || 0}</td>
+          <td style="font-family:'Playfair Display',serif;font-weight:700;">₨${o.total || 0}</td>
           <td style="color:var(--text-light);font-size:12px;">${new Date(o.date || Date.now()).toLocaleDateString()}</td>
           <td><span class="badge ${cls}">${o.status || 'pending'}</span></td>
           <td>
@@ -2026,7 +1993,7 @@
               <option value="shipped"  ${o.status==='shipped' ?'selected':''}>Shipped</option>
               <option value="refund"   ${o.status==='refund'  ?'selected':''}>Refund</option>
             </select>
-          </td>
+           </div>
         </tr>`;
     }).join('');
   }
@@ -2049,9 +2016,6 @@
     }
   }
 
-  /* ─────────────────────────────────────────
-     RENDER: RECENT ORDERS (dashboard)
-  ───────────────────────────────────────── */
   function renderRecentOrders() {
     const container = document.getElementById('recentOrdersList');
     const recent    = orders.slice(0, 5);
@@ -2067,7 +2031,7 @@
           <div class="order-product">${o.items ? o.items.length : 0} item(s) &bull; ${new Date(o.date||Date.now()).toLocaleDateString()}</div>
         </div>
         <div>
-          <div class="order-amount">$${o.total || 0}</div>
+          <div class="order-amount">₨${o.total || 0}</div>
           <div style="text-align:right;margin-top:3px;">
             <span class="badge ${o.status==='paid'?'badge-green':'badge-gold'}">${o.status||'pending'}</span>
           </div>
@@ -2076,9 +2040,6 @@
     `).join('');
   }
 
-  /* ─────────────────────────────────────────
-     RENDER: TOP PRODUCTS (dashboard)
-  ───────────────────────────────────────── */
   function renderTopProducts() {
     const container = document.getElementById('topProductsList');
     const top       = [...products].sort((a,b) => (b.rating||0)-(a.rating||0)).slice(0,5);
@@ -2092,7 +2053,7 @@
         <div class="tp-rank">${i + 1}</div>
         <div class="tp-info">
           <div class="tp-name">${p.name || 'Unnamed'}</div>
-          <div class="tp-cat">${p.category || '—'} &bull; $${p.price}</div>
+          <div class="tp-cat">${p.category || '—'} &bull; ₨${p.price}</div>
         </div>
         <div class="tp-bar-wrap">
           <div class="tp-bar" style="width:${Math.round((p.price/maxPrice)*100)}%"></div>
@@ -2102,9 +2063,6 @@
     `).join('');
   }
 
-  /* ─────────────────────────────────────────
-     RENDER: CUSTOMERS
-  ───────────────────────────────────────── */
   function renderCustomers() {
     const body = document.getElementById('customersTableBody');
     if (users.length === 0) {
@@ -2120,7 +2078,7 @@
             </div>
             <div class="product-name">${u.username || 'Unknown'}</div>
           </div>
-        </td>
+         </div>
         <td style="color:var(--text-light);font-size:13px;">@${u.username || '—'}</td>
         <td><span class="badge ${u.role === 'Administrator' ? 'badge-gold' : 'badge-gray'}">${u.role || 'Customer'}</span></td>
         <td><span class="badge badge-green">Active</span></td>
@@ -2128,17 +2086,13 @@
     `).join('');
   }
 
-  /* ─────────────────────────────────────────
-     DASHBOARD STATS
-  ───────────────────────────────────────── */
   function updateDashboardStats() {
     const totalRevenue = orders.reduce((s, o) => s + (o.total || 0), 0);
-    document.getElementById('totalRevenue').textContent   = `$${totalRevenue.toLocaleString()}`;
+    document.getElementById('totalRevenue').textContent   = `₨${totalRevenue.toLocaleString()}`;
     document.getElementById('totalOrders').textContent    = orders.length;
     document.getElementById('totalProducts').textContent  = products.length;
     document.getElementById('totalCustomers').textContent = users.length;
 
-    // Store health
     const inStock    = products.filter(p => p.stock > 0).length;
     const pct        = products.length ? Math.round((inStock / products.length) * 100) : 0;
     const lowStock   = products.filter(p => p.stock > 0 && p.stock < 10).length;
@@ -2160,28 +2114,24 @@
         </div>
         <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;padding-top:12px;border-top:1px solid var(--cream-dark);">
           <span style="font-size:13px;color:var(--text-mid);">Total Revenue</span>
-          <span style="font-family:'Playfair Display',serif;font-weight:700;font-size:16px;color:var(--gold-deep);">$${totalRevenue.toLocaleString()}</span>
+          <span style="font-family:'Playfair Display',serif;font-weight:700;font-size:16px;color:var(--gold-deep);">₨${totalRevenue.toLocaleString()}</span>
         </div>
         <div style="display:flex;justify-content:space-between;align-items:center;">
           <span style="font-size:13px;color:var(--text-mid);">Avg Order Value</span>
           <span style="font-family:'Playfair Display',serif;font-weight:700;color:var(--gold-deep);">
-            $${orders.length ? Math.round(totalRevenue / orders.length) : 0}
+            ₨${orders.length ? Math.round(totalRevenue / orders.length) : 0}
           </span>
         </div>
       </div>
     `;
   }
 
-  /* ─────────────────────────────────────────
-     SALES CHART (visual bar chart)
-  ───────────────────────────────────────── */
   function renderSalesChart() {
     const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul'];
-    // Build real monthly totals from orders if possible
     const monthlyTotals = Array(7).fill(0);
     orders.forEach(o => {
       const d = new Date(o.date || Date.now());
-      const m = d.getMonth(); // 0-indexed
+      const m = d.getMonth();
       if (m < 7) monthlyTotals[m] += (o.total || 0);
     });
 
@@ -2191,16 +2141,13 @@
       <div class="chart-bar-wrap">
         <div class="chart-bar"
           style="height:${Math.max(8, Math.round((val / max) * 140))}px"
-          data-val="$${val}">
+          data-val="₨${val}">
         </div>
         <div class="chart-label">${months[i]}</div>
       </div>
     `).join('');
   }
 
-  /* ─────────────────────────────────────────
-     PAGE NAVIGATION
-  ───────────────────────────────────────── */
   function showPage(pageId, navEl) {
     if (!isAuthenticated) { showLoginModal(); return; }
 
@@ -2228,9 +2175,6 @@
     if (pageId === 'addproduct') { loadCategories(); }
   }
 
-  /* ─────────────────────────────────────────
-     TOAST
-  ───────────────────────────────────────── */
   function showToast(msg) {
     const t = document.getElementById('toast');
     document.getElementById('toastMsg').textContent = msg;
@@ -2238,9 +2182,6 @@
     setTimeout(() => t.classList.remove('show'), 3200);
   }
 
-  /* ─────────────────────────────────────────
-     CLOSE MODAL ON BACKDROP CLICK
-  ───────────────────────────────────────── */
   document.getElementById('editModal').addEventListener('click', function(e) {
     if (e.target === this) closeModal();
   });
