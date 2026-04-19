@@ -2013,7 +2013,7 @@
     <div id="cartItemsList"></div>
     <div style="margin-top:40px;border-top:1px solid var(--gold);padding-top:30px;">
       <div style="display:flex;justify-content:space-between;font-size:1.8rem;font-weight:800;margin-bottom:30px;">
-        <span>TOTAL</span><span id="cartTotalPrice">Rs0</span>
+        <span>TOTAL</span><span id="cartTotalPrice">$0</span>
       </div>
       <button class="btn" onclick="showPaymentModal()">PROCEED TO PAYMENT</button>
     </div>
@@ -2024,7 +2024,7 @@
     <div class="payment-modal-content">
       <span class="close-payment" onclick="closePaymentModal()">&times;</span>
       <h2 style="font-family:'Barlow Condensed';font-size:2rem;margin-bottom:20px;">PAYMENT OPTIONS</h2>
-      <p style="color:var(--text-dim);margin-bottom:20px;">Total Amount: <strong id="paymentTotal">Rs0</strong></p>
+      <p style="color:var(--text-dim);margin-bottom:20px;">Total Amount: <strong id="paymentTotal">$0</strong></p>
       <div class="payment-methods">
         <div class="payment-method-btn" onclick="selectPaymentMethod('card')">💳 Credit/Debit Card</div>
         <div class="payment-method-btn" onclick="selectPaymentMethod('jazzcash')">📱 JazzCash</div>
@@ -2048,7 +2048,7 @@
     <div class="modal-content">
       <span class="close-modal" onclick="closeModal()">&times;</span>
       <div class="modal-img-container"><img id="modalMainImg" src="" alt="Product"></div>
-      <div style="padding:50px;"><h2 id="modalTitle" style="font-family:'Barlow Condensed';font-size:3.5rem;line-height:1;"></h2><div id="modalRating" style="color:var(--gold);margin:15px 0;"></div><p id="modalPrice" style="font-size:2.5rem;font-weight:800;margin-bottom:25px;"></p><p id="modalSpecs" style="color:var(--text-dim);font-size:15px;margin-bottom:30px;"></p><div style="background:rgba(197,163,87,0.08);padding:20px;border-left:3px solid var(--gold);margin-bottom:30px;"><h5 style="font-size:11px;letter-spacing:1px;color:var(--gold);margin-bottom:10px;">BUNDLE SAVINGS</h5><p style="font-size:13px;">Add "Industrial Coiled Cable" for only +Rs35</p></div><button class="btn" id="modalAddToCartBtn">ADD TO CART</button></div>
+      <div style="padding:50px;"><h2 id="modalTitle" style="font-family:'Barlow Condensed';font-size:3.5rem;line-height:1;"></h2><div id="modalRating" style="color:var(--gold);margin:15px 0;"></div><p id="modalPrice" style="font-size:2.5rem;font-weight:800;margin-bottom:25px;"></p><p id="modalSpecs" style="color:var(--text-dim);font-size:15px;margin-bottom:30px;"></p><div style="background:rgba(197,163,87,0.08);padding:20px;border-left:3px solid var(--gold);margin-bottom:30px;"><h5 style="font-size:11px;letter-spacing:1px;color:var(--gold);margin-bottom:10px;">BUNDLE SAVINGS</h5><p style="font-size:13px;">Add "Industrial Coiled Cable" for only +$35</p></div><button class="btn" id="modalAddToCartBtn">ADD TO CART</button></div>
     </div>
   </div>
 
@@ -2087,7 +2087,7 @@
   <main id="home" class="page active"><div class="hero-fullwidth"><div class="hero-bg"></div><div class="hero-bg-grain"></div><div class="hero-diagonal"></div><div class="hero-inner"><div class="hero-left"><div class="hero-eyebrow">PREMIUM TECH COLLECTIVE — EST. 2024</div><h1 class="hero-title">WHERE<br>TECHNOLOGY<br>MEETS<br><em>PRECISION.</em></h1><p class="hero-desc">The Accessories House delivers curated, high-performance computer accessories for professionals who demand reliability, craftsmanship, and modern design in every keystroke.</p><div class="hero-cta-row"><button class="btn-primary" onclick="navigateTo('shop')">EXPLORE CATALOG</button><button class="btn-ghost" onclick="quickFilter('Keyboards')">KEYBOARDS →</button></div><div class="hero-stats" id="heroStats"><div class="stat-item"><div class="stat-num" id="totalProductsStat">0</div><div class="stat-label">Products</div></div><div class="stat-item"><div class="stat-num" id="avgRatingStat">0★</div><div class="stat-label">Avg Rating</div></div><div class="stat-item"><div class="stat-num" id="fastDispatchStat">0</div><div class="stat-label">Fast Dispatch</div></div><div class="stat-item"><div class="stat-num" id="inStockStat">0</div><div class="stat-label">In Stock</div></div></div></div><div class="hero-right"><div class="hero-right-label">BROWSE BY CATEGORY</div><div class="cat-grid" id="categoryGrid"></div></div></div></div><div class="promise-band"><div class="promise-inner"><div class="promise-item"><div class="promise-icon">🚀</div><div><div class="promise-title">PRIME DISPATCH</div><div class="promise-desc">48-hour order processing on all stocked inventory.</div></div></div><div class="promise-item"><div class="promise-icon">🔒</div><div><div class="promise-title">SECURE CHECKOUT</div><div class="promise-desc">End-to-end encrypted transactions on every order.</div></div></div><div class="promise-item"><div class="promise-icon">↩</div><div><div class="promise-title">30-DAY RETURNS</div><div class="promise-desc">Hassle-free returns policy, no questions asked.</div></div></div><div class="promise-item"><div class="promise-icon">⭐</div><div><div class="promise-title">QUALITY CURATED</div><div class="promise-desc">Every product tested before it reaches our catalog.</div></div></div></div></div><div class="featured-strip"><div class="section-header"><div class="section-title"><span></span>FEATURED GEAR</div><button class="see-all-btn" onclick="navigateTo('shop')">VIEW ALL INVENTORY →</button></div><div class="featured-grid" id="featuredGrid"></div></div><div class="recent-section" id="recentSection" style="display:none;"><div class="section-header"><div class="section-title"><span></span>RECENTLY ACCESSED</div></div><div class="products-grid" id="recentGrid"></div></div></main>
 
   <!-- SHOP PAGE -->
-  <main id="shop" class="page"><div class="container" style="padding-top:60px;padding-bottom:60px;"><div style="margin-bottom:30px;font-size:12px;color:var(--text-dim);letter-spacing:1px;">HOME / <span id="shopBreadcrumb">ALL INVENTORY</span></div><div class="shop-layout"><aside class="filter-sidebar"><div class="filter-group"><h4>MANUFACTURER</h4><div id="manufacturerFilters"><label class="filter-option">Loading manufacturers...</label></div></div><div class="filter-group"><h4>PRICE THRESHOLD</h4><input type="range" id="priceRange" min="0" max="1000" value="1000" style="width:100%;accent-color:white;" oninput="applyShopFilters()"><div style="display:flex;justify-content:space-between;margin-top:15px;font-size:13px;"><span>Rs0</span><span id="priceDisplay">Rs<span id="maxPriceValue">1000</span></span></div></div><div class="filter-group"><h4>USER RATING</h4><label class="filter-option"><input type="radio" name="rat" value="5" onchange="applyShopFilters()"> ★★★★★ Only</label><label class="filter-option"><input type="radio" name="rat" value="4" onchange="applyShopFilters()"> ★★★★ & Up</label><label class="filter-option"><input type="radio" name="rat" value="0" onchange="applyShopFilters()" checked> All Ratings</label></div></aside><section><div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:40px;border-bottom:1px solid var(--border);padding-bottom:20px;"><h2 id="shopTitle" style="font-family:'Barlow Condensed';font-size:2.5rem;letter-spacing:2px;">HARDWARE CATALOG</h2><select id="sortSelect" style="background:white;color:black;border:1px solid var(--border);padding:8px 15px;" onchange="applyShopFilters()"><option value="featured">Featured</option><option value="low">Price: Low to High</option><option value="high">Price: High to Low</option></select></div><div class="products-grid" id="shopGrid"></div></section></div></div></main>
+  <main id="shop" class="page"><div class="container" style="padding-top:60px;padding-bottom:60px;"><div style="margin-bottom:30px;font-size:12px;color:var(--text-dim);letter-spacing:1px;">HOME / <span id="shopBreadcrumb">ALL INVENTORY</span></div><div class="shop-layout"><aside class="filter-sidebar"><div class="filter-group"><h4>MANUFACTURER</h4><div id="manufacturerFilters"><label class="filter-option">Loading manufacturers...</label></div></div><div class="filter-group"><h4>PRICE THRESHOLD</h4><input type="range" id="priceRange" min="0" max="1000" value="1000" style="width:100%;accent-color:white;" oninput="applyShopFilters()"><div style="display:flex;justify-content:space-between;margin-top:15px;font-size:13px;"><span>$0</span><span id="priceDisplay">$<span id="maxPriceValue">1000</span></span></div></div><div class="filter-group"><h4>USER RATING</h4><label class="filter-option"><input type="radio" name="rat" value="5" onchange="applyShopFilters()"> ★★★★★ Only</label><label class="filter-option"><input type="radio" name="rat" value="4" onchange="applyShopFilters()"> ★★★★ & Up</label><label class="filter-option"><input type="radio" name="rat" value="0" onchange="applyShopFilters()" checked> All Ratings</label></div></aside><section><div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:40px;border-bottom:1px solid var(--border);padding-bottom:20px;"><h2 id="shopTitle" style="font-family:'Barlow Condensed';font-size:2.5rem;letter-spacing:2px;">HARDWARE CATALOG</h2><select id="sortSelect" style="background:white;color:black;border:1px solid var(--border);padding:8px 15px;" onchange="applyShopFilters()"><option value="featured">Featured</option><option value="low">Price: Low to High</option><option value="high">Price: High to Low</option></select></div><div class="products-grid" id="shopGrid"></div></section></div></div></main>
 
   <!-- ABOUT PAGE -->
   <main id="about" class="page"><div class="container" style="max-width:900px;text-align:center;"><h1 style="font-family:'Barlow Condensed';font-size:5rem;margin-bottom:30px;">Who We Are</h1><p style="font-size:1.3rem;color:var(--text-dim);line-height:1.8;">Welcome to The Accessories House. We are a dedicated online store specializing in high-quality computer accessories and technology essentials. Our goal is to provide customers with reliable, affordable, and modern tech products that improve productivity, gaming, and everyday computing.<br><br>At The Accessories House, we believe technology should be accessible, innovative, and dependable — which is why we carefully select products that meet high performance and durability standards.</p><div style="margin:60px 0;border:1px solid var(--border);overflow:hidden;position:relative;height:450px;"><img src="https://i.postimg.cc/kGh0DnDn/Chat-GPT-Image-Apr-18-2026-05-59-00-PM.png" alt="Professional Workspace" style="width:100%;height:100%;object-fit:cover;filter:grayscale(0.5) contrast(1.1);"><div style="position:absolute;inset:0;background:linear-gradient(to bottom,transparent,rgba(10,10,11,0.5));"></div></div></div></main>
@@ -2206,14 +2206,14 @@
         }
         
         try {
-          const response = await fetch(`Rs{API_BASE}/register`, {
+          const response = await fetch(`${API_BASE}/register`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username, password, email, contact, role: 'customer' })
           });
           const data = await response.json();
           if (response.ok) {
-            alert(`Registration successful! Welcome Rs{username}!\nWe've sent a confirmation to Rs{email}\nPlease login to continue.`);
+            alert(`Registration successful! Welcome ${username}!\nWe've sent a confirmation to ${email}\nPlease login to continue.`);
             openAuthModal('login');
           } else {
             alert(data.message || 'Registration failed. Username may already exist.');
@@ -2223,7 +2223,7 @@
         }
       } else {
         try {
-          const response = await fetch(`Rs{API_BASE}/login`, {
+          const response = await fetch(`${API_BASE}/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username, password })
@@ -2234,7 +2234,7 @@
             localStorage.setItem('loggedInUser', JSON.stringify(loggedInUser));
             updateAuthUI();
             closeAuthModal();
-            alert(`Welcome back, Rs{username}!`);
+            alert(`Welcome back, ${username}!`);
           } else {
             alert(data.message || 'Invalid credentials');
           }
@@ -2257,7 +2257,7 @@
       if (loggedInUser) {
         authBtns.style.display = 'none';
         userGreeting.style.display = 'flex';
-        userGreeting.innerHTML = `<span>👋 Rs{loggedInUser.username}</span><button class="logout-btn" onclick="logout()">LOGOUT</button>`;
+        userGreeting.innerHTML = `<span>👋 ${loggedInUser.username}</span><button class="logout-btn" onclick="logout()">LOGOUT</button>`;
       } else {
         authBtns.style.display = 'flex';
         userGreeting.style.display = 'none';
@@ -2291,7 +2291,7 @@
 
     async function loadProducts() {
       try {
-        const response = await fetch(`Rs{API_BASE}/products`);
+        const response = await fetch(`${API_BASE}/products`);
         products = await response.json();
         updateHeroStats(); updateManufacturerFilters(); updatePriceRange(); renderFeatured(); renderProducts('shopGrid', products); applyShopFilters();
       } catch (error) {
@@ -2314,7 +2314,7 @@
       const manufacturers = [...new Set(products.map(p => p.brand || 'The Accessories House'))];
       const filterContainer = document.getElementById('manufacturerFilters');
       if (manufacturers.length === 0) { filterContainer.innerHTML = '<label class="filter-option">No manufacturers found</label>'; return; }
-      filterContainer.innerHTML = manufacturers.map(brand => `<label class="filter-option"><input type="checkbox" value="Rs{brand}" onchange="applyShopFilters()"> Rs{brand}</label>`).join('');
+      filterContainer.innerHTML = manufacturers.map(brand => `<label class="filter-option"><input type="checkbox" value="${brand}" onchange="applyShopFilters()"> ${brand}</label>`).join('');
     }
 
     function updatePriceRange() {
@@ -2325,15 +2325,15 @@
       priceRange.max = Math.ceil(maxProductPrice / 100) * 100;
       priceRange.value = priceRange.max;
       maxPriceValue.innerText = priceRange.max;
-      document.getElementById('priceDisplay').innerText = `Rs{priceRange.max}`;
+      document.getElementById('priceDisplay').innerText = `$${priceRange.max}`;
     }
 
     async function loadCategories() {
       try {
-        const response = await fetch(`Rs{API_BASE}/categories`);
+        const response = await fetch(`${API_BASE}/categories`);
         const categories = await response.json();
         const searchCat = document.getElementById('searchCategory');
-        if (categories.length > 0) { searchCat.innerHTML = '<option value="all">All Modules</option>' + categories.map(c => `<option value="Rs{c.name}">Rs{c.name}</option>`).join(''); }
+        if (categories.length > 0) { searchCat.innerHTML = '<option value="all">All Modules</option>' + categories.map(c => `<option value="${c.name}">${c.name}</option>`).join(''); }
         updateMegaMenu(categories); updateCategoryGrid(categories);
         return categories;
       } catch (error) { console.error('Error loading categories:', error); return []; }
@@ -2346,10 +2346,10 @@
       const megaMenu = document.getElementById('megaMenu');
       if (!megaMenu) return;
       let menuHTML = '<div><h4>INPUT HARDWARE</h4>';
-      if (inputHardware.length > 0) inputHardware.forEach(cat => { menuHTML += `<a onclick="quickFilter('Rs{cat.name}')">Rs{cat.name}</a>`; }); else menuHTML += '<a style="color:var(--text-dim);cursor:default;">No products</a>';
+      if (inputHardware.length > 0) inputHardware.forEach(cat => { menuHTML += `<a onclick="quickFilter('${cat.name}')">${cat.name}</a>`; }); else menuHTML += '<a style="color:var(--text-dim);cursor:default;">No products</a>';
       menuHTML += '</div><div><h4>SOUND & VISION</h4>';
-      if (soundVision.length > 0) soundVision.forEach(cat => { menuHTML += `<a onclick="quickFilter('Rs{cat.name}')">Rs{cat.name}</a>`; }); else menuHTML += '<a style="color:var(--text-dim);cursor:default;">No products</a>';
-      if (otherCategories.length > 0) { menuHTML += '<h4>OTHER CATEGORIES</h4>'; otherCategories.forEach(cat => { menuHTML += `<a onclick="quickFilter('Rs{cat.name}')">Rs{cat.name}</a>`; }); }
+      if (soundVision.length > 0) soundVision.forEach(cat => { menuHTML += `<a onclick="quickFilter('${cat.name}')">${cat.name}</a>`; }); else menuHTML += '<a style="color:var(--text-dim);cursor:default;">No products</a>';
+      if (otherCategories.length > 0) { menuHTML += '<h4>OTHER CATEGORIES</h4>'; otherCategories.forEach(cat => { menuHTML += `<a onclick="quickFilter('${cat.name}')">${cat.name}</a>`; }); }
       menuHTML += '</div>';
       megaMenu.innerHTML = menuHTML;
     }
@@ -2367,7 +2367,7 @@
   'Drones': 'https://images.unsplash.com/photo-1508614589041-895b88991e3e?w=400', 
   'Monitors': 'https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=400'
 };
-      catGrid.innerHTML = displayCategories.map(cat => { const imageUrl = categoryImages[cat.name] || 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?q=80&w=900&auto=format&fit=crop'; const productCount = products.filter(p => p.category === cat.name).length; return `<div class="cat-card" onclick="quickFilter('Rs{cat.name}')"><span class="cat-card-arrow">↗</span><img src="Rs{imageUrl}" alt="Rs{cat.name}"><div class="cat-card-body"><div class="cat-card-label">Rs{cat.name.toUpperCase()}</div><div class="cat-card-count">Rs{productCount} MODULES</div></div></div>`; }).join('');
+      catGrid.innerHTML = displayCategories.map(cat => { const imageUrl = categoryImages[cat.name] || 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?q=80&w=900&auto=format&fit=crop'; const productCount = products.filter(p => p.category === cat.name).length; return `<div class="cat-card" onclick="quickFilter('${cat.name}')"><span class="cat-card-arrow">↗</span><img src="${imageUrl}" alt="${cat.name}"><div class="cat-card-body"><div class="cat-card-label">${cat.name.toUpperCase()}</div><div class="cat-card-count">${productCount} MODULES</div></div></div>`; }).join('');
     }
 
     function navigateTo(pageId) { document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); const pg = document.getElementById(pageId); if (pg) pg.classList.add('active'); window.scrollTo(0, 0); }
@@ -2376,19 +2376,19 @@
       const list = products.slice(0, 4);
       const container = document.getElementById('featuredGrid');
       if (list.length === 0) { container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-dim);">No products available</div>'; return; }
-      container.innerHTML = list.map(p => `<div class="feat-card" onclick="openModal('Rs{p._id || p.id}')"><div class="feat-card-img">Rs{p.fast ? '<span class="feat-card-badge">PRIME</span>' : ''}<img src="Rs{getProductImage(p)}" alt="Rs{p.name}" onerror="this.src='https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=400'"></div><div class="feat-card-body"><div class="feat-card-cat">Rs{(p.category || '').toUpperCase()}</div><div class="feat-card-name">Rs{p.name}</div><div class="feat-card-stars">Rs{'★'.repeat(p.rating || 5)}Rs{'☆'.repeat(5-(p.rating || 5))}</div><div class="feat-card-price">Rs{p.price}</div><button class="feat-card-btn" onclick="event.stopPropagation(); addToCart('Rs{p._id || p.id}')">ADD TO CART</button></div></div>`).join('');
+      container.innerHTML = list.map(p => `<div class="feat-card" onclick="openModal('${p._id || p.id}')"><div class="feat-card-img">${p.fast ? '<span class="feat-card-badge">PRIME</span>' : ''}<img src="${getProductImage(p)}" alt="${p.name}" onerror="this.src='https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=400'"></div><div class="feat-card-body"><div class="feat-card-cat">${(p.category || '').toUpperCase()}</div><div class="feat-card-name">${p.name}</div><div class="feat-card-stars">${'★'.repeat(p.rating || 5)}${'☆'.repeat(5-(p.rating || 5))}</div><div class="feat-card-price">$${p.price}</div><button class="feat-card-btn" onclick="event.stopPropagation(); addToCart('${p._id || p.id}')">ADD TO CART</button></div></div>`).join('');
     }
 
     function renderProducts(targetId, list) {
       const container = document.getElementById(targetId);
       if (!container) return;
       if (list.length === 0) { container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-dim);">No products found</div>'; return; }
-      container.innerHTML = list.map(p => `<div class="product-card" onclick="openModal('Rs{p._id || p.id}')">Rs{p.fast ? '<div class="delivery-tag">PRIME DISPATCH</div>' : ''}<div class="card-img"><img src="Rs{getProductImage(p)}" alt="Rs{p.name}" onerror="this.src='https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=400'"></div><div style="display:flex;justify-content:space-between;align-items:center;"><h3 style="font-family:'Barlow Condensed';font-size:1.4rem;">Rs{p.name}</h3><input type="checkbox" onclick="event.stopPropagation(); toggleCompare('Rs{p._id || p.id}')"></div><p style="color:var(--text-dim);font-size:12px;">Rs{p.brand || 'The Accessories House'} // Rs{(p.category || '').toUpperCase()}</p><div style="color:var(--gold);font-size:11px;">Rs{'★'.repeat(p.rating || 5)}Rs{'☆'.repeat(5-(p.rating || 5))}</div><p style="font-size:1.5rem;font-weight:800;margin:15px 0;">Rs{p.price}</p><button class="btn" style="margin-top:15px;font-size:12px;" onclick="event.stopPropagation(); addToCart('Rs{p._id || p.id}')">ADD TO CART</button></div>`).join('');
+      container.innerHTML = list.map(p => `<div class="product-card" onclick="openModal('${p._id || p.id}')">${p.fast ? '<div class="delivery-tag">PRIME DISPATCH</div>' : ''}<div class="card-img"><img src="${getProductImage(p)}" alt="${p.name}" onerror="this.src='https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=400'"></div><div style="display:flex;justify-content:space-between;align-items:center;"><h3 style="font-family:'Barlow Condensed';font-size:1.4rem;">${p.name}</h3><input type="checkbox" onclick="event.stopPropagation(); toggleCompare('${p._id || p.id}')"></div><p style="color:var(--text-dim);font-size:12px;">${p.brand || 'The Accessories House'} // ${(p.category || '').toUpperCase()}</p><div style="color:var(--gold);font-size:11px;">${'★'.repeat(p.rating || 5)}${'☆'.repeat(5-(p.rating || 5))}</div><p style="font-size:1.5rem;font-weight:800;margin:15px 0;">$${p.price}</p><button class="btn" style="margin-top:15px;font-size:12px;" onclick="event.stopPropagation(); addToCart('${p._id || p.id}')">ADD TO CART</button></div>`).join('');
     }
 
     function applyShopFilters() {
       const maxPrice = document.getElementById('priceRange').value;
-      document.getElementById('priceDisplay').innerText = `Rs{maxPrice}`;
+      document.getElementById('priceDisplay').innerText = `$${maxPrice}`;
       const brandCheckboxes = document.querySelectorAll('#manufacturerFilters input[type="checkbox"]:checked');
       const brands = Array.from(brandCheckboxes).map(i => i.value);
       const ratingRadios = document.querySelectorAll('input[name="rat"]');
@@ -2401,21 +2401,21 @@
       renderProducts('shopGrid', filtered);
     }
 
-    function quickFilter(cat) { currentCategory = cat; document.getElementById('shopTitle').innerText = `Rs{cat.toUpperCase()} MODULES`; document.getElementById('shopBreadcrumb').innerText = cat.toUpperCase(); navigateTo('shop'); applyShopFilters(); }
+    function quickFilter(cat) { currentCategory = cat; document.getElementById('shopTitle').innerText = `${cat.toUpperCase()} MODULES`; document.getElementById('shopBreadcrumb').innerText = cat.toUpperCase(); navigateTo('shop'); applyShopFilters(); }
     function handleSearch(e) { const query = e.target.value.toLowerCase(); const catFilter = document.getElementById('searchCategory').value; let results = products.filter(p => (p.name.toLowerCase().includes(query) || (p.specs && p.specs.toLowerCase().includes(query))) && (catFilter === 'all' || (p.category || '') === catFilter)); navigateTo('shop'); renderProducts('shopGrid', results); }
-    function openModal(id) { const p = products.find(x => x._id === id || x.id === id); if (!p) return; document.getElementById('modalTitle').innerText = p.name; document.getElementById('modalPrice').innerText = `Rs{p.price}`; document.getElementById('modalMainImg').src = getProductImage(p); document.getElementById('modalSpecs').innerText = p.specs || 'No specifications available'; document.getElementById('modalRating').innerHTML = '★'.repeat(p.rating || 5) + '☆'.repeat(5-(p.rating || 5)); document.getElementById('modalAddToCartBtn').onclick = () => { addToCart(p._id || p.id); closeModal(); }; document.getElementById('productModal').style.display = 'flex'; if (!recentlyViewed.find(x => x._id === id || x.id === id)) { recentlyViewed.unshift(p); if (recentlyViewed.length > 4) recentlyViewed.pop(); renderProducts('recentGrid', recentlyViewed); document.getElementById('recentSection').style.display = 'block'; } }
+    function openModal(id) { const p = products.find(x => x._id === id || x.id === id); if (!p) return; document.getElementById('modalTitle').innerText = p.name; document.getElementById('modalPrice').innerText = `$${p.price}`; document.getElementById('modalMainImg').src = getProductImage(p); document.getElementById('modalSpecs').innerText = p.specs || 'No specifications available'; document.getElementById('modalRating').innerHTML = '★'.repeat(p.rating || 5) + '☆'.repeat(5-(p.rating || 5)); document.getElementById('modalAddToCartBtn').onclick = () => { addToCart(p._id || p.id); closeModal(); }; document.getElementById('productModal').style.display = 'flex'; if (!recentlyViewed.find(x => x._id === id || x.id === id)) { recentlyViewed.unshift(p); if (recentlyViewed.length > 4) recentlyViewed.pop(); renderProducts('recentGrid', recentlyViewed); document.getElementById('recentSection').style.display = 'block'; } }
     function closeModal() { document.getElementById('productModal').style.display = 'none'; }
     function toggleCart() { document.getElementById('cartSidebar').classList.toggle('open'); }
     function addToCart(id) { const product = products.find(x => x._id === id || x.id === id); if (product) { cart.push(product); updateCartUI(); if (!document.getElementById('cartSidebar').classList.contains('open')) toggleCart(); } }
-    function updateCartUI() { document.getElementById('cartCount').innerText = cart.length; document.getElementById('cartItemsList').innerHTML = cart.map((p,i) => `<div class="cart-item"><div class="cart-item-info"><h4>Rs{p.name}</h4><p>Rs{p.price}</p></div><span style="color:var(--red);cursor:pointer;font-size:12px;font-weight:700;" onclick="removeFromCart(Rs{i})">REMOVE</span></div>`).join(''); document.getElementById('cartTotalPrice').innerText = `Rs{cart.reduce((s,p) => s+p.price, 0)}`; }
+    function updateCartUI() { document.getElementById('cartCount').innerText = cart.length; document.getElementById('cartItemsList').innerHTML = cart.map((p,i) => `<div class="cart-item"><div class="cart-item-info"><h4>${p.name}</h4><p>$${p.price}</p></div><span style="color:var(--red);cursor:pointer;font-size:12px;font-weight:700;" onclick="removeFromCart(${i})">REMOVE</span></div>`).join(''); document.getElementById('cartTotalPrice').innerText = `$${cart.reduce((s,p) => s+p.price, 0)}`; }
     function removeFromCart(i) { cart.splice(i, 1); updateCartUI(); }
-    function showPaymentModal() { if (cart.length === 0) { alert("NO HARDWARE DETECTED"); return; } const total = cart.reduce((s,p) => s + p.price, 0); document.getElementById('paymentTotal').innerText = `Rs{total}`; document.getElementById('paymentModal').style.display = 'flex'; }
+    function showPaymentModal() { if (cart.length === 0) { alert("NO HARDWARE DETECTED"); return; } const total = cart.reduce((s,p) => s + p.price, 0); document.getElementById('paymentTotal').innerText = `$${total}`; document.getElementById('paymentModal').style.display = 'flex'; }
     function closePaymentModal() { document.getElementById('paymentModal').style.display = 'none'; selectedPaymentMethod = null; document.querySelectorAll('.payment-details').forEach(d => d.classList.remove('active')); document.querySelectorAll('.payment-method-btn').forEach(btn => btn.classList.remove('selected')); }
-    function selectPaymentMethod(method) { selectedPaymentMethod = method; document.querySelectorAll('.payment-details').forEach(d => d.classList.remove('active')); document.getElementById(`Rs{method}Payment`).classList.add('active'); document.querySelectorAll('.payment-method-btn').forEach(btn => btn.classList.remove('selected')); event.target.classList.add('selected'); }
-    function validateCardDetails() { const cardNumber = document.getElementById('cardNumber').value.replace(/\s/g, ''); const expiry = document.getElementById('cardExpiry').value; const cvv = document.getElementById('cardCvv').value; const cardName = document.getElementById('cardName').value; if (!cardNumber || !expiry || !cvv || !cardName) { alert('Please fill all card details'); return false; } if (!/^\d{16}Rs/.test(cardNumber)) { alert('Please enter a valid 16-digit card number'); return false; } if (!/^\d{2}\/\d{2}Rs/.test(expiry)) { alert('Please enter expiry date in MM/YY format'); return false; } if (!/^\d{3,4}Rs/.test(cvv)) { alert('Please enter a valid CVV'); return false; } return true; }
-    function processPayment() { if (!selectedPaymentMethod) { alert('Please select a payment method'); return; } let isValid = true; let transactionId = null; switch(selectedPaymentMethod) { case 'card': isValid = validateCardDetails(); transactionId = 'CARD-' + Math.random().toString(36).substring(4,9).toUpperCase(); break; case 'jazzcash': transactionId = document.getElementById('jazzcashTransactionId').value; if (!transactionId) { alert('Please enter JazzCash transaction ID'); isValid = false; } break; case 'easypaisa': transactionId = document.getElementById('easypaisaTransactionId').value; if (!transactionId) { alert('Please enter EasyPaisa transaction ID'); isValid = false; } break; case 'bank': transactionId = document.getElementById('bankReference').value; if (!transactionId) { alert('Please enter bank transfer reference number'); isValid = false; } break; } if (!isValid) return; const customerName = prompt("Enter your name:") || "Guest Customer"; const customerEmail = prompt("Enter your email:") || ""; const customerPhone = prompt("Enter your phone number:") || ""; const customerAddress = prompt("Enter your address:") || "Demo Address"; const id = "AUR-" + Math.floor(Math.random()*9000+1000) + "-" + Math.random().toString(36).substring(4,9).toUpperCase(); document.getElementById('generatedTrackId').innerText = id; const orderData = { name: customerName, email: customerEmail, phone: customerPhone, address: customerAddress, total: cart.reduce((s,p) => s+p.price, 0), items: cart.map(p => ({ productId: p._id || p.id, name: p.name, price: p.price, quantity: 1 })), status: "paid", paymentMethod: selectedPaymentMethod, transactionId: transactionId, trackingId: id }; fetch(`Rs{API_BASE}/checkout`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(orderData) }).then(r => r.json()).then(d => { alert(`Payment successful via Rs{selectedPaymentMethod.toUpperCase()}!\nTransaction ID: Rs{transactionId}\nOrder ID: Rs{id}`); cart = []; updateCartUI(); closePaymentModal(); toggleCart(); navigateTo('success'); }).catch(err => { console.error(err); alert('Payment processed but order saving failed. Please contact support with your transaction ID.'); }); }
-    async function handleContactForm(event) { event.preventDefault(); const formData = { name: document.getElementById('contactName').value, email: document.getElementById('contactEmail').value, subject: document.getElementById('contactSubject').value, message: document.getElementById('contactMessage').value }; try { const response = await fetch(`Rs{API_BASE}/contact`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(formData) }); if (response.ok) { alert('Message sent successfully! We will get back to you soon.'); document.getElementById('contactForm').reset(); } else { alert('Failed to send message. Please try again.'); } } catch (error) { alert('Error sending message. Please try calling us directly at +1 (555) 123-4567'); } }
-    function toggleCompare(id) { const p = products.find(x => x._id === id || x.id === id); if (!p) return; const idx = compareList.findIndex(x => x._id === id || x.id === id); if (idx > -1) compareList.splice(idx, 1); else if (compareList.length < 3) compareList.push(p); const drawer = document.getElementById('compareDrawer'); document.getElementById('compareContainer').innerHTML = compareList.map(item => `<div style="background:var(--bg-card);padding:5px 15px;border:1px solid var(--border);font-size:13px;display:flex;align-items:center;gap:10px;"><img src="Rs{getProductImage(item)}" style="width:25px;height:25px;object-fit:cover;"> Rs{item.name}</div>`).join(''); compareList.length > 0 ? drawer.classList.add('open') : drawer.classList.remove('open'); }
+    function selectPaymentMethod(method) { selectedPaymentMethod = method; document.querySelectorAll('.payment-details').forEach(d => d.classList.remove('active')); document.getElementById(`${method}Payment`).classList.add('active'); document.querySelectorAll('.payment-method-btn').forEach(btn => btn.classList.remove('selected')); event.target.classList.add('selected'); }
+    function validateCardDetails() { const cardNumber = document.getElementById('cardNumber').value.replace(/\s/g, ''); const expiry = document.getElementById('cardExpiry').value; const cvv = document.getElementById('cardCvv').value; const cardName = document.getElementById('cardName').value; if (!cardNumber || !expiry || !cvv || !cardName) { alert('Please fill all card details'); return false; } if (!/^\d{16}$/.test(cardNumber)) { alert('Please enter a valid 16-digit card number'); return false; } if (!/^\d{2}\/\d{2}$/.test(expiry)) { alert('Please enter expiry date in MM/YY format'); return false; } if (!/^\d{3,4}$/.test(cvv)) { alert('Please enter a valid CVV'); return false; } return true; }
+    function processPayment() { if (!selectedPaymentMethod) { alert('Please select a payment method'); return; } let isValid = true; let transactionId = null; switch(selectedPaymentMethod) { case 'card': isValid = validateCardDetails(); transactionId = 'CARD-' + Math.random().toString(36).substring(4,9).toUpperCase(); break; case 'jazzcash': transactionId = document.getElementById('jazzcashTransactionId').value; if (!transactionId) { alert('Please enter JazzCash transaction ID'); isValid = false; } break; case 'easypaisa': transactionId = document.getElementById('easypaisaTransactionId').value; if (!transactionId) { alert('Please enter EasyPaisa transaction ID'); isValid = false; } break; case 'bank': transactionId = document.getElementById('bankReference').value; if (!transactionId) { alert('Please enter bank transfer reference number'); isValid = false; } break; } if (!isValid) return; const customerName = prompt("Enter your name:") || "Guest Customer"; const customerEmail = prompt("Enter your email:") || ""; const customerPhone = prompt("Enter your phone number:") || ""; const customerAddress = prompt("Enter your address:") || "Demo Address"; const id = "AUR-" + Math.floor(Math.random()*9000+1000) + "-" + Math.random().toString(36).substring(4,9).toUpperCase(); document.getElementById('generatedTrackId').innerText = id; const orderData = { name: customerName, email: customerEmail, phone: customerPhone, address: customerAddress, total: cart.reduce((s,p) => s+p.price, 0), items: cart.map(p => ({ productId: p._id || p.id, name: p.name, price: p.price, quantity: 1 })), status: "paid", paymentMethod: selectedPaymentMethod, transactionId: transactionId, trackingId: id }; fetch(`${API_BASE}/checkout`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(orderData) }).then(r => r.json()).then(d => { alert(`Payment successful via ${selectedPaymentMethod.toUpperCase()}!\nTransaction ID: ${transactionId}\nOrder ID: ${id}`); cart = []; updateCartUI(); closePaymentModal(); toggleCart(); navigateTo('success'); }).catch(err => { console.error(err); alert('Payment processed but order saving failed. Please contact support with your transaction ID.'); }); }
+    async function handleContactForm(event) { event.preventDefault(); const formData = { name: document.getElementById('contactName').value, email: document.getElementById('contactEmail').value, subject: document.getElementById('contactSubject').value, message: document.getElementById('contactMessage').value }; try { const response = await fetch(`${API_BASE}/contact`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(formData) }); if (response.ok) { alert('Message sent successfully! We will get back to you soon.'); document.getElementById('contactForm').reset(); } else { alert('Failed to send message. Please try again.'); } } catch (error) { alert('Error sending message. Please try calling us directly at +1 (555) 123-4567'); } }
+    function toggleCompare(id) { const p = products.find(x => x._id === id || x.id === id); if (!p) return; const idx = compareList.findIndex(x => x._id === id || x.id === id); if (idx > -1) compareList.splice(idx, 1); else if (compareList.length < 3) compareList.push(p); const drawer = document.getElementById('compareDrawer'); document.getElementById('compareContainer').innerHTML = compareList.map(item => `<div style="background:var(--bg-card);padding:5px 15px;border:1px solid var(--border);font-size:13px;display:flex;align-items:center;gap:10px;"><img src="${getProductImage(item)}" style="width:25px;height:25px;object-fit:cover;"> ${item.name}</div>`).join(''); compareList.length > 0 ? drawer.classList.add('open') : drawer.classList.remove('open'); }
     renderFeatured(); renderProducts('shopGrid', []);
   </script>
 </body>
