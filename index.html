@@ -2178,6 +2178,50 @@
       gap: 4px;
       z-index: 10;
     }
+ /* BUY NOW BUTTON STYLES */
+  .action-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 12px;
+  }
+  .btn-buynow {
+    background: var(--gold);
+    color: #000;
+    border: none;
+    padding: 10px 12px;
+    font-family: 'Barlow Condensed';
+    font-weight: 800;
+    font-size: 12px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: 0.3s;
+    text-transform: uppercase;
+    flex: 1;
+    text-align: center;
+    border-radius: 3px;
+  }
+  .btn-buynow:hover {
+    background: white;
+    transform: translateY(-2px);
+  }
+  .btn-cart {
+    background: transparent;
+    border: 1px solid var(--border-bright);
+    color: var(--text-main);
+  }
+  .btn-cart:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+    background: transparent;
+  }
+  .bank-highlight {
+    background: #0f0f11;
+    padding: 16px;
+    border-left: 4px solid var(--gold);
+    margin-bottom: 20px;
+    font-size: 13px;
+  }
+  
     
     /* Mobile responsive for gallery */
     @media screen and (max-width: 768px) {
