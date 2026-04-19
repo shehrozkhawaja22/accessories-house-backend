@@ -2744,7 +2744,10 @@
             <div class="feat-card-name">${p.name}</div>
             <div class="feat-card-stars">${'★'.repeat(p.rating || 5)}${'☆'.repeat(5-(p.rating || 5))}</div>
             <div class="feat-card-price">₨${p.price}</div>
-            <button class="feat-card-btn" onclick="event.stopPropagation(); addToCart('${p._id || p.id}')">ADD TO CART</button>
+            <div class="action-buttons">
+  <button class="btn-buynow" onclick="event.stopPropagation(); buyNowDirect('${p._id || p.id}')">BUY NOW</button>
+  <button class="btn-cart btn-buynow" onclick="event.stopPropagation(); addToCart('${p._id || p.id}')">ADD TO CART</button>
+</div>
           </div>
         </div>`;
       }).join('');
