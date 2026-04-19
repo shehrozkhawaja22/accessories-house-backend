@@ -1984,88 +1984,50 @@
       }
     }
 
-    /* ========== 360-DEGREE PRODUCT VIEW ON HOVER ========== */
-
-    /* 3D perspective container */
+    /* ========== MAGNIFYING GLASS ZOOM EFFECT ========== */
+    
+    /* Product image container - needed for zoom effect */
     .card-img, .feat-card-img {
       position: relative;
       overflow: hidden;
-      perspective: 1000px;
-      cursor: pointer;
+      cursor: crosshair;
     }
 
-    /* The image that will rotate 360 degrees */
+    /* The image that will zoom */
     .card-img img, .feat-card-img img {
-      transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      transition: transform 0.3s ease-out;
       width: 100%;
       height: 100%;
       object-fit: cover;
-      transform-style: preserve-3d;
-      backface-visibility: visible;
     }
 
-    /* 360-degree rotation on hover */
+    /* Zoom effect on hover - cursor-based zoom */
     .card-img:hover img, .feat-card-img:hover img {
-      transform: rotateY(360deg) scale(1.05);
+      transform: scale(2);
     }
 
-    /* For modal popup image - 360 rotation */
+    /* For product modal image */
     .modal-img-container {
       position: relative;
       overflow: hidden;
-      perspective: 1000px;
-      cursor: zoom-in;
+      cursor: crosshair;
     }
 
     .modal-img-container img {
-      transition: transform 0.6s ease-out;
-      transform-style: preserve-3d;
+      transition: transform 0.3s ease-out;
     }
 
     .modal-img-container:hover img {
-      transform: rotateY(360deg);
+      transform: scale(2);
     }
 
-    /* For category cards - slight 3D tilt */
+    /* For category cards - subtle zoom */
     .cat-card img {
-      transition: transform 0.5s ease-out;
-      transform-style: preserve-3d;
+      transition: transform 0.3s ease-out;
     }
 
     .cat-card:hover img {
-      transform: rotateY(15deg) scale(1.05);
-    }
-
-    /* Smooth 360 rotation for all product images with scale */
-    .product-card .card-img,
-    .feat-card .feat-card-img {
-      overflow: hidden;
-      perspective: 1000px;
-    }
-
-    .product-card .card-img img,
-    .feat-card .feat-card-img img {
-      transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .product-card:hover .card-img img,
-    .feat-card:hover .feat-card-img img {
-      transform: rotateY(360deg) scale(1.08);
-    }
-
-    /* Optional: Add a slight shadow on hover for depth */
-    .product-card:hover .card-img,
-    .feat-card:hover .feat-card-img {
-      box-shadow: 0 10px 30px rgba(197, 163, 87, 0.3);
-    }
-
-    /* For touch devices - prevent 360 on mobile (optional) */
-    @media (hover: none) and (pointer: coarse) {
-      .card-img:hover img, 
-      .feat-card-img:hover img,
-      .modal-img-container:hover img {
-        transform: none;
-      }
+      transform: scale(1.1);
     }
   </style>
 </head>
