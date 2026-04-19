@@ -25,7 +25,8 @@ mongoose.connect(MONGODB_URI)
 const ProductSchema = new mongoose.Schema({
   name: String, 
   price: Number, 
-  image: String, 
+  image: String,  // Main product image URL
+  images: { type: [String], default: [] },  // ADDED: Array of additional gallery images
   category: String,
   stock: { type: Number, default: 10 }, 
   rating: { type: Number, default: 5 },
