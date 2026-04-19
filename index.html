@@ -2795,6 +2795,16 @@
     function addToCart(id) { const product = products.find(x => x._id === id || x.id === id); if (product) { cart.push(product); updateCartUI(); if (!document.getElementById('cartSidebar').classList.contains('open')) toggleCart(); } }
     function updateCartUI() { document.getElementById('cartCount').innerText = cart.length; document.getElementById('cartItemsList').innerHTML = cart.map((p,i) => `<div class="cart-item"><div class="cart-item-info"><h4>${p.name}</h4><p>₨${p.price}</p></div><span style="color:var(--red);cursor:pointer;font-size:12px;font-weight:700;" onclick="removeFromCart(${i})">REMOVE</span></div>`).join(''); document.getElementById('cartTotalPrice').innerText = `₨${cart.reduce((s,p) => s+p.price, 0)}`; }
     function removeFromCart(i) { cart.splice(i, 1); updateCartUI(); }
+    function buyNowDirect(productId) {
+  const product = products.find(x => x._id === productId || x.id === productId);
+  if (!product) return;
+  directBuyProduct = product;
+  document.getElementById('paymentTotal').innerText = `₨${product.price}`;
+  document.getElementById('paymentModal').style.display = 'flex';
+  selectedPaymentMethod = null;
+  document.querySelectorAll('.payment-details').forEach(d => d.classList.remove('active'));
+  document.querySelectorAll('.payment-method-btn').forEach(btn => btn.classList.remove('selected'));
+}
     function showPaymentModal() { if (cart.length === 0) { alert("NO HARDWARE DETECTED"); return; } const total = cart.reduce((s,p) => s + p.price, 0); document.getElementById('paymentTotal').innerText = `₨${total}`; document.getElementById('paymentModal').style.display = 'flex'; }
     function closePaymentModal() { document.getElementById('paymentModal').style.display = 'none'; selectedPaymentMethod = null; document.querySelectorAll('.payment-details').forEach(d => d.classList.remove('active')); document.querySelectorAll('.payment-method-btn').forEach(btn => btn.classList.remove('selected')); }
     function selectPaymentMethod(method) { selectedPaymentMethod = method; document.querySelectorAll('.payment-details').forEach(d => d.classList.remove('active')); document.getElementById(`${method}Payment`).classList.add('active'); document.querySelectorAll('.payment-method-btn').forEach(btn => btn.classList.remove('selected')); event.target.classList.add('selected'); }
