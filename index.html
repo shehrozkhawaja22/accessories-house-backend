@@ -1658,6 +1658,331 @@
         word-break: keep-all;
       }
     }
+
+    /* ========== MOBILE TAP HIGHLIGHT & CONTACT PAGE FIX ========== */
+    
+    /* Remove blue tap highlight on mobile */
+    * {
+      -webkit-tap-highlight-color: transparent;
+      -webkit-touch-callout: none;
+    }
+
+    /* Remove blue outline on focus/active for buttons and clickable elements */
+    button:focus, 
+    button:active,
+    .btn:focus,
+    .btn:active,
+    .btn-primary:focus,
+    .btn-primary:active,
+    .auth-btn:focus,
+    .auth-btn:active,
+    .feat-card:focus,
+    .feat-card:active,
+    .product-card:focus,
+    .product-card:active,
+    .cat-card:focus,
+    .cat-card:active,
+    [onclick]:focus,
+    [onclick]:active,
+    a:focus,
+    a:active {
+      outline: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Fix contact page layout on mobile */
+    @media screen and (max-width: 768px) {
+      /* Contact page - fix grid and spacing */
+      #contact .container > div {
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+      }
+      
+      #contact .container > div > div {
+        width: 100%;
+      }
+      
+      /* Fix direct chat section */
+      .contact-info {
+        padding: 20px;
+      }
+      
+      .contact-item {
+        flex-wrap: wrap;
+        justify-content: center;
+        text-align: center;
+      }
+      
+      .contact-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
+      }
+      
+      /* Fix emergency support box */
+      #contact .container > div > div:last-child {
+        margin-top: 20px;
+      }
+      
+      /* Fix about page */
+      #about .container {
+        padding: 0 20px;
+      }
+      
+      #about h1 {
+        font-size: 2.5rem !important;
+      }
+      
+      #about p {
+        font-size: 1rem !important;
+      }
+      
+      #about .container > div:last-child {
+        height: 250px !important;
+      }
+      
+      /* Fix product modal on mobile */
+      .modal-content {
+        margin: 10px;
+        max-width: calc(100% - 20px);
+      }
+      
+      .modal-content > div {
+        padding: 20px !important;
+      }
+      
+      .modal-content h2 {
+        font-size: 1.8rem !important;
+      }
+      
+      .modal-content #modalPrice {
+        font-size: 1.5rem !important;
+      }
+      
+      /* Fix cart sidebar */
+      #cartSidebar {
+        padding: 20px 15px;
+      }
+      
+      .cart-header h2 {
+        font-size: 1.3rem !important;
+      }
+      
+      .cart-item {
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      
+      .cart-item-info h4 {
+        font-size: 1rem;
+      }
+      
+      /* Fix payment modal */
+      .payment-modal-content {
+        padding: 20px 15px;
+        margin: 15px;
+      }
+      
+      .payment-method-btn {
+        padding: 12px;
+        font-size: 0.8rem;
+      }
+      
+      .card-row {
+        flex-direction: column;
+        gap: 10px;
+      }
+      
+      /* Fix auth modal */
+      .auth-modal {
+        padding: 20px 15px;
+        margin: 15px;
+      }
+      
+      .auth-modal h2 {
+        font-size: 1.5rem;
+      }
+      
+      .auth-modal input {
+        padding: 12px;
+        font-size: 14px;
+      }
+      
+      /* Fix hero stats on mobile */
+      .hero-stats {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+        justify-items: center;
+      }
+      
+      .stat-item {
+        width: 100%;
+      }
+      
+      /* Fix category cards */
+      .cat-card-body {
+        padding: 12px;
+      }
+      
+      .cat-card-label {
+        font-size: 0.7rem;
+      }
+      
+      .cat-card-count {
+        font-size: 8px;
+      }
+      
+      /* Fix promise items */
+      .promise-item {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+      
+      .promise-icon {
+        margin-bottom: 10px;
+      }
+      
+      /* Fix featured cards */
+      .feat-card-img {
+        height: 160px;
+      }
+      
+      .feat-card-body {
+        padding: 12px;
+      }
+      
+      .feat-card-name {
+        font-size: 0.9rem;
+      }
+      
+      .feat-card-price {
+        font-size: 1rem;
+      }
+      
+      .feat-card-btn {
+        padding: 8px;
+        font-size: 10px;
+      }
+      
+      /* Fix product cards */
+      .product-card {
+        padding: 12px;
+      }
+      
+      .card-img {
+        height: 160px;
+      }
+      
+      .product-card h3 {
+        font-size: 1rem;
+      }
+      
+      /* Fix filter sidebar */
+      .filter-group h4 {
+        font-size: 14px;
+      }
+      
+      .filter-option {
+        font-size: 12px;
+      }
+      
+      /* Fix price range slider */
+      #priceRange {
+        height: 4px;
+      }
+      
+      /* Fix compare drawer */
+      .compare-drawer {
+        padding: 10px;
+        gap: 8px;
+      }
+      
+      .compare-drawer span {
+        font-size: 11px;
+      }
+      
+      #compareContainer {
+        gap: 8px;
+      }
+      
+      #compareContainer > div {
+        padding: 4px 8px;
+        font-size: 10px;
+      }
+      
+      /* Fix success page */
+      .track-card {
+        padding: 20px;
+      }
+      
+      .track-num {
+        font-size: 1rem;
+      }
+      
+      /* Fix modal close buttons */
+      .close-modal, .close-payment, .close-auth {
+        width: 30px;
+        height: 30px;
+        font-size: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      
+      /* Fix payment method buttons */
+      .payment-methods {
+        gap: 10px;
+      }
+      
+      /* Fix input fields on mobile - prevents zoom on focus in iOS */
+      input, textarea, select {
+        font-size: 16px !important;
+      }
+    }
+
+    /* Fix for very small devices (below 380px) */
+    @media screen and (max-width: 380px) {
+      .nav-links {
+        gap: 8px;
+      }
+      
+      .nav-links li {
+        font-size: 9px;
+      }
+      
+      .auth-btn {
+        padding: 3px 8px;
+        font-size: 9px;
+      }
+      
+      .hero-title {
+        font-size: 1.5rem;
+      }
+      
+      .hero-desc {
+        font-size: 0.7rem;
+      }
+      
+      .section-title {
+        font-size: 1.1rem;
+      }
+      
+      .feat-card-name {
+        font-size: 0.8rem;
+      }
+      
+      .product-card h3 {
+        font-size: 0.9rem;
+      }
+      
+      .btn, .btn-primary, .btn-ghost {
+        padding: 8px 15px;
+        font-size: 10px;
+      }
+    }
   </style>
 </head>
 <body>
