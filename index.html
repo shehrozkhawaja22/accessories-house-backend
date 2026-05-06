@@ -2563,10 +2563,11 @@
     }
 
     document.addEventListener('DOMContentLoaded', async () => {
-      checkStoredUser();
-      await loadProducts();
-      await loadCategories();
-    });
+  checkStoredUser();
+  initializePageFromUrl();  // ADD THIS LINE
+  await loadProducts();
+  await loadCategories();
+});
 
     // Close modal when clicking outside
     document.getElementById('productModal').addEventListener('click', function(e) {
@@ -2728,7 +2729,41 @@
       catGrid.innerHTML = displayCategories.map(cat => { const imageUrl = categoryImages[cat.name] || 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?q=80&w=900&auto=format&fit=crop'; const productCount = products.filter(p => p.category === cat.name).length; return `<div class="cat-card" onclick="quickFilter('${cat.name}')"><span class="cat-card-arrow">↗</span><img src="${imageUrl}" alt="${cat.name}"><div class="cat-card-body"><div class="cat-card-label">${cat.name.toUpperCase()}</div><div class="cat-card-count">${productCount} MODULES</div></div></div>`; }).join('');
     }
 
-    function navigateTo(pageId) { document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); const pg = document.getElementById(pageId); if (pg) pg.classList.add('active'); window.scrollTo(0, 0); }
+    function navigateTo(pageId, addToHistory = true) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const pg = document.getElementById(pageId);
+  if (pg) pg.classList.add('active');
+  
+  if (addToHistory) {
+    const newUrl = pageId === 'home' ? window.location.pathname : `?page=${pageId}`;
+    window.history.pushState({ page: pageId }, '', newUrl);
+  }
+  
+  window.scrollTo(0, 0);
+}
+
+window.addEventListener('popstate', function(event) {
+  const page = event.state?.page || getPageFromUrl();
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const pg = document.getElementById(page);
+  if (pg) pg.classList.add('active');
+  window.scrollTo(0, 0);
+});
+
+function getPageFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  const pageParam = params.get('page');
+  if (pageParam && document.getElementById(pageParam)) return pageParam;
+  return 'home';
+}
+
+function initializePageFromUrl() {
+  const page = getPageFromUrl();
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const pg = document.getElementById(page);
+  if (pg) pg.classList.add('active');
+  window.history.replaceState({ page: page }, '', window.location.pathname + (page !== 'home' ? `?page=${page}` : ''));
+}
 
     function renderFeatured() {
       const list = products.slice(0, 4);
