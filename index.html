@@ -361,6 +361,48 @@
       cursor: pointer; transition: 0.3s;
     }
     .btn-primary:hover { background: white; transform: translateY(-2px); }
+
+        /* ========== BUY NOW BUTTON STYLES ========== */
+    .action-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 12px;
+      flex-wrap: wrap;
+    }
+    
+    .btn-buynow {
+      background: var(--gold);
+      color: #000;
+      border: none;
+      padding: 12px 16px;
+      font-family: 'Barlow Condensed';
+      font-weight: 800;
+      font-size: 13px;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: 0.3s;
+      text-transform: uppercase;
+      flex: 1;
+      text-align: center;
+      border-radius: 4px;
+    }
+    
+    .btn-buynow:hover {
+      background: #d4b46a;
+      transform: translateY(-2px);
+    }
+    
+    .btn-cart {
+      background: var(--gold);
+      border: 1px solid var(--gold);
+      color: #000;
+    }
+    
+    .btn-cart:hover {
+      background: #d4b46a;
+      border-color: #d4b46a;
+      color: #000;
+    }
     .btn-ghost {
       background: none; color: white;
       border: 1px solid rgba(255,255,255,0.2);
@@ -1147,6 +1189,131 @@
         }
       }
     }
+        /* Fix Payment Modal Width on Mobile */
+    .payment-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.95);
+      z-index: 4000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 15px;
+    }
+
+    .payment-modal-content {
+      background: var(--bg-card);
+      width: 100%;
+      max-width: 500px;
+      max-height: 90vh;
+      overflow-y: auto;
+      border: 1px solid var(--border-bright);
+      position: relative;
+      padding: 25px;
+      border-radius: 8px;
+    }
+
+    /* Fix for all payment details sections */
+    .payment-details {
+      margin-top: 20px;
+    }
+
+    .payment-details.active {
+      display: block;
+    }
+
+    .pk-payment-info {
+      text-align: left;
+      padding: 15px;
+      background: var(--bg-deep);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      max-width: 100%;
+      overflow-x: hidden;
+      word-wrap: break-word;
+    }
+
+    .pk-payment-info input {
+      width: 100%;
+      box-sizing: border-box;
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 4px;
+    }
+
+    /* Mobile specific fixes */
+    @media screen and (max-width: 768px) {
+      .payment-modal-overlay {
+        padding: 10px;
+        align-items: flex-start;
+        padding-top: 60px;
+      }
+      
+      .payment-modal-content {
+        max-width: 100%;
+        padding: 20px 15px;
+        max-height: 85vh;
+        border-radius: 12px;
+      }
+      
+      .payment-modal-content h2 {
+        font-size: 1.4rem !important;
+        text-align: center;
+      }
+      
+      .payment-method-btn {
+        padding: 12px 10px;
+        font-size: 0.85rem;
+      }
+      
+      .pk-payment-info {
+        padding: 12px;
+      }
+      
+      .pk-payment-info p {
+        font-size: 12px;
+      }
+      
+      .pk-payment-info .qr-code {
+        font-size: 40px;
+      }
+      
+      .card-row {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+      
+      .close-payment {
+        top: 12px;
+        right: 12px;
+        width: 28px;
+        height: 28px;
+        font-size: 20px;
+      }
+    }
+
+    @media screen and (max-width: 480px) {
+      .payment-modal-content {
+        padding: 15px 12px;
+      }
+      
+      .payment-method-btn {
+        padding: 10px;
+        font-size: 0.75rem;
+      }
+      
+      .pk-payment-info {
+        padding: 10px;
+      }
+      
+      .pk-payment-info input {
+        padding: 8px;
+        font-size: 13px;
+      }
+    }
+
+
+    
     
   </style>
 </head>
@@ -1213,17 +1380,17 @@
       <div id="easypaisaPayment" class="payment-details"><div class="pk-payment-info"><div class="qr-code">📱</div><p style="margin:10px 0;"><strong>EasyPaisa Account Details:</strong></p><p>Account Number: <strong>0345 7654321</strong></p><p>Account Title: <strong>The Accessories House</strong></p><p style="margin-top:15px;font-size:12px;">After payment, enter transaction ID:</p><input type="text" id="easypaisaTransactionId" placeholder="Transaction ID" style="width:100%;margin-top:10px;padding:8px;background:var(--bg-deep);border:1px solid var(--border);color:white;"></div></div>
       <div id="bankPayment" class="payment-details"><div class="pk-payment-info"><p style="margin:10px 0;"><strong>Bank Account Details:</strong></p><p>Bank: <strong>Standard Chartered</strong></p><p>Account Number: <strong>01039362001</strong></p><p>IBAN: <strong>PK72SCBL0000001039362001</strong></p><p>Account Title: <strong>Shayan Tahir</strong></p><p style="margin-top:15px;font-size:12px;">After transfer, enter reference number:</p><input type="text" id="bankReference" placeholder="Transaction Reference" style="width:100%;margin-top:10px;padding:8px;background:var(--bg-deep);border:1px solid var(--border);color:white;"></div></div>
 <div id="codPayment" class="payment-details">
-  <div class="pk-payment-info">
-    <div class="qr-code" style="font-size: 60px;">🚚</div>
-    <p style="margin:10px 0;"><strong>Cash on Delivery</strong></p>
-    <p style="color: var(--gold); font-size: 14px;">✓ No advance payment required</p>
-    <p style="margin:10px 0;">Pay cash when our delivery partner arrives at your doorstep.</p>
-    <div style="background: rgba(197,163,87,0.1); padding: 15px; margin: 15px 0; border-radius: 8px;">
-      <p style="font-size: 12px;"><strong>📋 COD Terms:</strong></p>
-      <p style="font-size: 11px; color: var(--text-dim);">• Exact cash amount preferred<br>• Delivery within 3-5 business days<br>• Order confirmation via SMS/call</p>
+  <div class="pk-payment-info" style="max-width: 100%; overflow-x: hidden; padding: 15px;">
+    <div class="qr-code" style="font-size: 50px; text-align: center;">🚚</div>
+    <p style="margin:10px 0; text-align: center;"><strong>Cash on Delivery</strong></p>
+    <p style="color: var(--gold); font-size: 13px; text-align: center;">✓ No advance payment required</p>
+    <p style="margin:10px 0; text-align: center; font-size: 13px;">Pay cash when our delivery partner arrives at your doorstep.</p>
+    <div style="background: rgba(197,163,87,0.1); padding: 12px; margin: 12px 0; border-radius: 8px;">
+      <p style="font-size: 11px; margin-bottom: 5px;"><strong>📋 COD Terms:</strong></p>
+      <p style="font-size: 10px; color: var(--text-dim); line-height: 1.4;">• Exact cash amount preferred<br>• Delivery within 3-5 business days<br>• Order confirmation via SMS/call</p>
     </div>
-    <input type="text" id="codAddress" placeholder="Complete Delivery Address" style="width:100%;margin-top:10px;padding:8px;background:var(--bg-deep);border:1px solid var(--border);color:white;">
-    <input type="text" id="codLandmark" placeholder="Nearby Landmark (Optional)" style="width:100%;margin-top:10px;padding:8px;background:var(--bg-deep);border:1px solid var(--border);color:white;">
+    <input type="text" id="codAddress" placeholder="Complete Delivery Address" style="width: 100%; margin-top: 10px; padding: 10px; background: var(--bg-deep); border: 1px solid var(--border); color: white; border-radius: 4px; box-sizing: border-box;">
+    <input type="text" id="codLandmark" placeholder="Nearby Landmark (Optional)" style="width: 100%; margin-top: 10px; padding: 10px; background: var(--bg-deep); border: 1px solid var(--border); color: white; border-radius: 4px; box-sizing: border-box;">
   </div>
 </div>
       
