@@ -2465,7 +2465,7 @@
     let currentProductImages = [];
     let currentImageIndex = 0;
 
-    // Auth Functions - Enhanced with Email & Contact Number
+    // Auth Functions
     function openAuthModal(mode) {
       currentAuthMode = mode;
       const modal = document.getElementById('authModal');
@@ -2608,39 +2608,96 @@
       }
     }
 
-    document.addEventListener('DOMContentLoaded', async () => {
-  checkStoredUser();
-  initializePageFromUrl();  // ADD THIS LINE
-  await loadProducts();
-  await loadCategories();
-});
-
-    // Close modal when clicking outside
-    document.getElementById('productModal').addEventListener('click', function(e) {
-      if (e.target === this) {
-        closeModal();
+    // ========== PAGE NAVIGATION WITH HISTORY ==========
+    
+    function updateActiveMenuItem(pageId) {
+      const allNavItems = document.querySelectorAll('.nav-links li');
+      allNavItems.forEach(item => item.classList.remove('active'));
+      
+      const pageToMenuMap = {
+        'home': 'HOME',
+        'shop': 'SHOP',
+        'about': 'ABOUT',
+        'contact': 'CONTACT'
+      };
+      
+      const targetMenuText = pageToMenuMap[pageId];
+      if (targetMenuText) {
+        allNavItems.forEach(item => {
+          if (item.innerText.trim() === targetMenuText || 
+              (targetMenuText === 'SHOP' && item.innerText.trim().startsWith('SHOP'))) {
+            item.classList.add('active');
+          }
+        });
       }
+    }
+
+    function navigateTo(pageId, addToHistory = true) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      const pg = document.getElementById(pageId);
+      if (pg) pg.classList.add('active');
+      
+      updateActiveMenuItem(pageId);
+      
+      const pageTitles = {
+        home: 'The Accessories House | Industrial Tech Collective',
+        shop: 'Shop | The Accessories House',
+        about: 'About Us | The Accessories House',
+        contact: 'Contact | The Accessories House',
+        success: 'Order Success | The Accessories House'
+      };
+      document.title = pageTitles[pageId] || 'The Accessories House';
+      
+      if (addToHistory) {
+        const newUrl = pageId === 'home' ? window.location.pathname : `?page=${pageId}`;
+        window.history.pushState({ page: pageId }, '', newUrl);
+      }
+      
+      window.scrollTo(0, 0);
+    }
+
+    function getPageFromUrl() {
+      const params = new URLSearchParams(window.location.search);
+      const pageParam = params.get('page');
+      if (pageParam && document.getElementById(pageParam)) return pageParam;
+      return 'home';
+    }
+
+    function initializePageFromUrl() {
+      const page = getPageFromUrl();
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      const pg = document.getElementById(page);
+      if (pg) pg.classList.add('active');
+      updateActiveMenuItem(page);
+      window.history.replaceState({ page: page }, '', window.location.pathname + (page !== 'home' ? `?page=${page}` : ''));
+    }
+
+    window.addEventListener('popstate', function(event) {
+      const page = event.state?.page || getPageFromUrl();
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      const pg = document.getElementById(page);
+      if (pg) pg.classList.add('active');
+      updateActiveMenuItem(page);
+      window.scrollTo(0, 0);
     });
+
+    // ========== PRODUCT FUNCTIONS ==========
 
     function getProductImage(p) { 
       let imgUrl = p.image || p.img || '';
-      // If main image exists, use it; otherwise try first additional image
       if (!imgUrl && p.images && p.images.length > 0) {
         imgUrl = p.images[0];
       }
-      // Fallback for broken images
       if (imgUrl.includes('img.sanishtech.com') || !imgUrl) {
         imgUrl = 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=400';
       }
       return imgUrl;
     }
 
-    // Gallery function to change modal image
     function changeModalImage(index) {
       if (index >= 0 && index < currentProductImages.length) {
         currentImageIndex = index;
         document.getElementById('modalMainImg').src = currentProductImages[index];
-        // Update active thumbnail styling
         document.querySelectorAll('.modal-thumbnail').forEach((thumb, i) => {
           if (i === index) thumb.classList.add('active');
           else thumb.classList.remove('active');
@@ -2652,12 +2709,10 @@
       document.getElementById('productModal').style.display = 'none'; 
     }
 
-    // Updated openModal with gallery support
     function openModal(id) {
       const p = products.find(x => x._id === id || x.id === id);
       if (!p) return;
       
-      // Build image array (main image + additional images)
       currentProductImages = [p.image || p.img || ''];
       if (p.images && Array.isArray(p.images) && p.images.length > 0) {
         currentProductImages = [...currentProductImages, ...p.images];
@@ -2670,7 +2725,6 @@
       document.getElementById('modalSpecs').innerText = p.specs || 'No specifications available';
       document.getElementById('modalRating').innerHTML = '★'.repeat(p.rating || 5) + '☆'.repeat(5-(p.rating || 5));
       
-      // Render thumbnails
       const thumbContainer = document.getElementById('modalThumbnails');
       if (currentProductImages.length > 1) {
         thumbContainer.innerHTML = currentProductImages.map((img, idx) => `
@@ -2682,10 +2736,10 @@
         thumbContainer.innerHTML = '';
       }
       
-      document.getElementById('modalAddToCartBtn').onclick = () => { addToCart(p._id || p.id); closeModal(); }; document.getElementById('modalBuyNowBtn').onclick = () => { closeModal(); buyNowDirect(p._id || p.id); };
+      document.getElementById('modalAddToCartBtn').onclick = () => { addToCart(p._id || p.id); closeModal(); };
+      document.getElementById('modalBuyNowBtn').onclick = () => { closeModal(); buyNowDirect(p._id || p.id); };
       document.getElementById('productModal').style.display = 'flex';
       
-      // Add to recently viewed
       if (!recentlyViewed.find(x => x._id === id || x.id === id)) {
         recentlyViewed.unshift(p);
         if (recentlyViewed.length > 4) recentlyViewed.pop();
@@ -2698,7 +2752,12 @@
       try {
         const response = await fetch(`${API_BASE}/products`);
         products = await response.json();
-        updateHeroStats(); updateManufacturerFilters(); updatePriceRange(); renderFeatured(); renderProducts('shopGrid', products); applyShopFilters();
+        updateHeroStats(); 
+        updateManufacturerFilters(); 
+        updatePriceRange(); 
+        renderFeatured(); 
+        renderProducts('shopGrid', products); 
+        applyShopFilters();
       } catch (error) {
         console.error('Error loading products:', error);
         products = [];
@@ -2739,7 +2798,8 @@
         const categories = await response.json();
         const searchCat = document.getElementById('searchCategory');
         if (categories.length > 0) { searchCat.innerHTML = '<option value="all">All Modules</option>' + categories.map(c => `<option value="${c.name}">${c.name}</option>`).join(''); }
-        updateMegaMenu(categories); updateCategoryGrid(categories);
+        updateMegaMenu(categories); 
+        updateCategoryGrid(categories);
         return categories;
       } catch (error) { console.error('Error loading categories:', error); return []; }
     }
@@ -2765,107 +2825,16 @@
       const displayCategories = categories.slice(0, 4);
       if (displayCategories.length === 0) { catGrid.innerHTML = '<div style="grid-column:span 2;text-align:center;color:var(--text-dim);">No categories available</div>'; return; }
       const categoryImages = { 
-  'Keyboards': 'https://i.postimg.cc/MTPmVXwy/pngtree-3d-render-of-black-gaming-keyboard-with-backlit-rgb-compatability-image-13545585.png', 
-  'HEADPHONES & EARPHONES': 'https://i.postimg.cc/TwsL9D4t/headphones-displayed-against-dark-background-157027-4466.avif', 
-  'Mice': 'https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?w=400', 
-  'Cable': 'https://images.unsplash.com/photo-1583391733956-6c27b5d88e6a?w=400', 
-  'Drones': 'https://images.unsplash.com/photo-1508614589041-895b88991e3e?w=400', 
-  'Monitors': 'https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=400'
-};
+        'Keyboards': 'https://i.postimg.cc/MTPmVXwy/pngtree-3d-render-of-black-gaming-keyboard-with-backlit-rgb-compatability-image-13545585.png', 
+        'HEADPHONES & EARPHONES': 'https://i.postimg.cc/TwsL9D4t/headphones-displayed-against-dark-background-157027-4466.avif', 
+        'Mice': 'https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?w=400', 
+        'Cable': 'https://images.unsplash.com/photo-1583391733956-6c27b5d88e6a?w=400', 
+        'Drones': 'https://images.unsplash.com/photo-1508614589041-895b88991e3e?w=400', 
+        'Monitors': 'https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=400'
+      };
       catGrid.innerHTML = displayCategories.map(cat => { const imageUrl = categoryImages[cat.name] || 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?q=80&w=900&auto=format&fit=crop'; const productCount = products.filter(p => p.category === cat.name).length; return `<div class="cat-card" onclick="quickFilter('${cat.name}')"><span class="cat-card-arrow">↗</span><img src="${imageUrl}" alt="${cat.name}"><div class="cat-card-body"><div class="cat-card-label">${cat.name.toUpperCase()}</div><div class="cat-card-count">${productCount} MODULES</div></div></div>`; }).join('');
     }
 
-    function updateActiveMenuItem(pageId) {
-  // Remove active class from all nav links
-  const allNavItems = document.querySelectorAll('.nav-links li');
-  allNavItems.forEach(item => item.classList.remove('active'));
-  
-  // Map page IDs to menu text
-  const pageToMenuMap = {
-    'home': 'HOME',
-    'shop': 'SHOP',
-    'about': 'ABOUT',
-    'contact': 'CONTACT'
-  };
-  
-  // Find and highlight the matching menu item
-  const targetMenuText = pageToMenuMap[pageId];
-  if (targetMenuText) {
-    allNavItems.forEach(item => {
-      if (item.innerText.trim() === targetMenuText || 
-          (targetMenuText === 'SHOP' && item.innerText.trim().startsWith('SHOP'))) {
-        item.classList.add('active');
-      }
-    });
-  }
-}
-
-// Updated navigateTo function
-function navigateTo(pageId, addToHistory = true) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  const pg = document.getElementById(pageId);
-  if (pg) pg.classList.add('active');
-  
-  // Update active menu highlight
-  updateActiveMenuItem(pageId);
-  
-  // Update page title
-  const pageTitles = {
-    home: 'The Accessories House | Industrial Tech Collective',
-    shop: 'Shop | The Accessories House',
-    about: 'About Us | The Accessories House',
-    contact: 'Contact | The Accessories House',
-    success: 'Order Success | The Accessories House'
-  };
-  document.title = pageTitles[pageId] || 'The Accessories House';
-  
-  if (addToHistory) {
-    const newUrl = pageId === 'home' ? window.location.pathname : `?page=${pageId}`;
-    window.history.pushState({ page: pageId }, '', newUrl);
-  }
-  
-  window.scrollTo(0, 0);
-}
-    
-  if (addToHistory) {
-    const newUrl = pageId === 'home' ? window.location.pathname : `?page=${pageId}`;
-    window.history.pushState({ page: pageId }, '', newUrl);
-  }
-  
-  window.scrollTo(0, 0);
-}
-
-window.addEventListener('popstate', function(event) {
-  const page = event.state?.page || getPageFromUrl();
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  const pg = document.getElementById(page);
-  if (pg) pg.classList.add('active');
-  
-  // Update active menu highlight when using back/forward
-  updateActiveMenuItem(page);
-  
-  window.scrollTo(0, 0);
-});
-    
-function getPageFromUrl() {
-  const params = new URLSearchParams(window.location.search);
-  const pageParam = params.get('page');
-  if (pageParam && document.getElementById(pageParam)) return pageParam;
-  return 'home';
-}
-
-function initializePageFromUrl() {
-  const page = getPageFromUrl();
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  const pg = document.getElementById(page);
-  if (pg) pg.classList.add('active');
-  
-  // Highlight the active menu item on page load
-  updateActiveMenuItem(page);
-  
-  window.history.replaceState({ page: page }, '', window.location.pathname + (page !== 'home' ? `?page=${page}` : ''));
-}
-    
     function renderFeatured() {
       const list = products.slice(0, 4);
       const container = document.getElementById('featuredGrid');
@@ -2884,9 +2853,9 @@ function initializePageFromUrl() {
             <div class="feat-card-stars">${'★'.repeat(p.rating || 5)}${'☆'.repeat(5-(p.rating || 5))}</div>
             <div class="feat-card-price">₨${p.price}</div>
             <div class="action-buttons">
-  <button class="btn-buynow" onclick="event.stopPropagation(); buyNowDirect('${p._id || p.id}')">BUY NOW</button>
-  <button class="btn-cart btn-buynow" onclick="event.stopPropagation(); addToCart('${p._id || p.id}')">ADD TO CART</button>
-</div>
+              <button class="btn-buynow" onclick="event.stopPropagation(); buyNowDirect('${p._id || p.id}')">BUY NOW</button>
+              <button class="btn-cart btn-buynow" onclick="event.stopPropagation(); addToCart('${p._id || p.id}')">ADD TO CART</button>
+            </div>
           </div>
         </div>`;
       }).join('');
@@ -2937,30 +2906,75 @@ function initializePageFromUrl() {
     function addToCart(id) { const product = products.find(x => x._id === id || x.id === id); if (product) { cart.push(product); updateCartUI(); if (!document.getElementById('cartSidebar').classList.contains('open')) toggleCart(); } }
     function updateCartUI() { document.getElementById('cartCount').innerText = cart.length; document.getElementById('cartItemsList').innerHTML = cart.map((p,i) => `<div class="cart-item"><div class="cart-item-info"><h4>${p.name}</h4><p>₨${p.price}</p></div><span style="color:var(--red);cursor:pointer;font-size:12px;font-weight:700;" onclick="removeFromCart(${i})">REMOVE</span></div>`).join(''); document.getElementById('cartTotalPrice').innerText = `₨${cart.reduce((s,p) => s+p.price, 0)}`; }
     function removeFromCart(i) { cart.splice(i, 1); updateCartUI(); }
+    
     function buyNowDirect(productId) {
-  const product = products.find(x => x._id === productId || x.id === productId);
-  if (!product) return;
-  directBuyProduct = product;
-  document.getElementById('paymentTotal').innerText = `₨${product.price}`;
-  document.getElementById('paymentModal').style.display = 'flex';
-  selectedPaymentMethod = null;
-  document.querySelectorAll('.payment-details').forEach(d => d.classList.remove('active'));
-  document.querySelectorAll('.payment-method-btn').forEach(btn => btn.classList.remove('selected'));
-}
+      const product = products.find(x => x._id === productId || x.id === productId);
+      if (!product) return;
+      directBuyProduct = product;
+      document.getElementById('paymentTotal').innerText = `₨${product.price}`;
+      document.getElementById('paymentModal').style.display = 'flex';
+      selectedPaymentMethod = null;
+      document.querySelectorAll('.payment-details').forEach(d => d.classList.remove('active'));
+      document.querySelectorAll('.payment-method-btn').forEach(btn => btn.classList.remove('selected'));
+    }
+    
     function showPaymentModal() { if (cart.length === 0) { alert("NO HARDWARE DETECTED"); return; } const total = cart.reduce((s,p) => s + p.price, 0); document.getElementById('paymentTotal').innerText = `₨${total}`; document.getElementById('paymentModal').style.display = 'flex'; }
     function closePaymentModal() { document.getElementById('paymentModal').style.display = 'none'; selectedPaymentMethod = null; document.querySelectorAll('.payment-details').forEach(d => d.classList.remove('active')); document.querySelectorAll('.payment-method-btn').forEach(btn => btn.classList.remove('selected')); }
-    function selectPaymentMethod(method) { selectedPaymentMethod = method; document.querySelectorAll('.payment-details').forEach(d => d.classList.remove('active')); document.getElementById(`${method}Payment`).classList.add('active'); document.querySelectorAll('.payment-method-btn').forEach(btn => btn.classList.remove('selected')); event.target.classList.add('selected'); }
+    function selectPaymentMethod(method) { selectedPaymentMethod = method; document.querySelectorAll('.payment-details').forEach(d => d.classList.remove('active')); document.getElementById(`${method}Payment`).classList.add('active'); event.target.classList.add('selected'); }
     function validateCardDetails() { const cardNumber = document.getElementById('cardNumber').value.replace(/\s/g, ''); const expiry = document.getElementById('cardExpiry').value; const cvv = document.getElementById('cardCvv').value; const cardName = document.getElementById('cardName').value; if (!cardNumber || !expiry || !cvv || !cardName) { alert('Please fill all card details'); return false; } if (!/^\d{16}$/.test(cardNumber)) { alert('Please enter a valid 16-digit card number'); return false; } if (!/^\d{2}\/\d{2}$/.test(expiry)) { alert('Please enter expiry date in MM/YY format'); return false; } if (!/^\d{3,4}$/.test(cvv)) { alert('Please enter a valid CVV'); return false; } return true; }
-    function processPayment() { if (!selectedPaymentMethod) { alert('Please select a payment method'); return; } let isValid = true; let transactionId = null; switch(selectedPaymentMethod) { case 'card': isValid = validateCardDetails(); transactionId = 'CARD-' + Math.random().toString(36).substring(4,9).toUpperCase(); break; case 'jazzcash': transactionId = document.getElementById('jazzcashTransactionId').value; if (!transactionId) { alert('Please enter JazzCash transaction ID'); isValid = false; } break; case 'easypaisa': transactionId = document.getElementById('easypaisaTransactionId').value; if (!transactionId) { alert('Please enter EasyPaisa transaction ID'); isValid = false; } break; case 'bank': transactionId = document.getElementById('bankReference').value; if (!transactionId) { alert('Please enter bank transfer reference number'); isValid = false; } break; } if (!isValid) return; let orderItems = [];
-  if (directBuyProduct) {
-    orderItems = [directBuyProduct];
-  } else {
-    orderItems = [...cart];
-  }
-  if (orderItems.length === 0) { alert('No items to order'); return; }const customerName = prompt("Enter your name:") || "Guest Customer"; const customerEmail = prompt("Enter your email:") || ""; const customerPhone = prompt("Enter your phone number:") || ""; const customerAddress = prompt("Enter your address:") || "Demo Address"; const id = "AUR-" + Math.floor(Math.random()*9000+1000) + "-" + Math.random().toString(36).substring(4,9).toUpperCase(); document.getElementById('generatedTrackId').innerText = id; const orderData = { name: customerName, email: customerEmail, phone: customerPhone, address: customerAddress, total: cart.reduce((s,p) => s+p.price, 0), items: cart.map(p => ({ productId: p._id || p.id, name: p.name, price: p.price, quantity: 1 })), status: "paid", paymentMethod: selectedPaymentMethod, transactionId: transactionId, trackingId: id }; fetch(`${API_BASE}/checkout`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(orderData) }).then(r => r.json()).then(d => { alert(`Payment successful via ${selectedPaymentMethod.toUpperCase()}!\nTransaction ID: ${transactionId}\nOrder ID: ${id}`); cart = []; directBuyProduct = null; updateCartUI(); closePaymentModal(); toggleCart(); navigateTo('success'); }).catch(err => { console.error(err); alert('Payment processed but order saving failed. Please contact support with your transaction ID.'); }); }
+    
+    function processPayment() { 
+      if (!selectedPaymentMethod) { alert('Please select a payment method'); return; } 
+      let isValid = true; let transactionId = null; 
+      switch(selectedPaymentMethod) { 
+        case 'card': isValid = validateCardDetails(); transactionId = 'CARD-' + Math.random().toString(36).substring(4,9).toUpperCase(); break; 
+        case 'jazzcash': transactionId = document.getElementById('jazzcashTransactionId').value; if (!transactionId) { alert('Please enter JazzCash transaction ID'); isValid = false; } break; 
+        case 'easypaisa': transactionId = document.getElementById('easypaisaTransactionId').value; if (!transactionId) { alert('Please enter EasyPaisa transaction ID'); isValid = false; } break; 
+        case 'bank': transactionId = document.getElementById('bankReference').value; if (!transactionId) { alert('Please enter bank transfer reference number'); isValid = false; } break; 
+      } 
+      if (!isValid) return; 
+      
+      let orderItems = [];
+      if (directBuyProduct) {
+        orderItems = [directBuyProduct];
+      } else {
+        orderItems = [...cart];
+      }
+      if (orderItems.length === 0) { alert('No items to order'); return; }
+      
+      const customerName = prompt("Enter your name:") || "Guest Customer"; 
+      const customerEmail = prompt("Enter your email:") || ""; 
+      const customerPhone = prompt("Enter your phone number:") || ""; 
+      const customerAddress = prompt("Enter your address:") || "Demo Address"; 
+      const id = "AUR-" + Math.floor(Math.random()*9000+1000) + "-" + Math.random().toString(36).substring(4,9).toUpperCase(); 
+      document.getElementById('generatedTrackId').innerText = id; 
+      
+      const orderData = { name: customerName, email: customerEmail, phone: customerPhone, address: customerAddress, total: orderItems.reduce((s,p) => s+p.price, 0), items: orderItems.map(p => ({ productId: p._id || p.id, name: p.name, price: p.price, quantity: 1 })), status: "paid", paymentMethod: selectedPaymentMethod, transactionId: transactionId, trackingId: id }; 
+      
+      fetch(`${API_BASE}/checkout`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(orderData) }).then(r => r.json()).then(d => { alert(`Payment successful via ${selectedPaymentMethod.toUpperCase()}!\nTransaction ID: ${transactionId}\nOrder ID: ${id}`); cart = []; directBuyProduct = null; updateCartUI(); closePaymentModal(); toggleCart(); navigateTo('success'); }).catch(err => { console.error(err); alert('Payment processed but order saving failed. Please contact support with your transaction ID.'); }); 
+    }
+    
     async function handleContactForm(event) { event.preventDefault(); const formData = { name: document.getElementById('contactName').value, email: document.getElementById('contactEmail').value, subject: document.getElementById('contactSubject').value, message: document.getElementById('contactMessage').value }; try { const response = await fetch(`${API_BASE}/contact`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(formData) }); if (response.ok) { alert('Message sent successfully! We will get back to you soon.'); document.getElementById('contactForm').reset(); } else { alert('Failed to send message. Please try again.'); } } catch (error) { alert('Error sending message. Please try calling us directly at +1 (555) 123-4567'); } }
+    
     function toggleCompare(id) { const p = products.find(x => x._id === id || x.id === id); if (!p) return; const idx = compareList.findIndex(x => x._id === id || x.id === id); if (idx > -1) compareList.splice(idx, 1); else if (compareList.length < 3) compareList.push(p); const drawer = document.getElementById('compareDrawer'); document.getElementById('compareContainer').innerHTML = compareList.map(item => `<div style="background:var(--bg-card);padding:5px 15px;border:1px solid var(--border);font-size:13px;display:flex;align-items:center;gap:10px;"><img src="${getProductImage(item)}" style="width:25px;height:25px;object-fit:cover;"> ${item.name}</div>`).join(''); compareList.length > 0 ? drawer.classList.add('open') : drawer.classList.remove('open'); }
-    renderFeatured(); renderProducts('shopGrid', []);
+    
+    // Close modal when clicking outside
+    document.getElementById('productModal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeModal();
+      }
+    });
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      checkStoredUser();
+      initializePageFromUrl();
+      await loadProducts();
+      await loadCategories();
+    });
+    
+    renderFeatured(); 
+    renderProducts('shopGrid', []);
   </script>
+
 </body>
 </html>
