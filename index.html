@@ -113,6 +113,52 @@
     }
     .nav-links li:hover { color: var(--gold); }
 
+    .nav-links li.active {
+  color: var(--gold);
+  position: relative;
+}
+
+.nav-links li.active::before {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--gold);
+  animation: slideIn 0.3s ease forwards;
+}
+
+@keyframes slideIn {
+  from {
+    width: 0;
+    opacity: 0;
+  }
+  to {
+    width: 100%;
+    opacity: 1;
+  }
+}
+
+/* Subtle hover effect for non-active items */
+.nav-links li:not(.active):hover {
+  color: var(--gold);
+  transition: color 0.2s ease;
+}
+
+.nav-links li:not(.active):hover::before {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: var(--gold);
+  opacity: 0.5;
+}
+
+    
+
     /* Auth buttons styling */
     .auth-buttons {
       display: flex;
@@ -2729,11 +2775,58 @@
       catGrid.innerHTML = displayCategories.map(cat => { const imageUrl = categoryImages[cat.name] || 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?q=80&w=900&auto=format&fit=crop'; const productCount = products.filter(p => p.category === cat.name).length; return `<div class="cat-card" onclick="quickFilter('${cat.name}')"><span class="cat-card-arrow">↗</span><img src="${imageUrl}" alt="${cat.name}"><div class="cat-card-body"><div class="cat-card-label">${cat.name.toUpperCase()}</div><div class="cat-card-count">${productCount} MODULES</div></div></div>`; }).join('');
     }
 
-    function navigateTo(pageId, addToHistory = true) {
+    function updateActiveMenuItem(pageId) {
+  // Remove active class from all nav links
+  const allNavItems = document.querySelectorAll('.nav-links li');
+  allNavItems.forEach(item => item.classList.remove('active'));
+  
+  // Map page IDs to menu text
+  const pageToMenuMap = {
+    'home': 'HOME',
+    'shop': 'SHOP',
+    'about': 'ABOUT',
+    'contact': 'CONTACT'
+  };
+  
+  // Find and highlight the matching menu item
+  const targetMenuText = pageToMenuMap[pageId];
+  if (targetMenuText) {
+    allNavItems.forEach(item => {
+      if (item.innerText.trim() === targetMenuText || 
+          (targetMenuText === 'SHOP' && item.innerText.trim().startsWith('SHOP'))) {
+        item.classList.add('active');
+      }
+    });
+  }
+}
+
+// Updated navigateTo function
+function navigateTo(pageId, addToHistory = true) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   const pg = document.getElementById(pageId);
   if (pg) pg.classList.add('active');
   
+  // Update active menu highlight
+  updateActiveMenuItem(pageId);
+  
+  // Update page title
+  const pageTitles = {
+    home: 'The Accessories House | Industrial Tech Collective',
+    shop: 'Shop | The Accessories House',
+    about: 'About Us | The Accessories House',
+    contact: 'Contact | The Accessories House',
+    success: 'Order Success | The Accessories House'
+  };
+  document.title = pageTitles[pageId] || 'The Accessories House';
+  
+  if (addToHistory) {
+    const newUrl = pageId === 'home' ? window.location.pathname : `?page=${pageId}`;
+    window.history.pushState({ page: pageId }, '', newUrl);
+  }
+  
+  window.scrollTo(0, 0);
+}
+    
   if (addToHistory) {
     const newUrl = pageId === 'home' ? window.location.pathname : `?page=${pageId}`;
     window.history.pushState({ page: pageId }, '', newUrl);
@@ -2747,9 +2840,13 @@ window.addEventListener('popstate', function(event) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   const pg = document.getElementById(page);
   if (pg) pg.classList.add('active');
+  
+  // Update active menu highlight when using back/forward
+  updateActiveMenuItem(page);
+  
   window.scrollTo(0, 0);
 });
-
+    
 function getPageFromUrl() {
   const params = new URLSearchParams(window.location.search);
   const pageParam = params.get('page');
@@ -2762,9 +2859,13 @@ function initializePageFromUrl() {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   const pg = document.getElementById(page);
   if (pg) pg.classList.add('active');
+  
+  // Highlight the active menu item on page load
+  updateActiveMenuItem(page);
+  
   window.history.replaceState({ page: page }, '', window.location.pathname + (page !== 'home' ? `?page=${page}` : ''));
 }
-
+    
     function renderFeatured() {
       const list = products.slice(0, 4);
       const container = document.getElementById('featuredGrid');
