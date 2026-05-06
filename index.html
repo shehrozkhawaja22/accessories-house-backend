@@ -3086,13 +3086,16 @@
         <input type="text" class="search-input" id="globalSearch" placeholder="Search industrial inventory..." onkeyup="handleSearch(event)">
       </div>
       <nav style="height:100%; display: flex; align-items: center;">
-        <ul class="nav-links">
-          <li onclick="navigateTo('home')">HOME</li>
-          <li>SHOP ▼<div class="mega-menu" id="megaMenu"></div></li>
-          <li onclick="navigateTo('about')">ABOUT</li>
-          <li onclick="navigateTo('contact')">CONTACT</li>
-          <li onclick="toggleCart()" style="color:var(--gold)">CART [<span id="cartCount">0</span>]</li>
-        </ul>
+       <ul class="nav-links">
+  <li onclick="navigateTo('home')">HOME</li>
+  <li onclick="navigateTo('shop')" style="cursor:pointer;">
+    SHOP ▼
+    <div class="mega-menu" id="megaMenu"></div>
+  </li>
+  <li onclick="navigateTo('about')">ABOUT</li>
+  <li onclick="navigateTo('contact')">CONTACT</li>
+  <li onclick="toggleCart()" style="color:var(--gold)">CART [<span id="cartCount">0</span>]</li>
+</ul>
         <div class="auth-buttons" id="authButtonsContainer">
           <button class="auth-btn" onclick="openAuthModal('login')">LOGIN</button>
           <button class="auth-btn auth-btn-signup" onclick="openAuthModal('signup')">SIGN UP</button>
