@@ -2302,6 +2302,217 @@
   border-color: var(--green);
 }
 
+        /* ========== FIX PAYMENT MODAL RESPONSIVENESS ========== */
+    
+    /* Fix Payment Modal Width and Responsiveness */
+    .payment-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.95);
+      z-index: 4000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .payment-modal-content {
+      background: var(--bg-card);
+      width: 100%;
+      max-width: 500px;
+      max-height: 90vh;
+      overflow-y: auto;
+      border: 1px solid var(--border-bright);
+      position: relative;
+      padding: 30px;
+      border-radius: 8px;
+    }
+
+    /* Fix COD section inside payment modal */
+    #codPayment .pk-payment-info {
+      text-align: left;
+      max-width: 100%;
+      overflow-x: hidden;
+      word-wrap: break-word;
+    }
+
+    #codPayment input,
+    #codPayment .pk-payment-info input {
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+      padding: 12px;
+      margin-top: 12px;
+      background: var(--bg-deep);
+      border: 1px solid var(--border);
+      color: white;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    #codPayment .qr-code {
+      font-size: 50px;
+      text-align: center;
+    }
+
+    #codPayment p {
+      word-break: break-word;
+      font-size: 13px;
+    }
+
+    /* Make all payment method buttons responsive */
+    .payment-method-btn {
+      background: var(--bg-panel);
+      border: 2px solid var(--border);
+      padding: 15px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      font-family: 'Barlow Condensed';
+      font-size: 1rem;
+      font-weight: 600;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    /* Mobile specific fixes for payment modal */
+    @media screen and (max-width: 768px) {
+      .payment-modal-overlay {
+        padding: 10px;
+        align-items: flex-start;
+        padding-top: 50px;
+      }
+      
+      .payment-modal-content {
+        max-width: 95%;
+        padding: 20px 15px;
+        max-height: 85vh;
+        overflow-y: auto;
+      }
+      
+      .payment-modal-content h2 {
+        font-size: 1.5rem !important;
+      }
+      
+      .payment-method-btn {
+        padding: 12px;
+        font-size: 0.85rem;
+        gap: 8px;
+      }
+      
+      #codPayment .pk-payment-info {
+        padding: 12px;
+      }
+      
+      #codPayment input,
+      #codPayment .pk-payment-info input {
+        padding: 10px;
+        font-size: 13px;
+      }
+      
+      #codPayment .qr-code {
+        font-size: 40px;
+      }
+      
+      #codPayment p {
+        font-size: 11px;
+      }
+      
+      .payment-modal-content .btn {
+        padding: 12px;
+        font-size: 13px;
+      }
+    }
+
+    /* Extra small devices */
+    @media screen and (max-width: 480px) {
+      .payment-modal-content {
+        padding: 15px 12px;
+      }
+      
+      .payment-method-btn {
+        padding: 10px;
+        font-size: 0.75rem;
+      }
+      
+      .payment-modal-content h2 {
+        font-size: 1.2rem !important;
+      }
+      
+      #codPayment .pk-payment-info {
+        padding: 8px;
+      }
+      
+      #codPayment input {
+        padding: 8px;
+        margin-top: 8px;
+      }
+    }
+
+    /* Fix for the bank highlight box */
+    .bank-highlight {
+      background: #0f0f11;
+      padding: 12px;
+      border-left: 3px solid var(--gold);
+      margin-bottom: 15px;
+      font-size: 11px;
+      word-break: break-word;
+    }
+
+    /* Ensure all inputs in payment modal are contained */
+    .payment-modal-content input,
+    .payment-modal-content select,
+    .payment-modal-content textarea {
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    /* Fix card row layout */
+    .card-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
+
+    @media screen and (max-width: 480px) {
+      .card-row {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+    }
+
+    /* Close button positioning */
+    .close-payment {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      font-size: 24px;
+      cursor: pointer;
+      color: var(--text-dim);
+      background: rgba(0,0,0,0.5);
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: 0.2s;
+      z-index: 10;
+    }
+
+    .close-payment:hover {
+      color: white;
+      background: var(--gold);
+    }
+    
+
+
+
+    
     
   </style>
 </head>
