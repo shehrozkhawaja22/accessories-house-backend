@@ -2508,11 +2508,460 @@
       color: white;
       background: var(--gold);
     }
+        /* ========== CRITICAL MOBILE FIXES ========== */
     
-
-
-
+    /* Force proper viewport behavior */
+    * {
+      max-width: 100%;
+      box-sizing: border-box;
+    }
     
+    body {
+      overflow-x: hidden;
+      width: 100%;
+      position: relative;
+    }
+    
+    /* Fix main containers on mobile */
+    @media screen and (max-width: 768px) {
+      /* Ensure no horizontal scroll */
+      html, body {
+        overflow-x: hidden;
+        width: 100%;
+      }
+      
+      /* Fix header on mobile */
+      header {
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+      }
+      
+      .nav-container {
+        flex-direction: column;
+        padding: 10px 15px;
+        height: auto;
+        gap: 12px;
+      }
+      
+      .logo {
+        width: 100%;
+        justify-content: center;
+      }
+      
+      .logo-text {
+        font-size: 1rem;
+        white-space: normal;
+        text-align: center;
+      }
+      
+      /* Fix search bar */
+      .search-wrapper {
+        width: 100%;
+        margin: 5px 0;
+      }
+      
+      .search-input {
+        font-size: 14px;
+        padding: 10px;
+      }
+      
+      /* Fix navigation links */
+      .nav-links {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+      }
+      
+      .nav-links li {
+        font-size: 12px;
+        padding: 5px 0;
+      }
+      
+      /* Fix hero section */
+      .hero-fullwidth {
+        min-height: auto;
+        padding: 20px 0;
+      }
+      
+      .hero-inner {
+        padding: 0 15px;
+      }
+      
+      .hero-left {
+        padding: 20px 0;
+      }
+      
+      .hero-title {
+        font-size: 2rem;
+        line-height: 1.2;
+      }
+      
+      .hero-desc {
+        font-size: 0.9rem;
+        margin-bottom: 20px;
+      }
+      
+      .hero-cta-row {
+        flex-direction: column;
+        gap: 10px;
+      }
+      
+      .btn-primary, .btn-ghost {
+        width: 100%;
+        text-align: center;
+        padding: 12px;
+        font-size: 12px;
+      }
+      
+      /* Fix stats section */
+      .hero-stats {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+        margin-top: 25px;
+      }
+      
+      .stat-item {
+        text-align: center;
+      }
+      
+      .stat-num {
+        font-size: 1.3rem;
+      }
+      
+      .stat-label {
+        font-size: 9px;
+      }
+      
+      /* Fix category grid */
+      .cat-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+      
+      .cat-card {
+        aspect-ratio: 16/9;
+      }
+      
+      /* Fix promise section */
+      .promise-inner {
+        grid-template-columns: 1fr;
+      }
+      
+      .promise-item {
+        padding: 15px;
+        text-align: center;
+        justify-content: center;
+      }
+      
+      /* Fix featured products */
+      .featured-strip, .recent-section {
+        padding: 30px 15px;
+      }
+      
+      .featured-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+      
+      .feat-card-img {
+        height: 200px;
+      }
+      
+      /* Fix shop layout */
+      .shop-layout {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+      
+      .filter-sidebar {
+        position: static;
+        margin-bottom: 20px;
+      }
+      
+      .products-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+      
+      .product-card {
+        padding: 15px;
+      }
+      
+      .card-img {
+        height: 180px;
+      }
+      
+      /* Fix cart sidebar */
+      #cartSidebar {
+        width: 100%;
+        right: -100%;
+        padding: 20px;
+      }
+      
+      /* Fix modals */
+      .modal-overlay {
+        padding: 10px;
+        align-items: center;
+      }
+      
+      .modal-content {
+        grid-template-columns: 1fr;
+        margin: 10px;
+        max-height: 90vh;
+        overflow-y: auto;
+      }
+      
+      .modal-img-container {
+        height: 250px;
+      }
+      
+      .modal-content > div {
+        padding: 20px !important;
+      }
+      
+      /* Fix payment modal */
+      .payment-modal-overlay {
+        padding: 10px;
+        align-items: center;
+      }
+      
+      .payment-modal-content {
+        max-width: 95%;
+        padding: 20px 15px;
+        max-height: 85vh;
+      }
+      
+      /* Fix footer */
+      footer {
+        padding: 40px 0 20px;
+      }
+      
+      .footer-grid {
+        grid-template-columns: 1fr;
+        gap: 30px;
+        text-align: center;
+      }
+      
+      .footer-contact-box {
+        text-align: center;
+      }
+      
+      /* Fix contact page */
+      #contact .container > div {
+        grid-template-columns: 1fr;
+        gap: 30px;
+      }
+      
+      .contact-form {
+        padding: 20px;
+      }
+      
+      .form-group.double {
+        grid-template-columns: 1fr;
+        gap: 15px;
+      }
+      
+      /* Fix about page */
+      #about .container {
+        padding: 0 20px;
+      }
+      
+      #about h1 {
+        font-size: 2.5rem !important;
+      }
+      
+      #about p {
+        font-size: 1rem !important;
+      }
+      
+      #about .container > div:last-child {
+        height: 250px !important;
+      }
+      
+      /* Fix auth modal */
+      .auth-modal {
+        width: 90%;
+        padding: 25px 20px;
+        margin: 20px;
+      }
+      
+      .auth-modal h2 {
+        font-size: 1.5rem;
+      }
+      
+      .auth-modal input {
+        padding: 10px;
+        font-size: 14px;
+      }
+      
+      /* Fix compare drawer */
+      .compare-drawer {
+        padding: 10px;
+        height: auto;
+        flex-wrap: wrap;
+        bottom: -150px;
+      }
+      
+      /* Fix success page */
+      .success-wrap {
+        padding: 40px 20px;
+      }
+      
+      .track-num {
+        font-size: 1.2rem;
+        word-break: break-all;
+      }
+      
+      /* Fix buttons on mobile */
+      .btn, .btn-primary, .btn-ghost {
+        white-space: normal;
+        word-break: keep-all;
+      }
+      
+      /* Fix images */
+      img {
+        max-width: 100%;
+        height: auto;
+      }
+      
+      /* Fix mega menu on mobile */
+      .mega-menu {
+        position: fixed;
+        top: auto;
+        left: 10px;
+        right: 10px;
+        width: auto;
+        max-width: calc(100% - 20px);
+        z-index: 1001;
+      }
+    }
+    
+    /* Fix for very small phones (below 380px) */
+    @media screen and (max-width: 380px) {
+      .hero-title {
+        font-size: 1.5rem;
+      }
+      
+      .nav-links {
+        gap: 10px;
+      }
+      
+      .nav-links li {
+        font-size: 10px;
+      }
+      
+      .auth-btn {
+        padding: 4px 8px;
+        font-size: 9px;
+      }
+      
+      .section-title {
+        font-size: 1.2rem;
+      }
+      
+      .feat-card-name {
+        font-size: 0.9rem;
+      }
+      
+      .product-card h3 {
+        font-size: 1rem;
+      }
+    }
+    
+    /* Fix landscape mode on mobile */
+    @media screen and (max-width: 768px) and (orientation: landscape) {
+      .hero-fullwidth {
+        min-height: auto;
+      }
+      
+      .hero-left {
+        padding: 15px 0;
+      }
+      
+      .featured-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .products-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .modal-content {
+        max-height: 85vh;
+        overflow-y: auto;
+      }
+    }
+    
+    /* Fix for notched phones (iPhone X and above) */
+    @supports (padding: max(0px)) {
+      @media screen and (max-width: 768px) {
+        .nav-container {
+          padding-left: max(15px, env(safe-area-inset-left));
+          padding-right: max(15px, env(safe-area-inset-right));
+        }
+        
+        .payment-modal-content,
+        .auth-modal,
+        .modal-content {
+          margin-left: max(10px, env(safe-area-inset-left));
+          margin-right: max(10px, env(safe-area-inset-right));
+        }
+      }
+    }
+    
+    /* Ensure all containers respect screen width */
+    .container, .nav-container, .hero-inner {
+      max-width: 100%;
+      overflow-x: hidden;
+    }
+    
+    /* Fix price range slider on mobile */
+    @media screen and (max-width: 768px) {
+      #priceRange {
+        width: 100%;
+        height: 4px;
+      }
+      
+      .filter-option {
+        font-size: 13px;
+        padding: 8px 0;
+      }
+      
+      /* Make touch targets larger on mobile */
+      .nav-links li,
+      .auth-btn,
+      .btn,
+      .product-card,
+      .feat-card,
+      .cat-card,
+      .payment-method-btn,
+      .close-modal,
+      .close-payment,
+      .close-auth {
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+      }
+      
+      /* Improve readability on mobile */
+      p, li, a, .hero-desc, .promise-desc {
+        font-size: 14px;
+        line-height: 1.5;
+      }
+      
+      h1, .hero-title {
+        font-size: 1.8rem;
+      }
+      
+      h2, .section-title {
+        font-size: 1.3rem;
+      }
+      
+      h3 {
+        font-size: 1.1rem;
+      }
+    }
     
   </style>
 </head>
