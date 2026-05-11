@@ -30,7 +30,6 @@
       line-height: 1.6;
     }
 
-    /* ─── Full-width container (no side padding) ─── */
     .container { max-width: 100%; margin: 0 auto; padding: 0 40px; }
     .container--flush { width: 100%; margin: 0; padding: 0; }
 
@@ -52,7 +51,6 @@
       width: 100%; padding: 0 48px;
     }
 
-    /* ── TAH LOGO ── */
     .logo {
       display: flex; align-items: center; gap: 13px;
       cursor: pointer; transition: var(--transition);
@@ -112,12 +110,10 @@
       height: 100%; display: flex; align-items: center;
     }
     .nav-links li:hover { color: var(--gold); }
-
     .nav-links li.active {
       color: var(--gold);
       position: relative;
     }
-
     .nav-links li.active::before {
       content: '';
       position: absolute;
@@ -128,17 +124,14 @@
       background: var(--gold);
       animation: slideIn 0.3s ease forwards;
     }
-
     @keyframes slideIn {
       from { width: 0; opacity: 0; }
       to { width: 100%; opacity: 1; }
     }
-
     .nav-links li:not(.active):hover {
       color: var(--gold);
       transition: color 0.2s ease;
     }
-
     .nav-links li:not(.active):hover::before {
       content: '';
       position: absolute;
@@ -229,7 +222,7 @@
     .mega-menu a { display: block; color: var(--text-dim); font-size: 13px; margin-bottom: 10px; transition: 0.2s; cursor: pointer; }
     .mega-menu a:hover { color: white; padding-left: 5px; }
 
-    /* Auth Modal Styles */
+    /* Auth Modal */
     .auth-modal-overlay {
       position: fixed; inset: 0; background: rgba(0,0,0,0.96); z-index: 5000;
       display: none; align-items: center; justify-content: center; padding: 40px;
@@ -268,15 +261,14 @@
     }
     .close-auth:hover { color: white; }
 
-    /* ─── PAGES ─── */
+    /* PAGES */
     .page { display: none; min-height: 85vh; animation: pageIn 0.4s ease forwards; }
     .page.active { display: block; }
     @keyframes pageIn { from { opacity:0; transform:translateY(15px); } to { opacity:1; transform:translateY(0); } }
 
-    /* ══ HOME PAGE ══ */
     #home { padding: 0; }
 
-    /* ── HERO: TRUE FULL WIDTH ── */
+    /* HERO */
     .hero-fullwidth {
       width: 100%;
       position: relative;
@@ -285,7 +277,6 @@
       display: flex;
       align-items: stretch;
     }
-
     .hero-bg {
       position: absolute; inset: 0;
       background: url('https://images.unsplash.com/photo-1587829741301-dc798b83add3?q=80&w=2071&auto=format&fit=crop') center/cover no-repeat;
@@ -302,7 +293,6 @@
       background: linear-gradient(to bottom, transparent, var(--gold), transparent);
       opacity: 0.35;
     }
-
     .hero-inner {
       position: relative; z-index: 2;
       width: 100%;
@@ -312,7 +302,6 @@
       gap: 0;
       align-items: stretch;
     }
-
     .hero-left {
       display: flex; flex-direction: column; justify-content: center;
       padding: 90px 80px 90px 0;
@@ -328,8 +317,7 @@
       content: ''; display: block;
       width: 40px; height: 1px; background: var(--gold);
     }
-    
-    /* FIXED: Meets word starts exactly under letter T of Technology */
+    /* Hero title - precise alignment */
     .hero-title {
       font-family: 'Barlow Condensed'; font-weight: 800;
       font-size: clamp(4rem, 7vw, 6.5rem);
@@ -340,25 +328,17 @@
       display: flex;
       flex-direction: column;
     }
-    .hero-title .line1 {
-      display: block;
-    }
-    .hero-title .line2 {
-      display: block;
-      margin-left: 0;
-    }
+    .hero-title .line1,
+    .hero-title .line2,
     .hero-title .line3 {
       display: block;
     }
-    .hero-title em { color: var(--gold); font-style: normal; }
-    
-    /* For desktop - precise alignment */
-    @media screen and (min-width: 769px) {
-      .hero-title .line2 {
-        margin-left: 0.9em;
-      }
+    /* TECHNOLOGY stays left-aligned, MEETS indented under the 'T' */
+    .hero-title .line3 {
+      margin-left: 0.55em;   /* width of uppercase 'T' in this font */
     }
-    
+    .hero-title em { color: var(--gold); font-style: normal; }
+
     .hero-desc {
       color: var(--text-dim); font-size: 1.1rem;
       max-width: 480px; line-height: 1.75;
@@ -380,7 +360,6 @@
       margin-top: 12px;
       flex-wrap: wrap;
     }
-    
     .btn-buynow {
       background: var(--gold);
       color: #000;
@@ -397,18 +376,15 @@
       text-align: center;
       border-radius: 4px;
     }
-    
     .btn-buynow:hover {
       background: #d4b46a;
       transform: translateY(-2px);
     }
-    
     .btn-cart {
       background: var(--gold);
       border: 1px solid var(--gold);
       color: #000;
     }
-    
     .btn-cart:hover {
       background: #d4b46a;
       border-color: #d4b46a;
@@ -762,62 +738,38 @@
     ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
     ::-webkit-scrollbar-thumb:hover { background: var(--gold); }
 
-    /* ========== DARAZ-STYLE MOBILE RESPONSIVE - PROFESSIONAL ========== */
-    
-    /* Mobile view - Daraz style */
+    /* ========== DARAZ-STYLE MOBILE RESPONSIVE ========== */
     @media screen and (max-width: 768px) {
-      /* Header - Daraz style */
       .nav-container {
         flex-direction: column !important;
         padding: 10px 12px !important;
         height: auto !important;
         gap: 8px !important;
-        background: var(--bg-deep);
       }
-      
       .logo {
         width: 100% !important;
         justify-content: center !important;
         gap: 8px !important;
-        padding: 5px 0;
       }
-      
       .logo-text {
         font-size: 0.9rem !important;
         white-space: normal !important;
         text-align: center;
-        letter-spacing: 1px;
       }
-      
-      .logo-badge {
-        width: 32px !important;
-        height: 32px !important;
-      }
-      
+      .logo-badge { width: 32px !important; height: 32px !important; }
       .search-wrapper {
         width: 100% !important;
         margin: 4px 0 !important;
         height: 42px !important;
         border-radius: 8px !important;
       }
-      
-      .search-input {
-        font-size: 13px !important;
-        padding: 0 12px !important;
-      }
-      
-      .search-cat {
-        font-size: 11px !important;
-        padding: 0 10px !important;
-      }
-      
+      .search-input { font-size: 13px !important; padding: 0 12px !important; }
+      .search-cat { font-size: 11px !important; padding: 0 10px !important; }
       nav {
         width: 100% !important;
         overflow-x: auto !important;
         -webkit-overflow-scrolling: touch;
-        margin: 5px 0;
       }
-      
       .nav-links {
         display: flex !important;
         flex-direction: row !important;
@@ -827,75 +779,32 @@
         min-width: min-content;
         justify-content: center;
       }
-      
-      .nav-links li {
-        white-space: nowrap !important;
-        font-size: 12px !important;
-        padding: 4px 0;
-      }
-      
+      .nav-links li { white-space: nowrap !important; font-size: 12px !important; }
       .auth-buttons {
         margin-left: 0 !important;
         margin-top: 5px !important;
         gap: 10px !important;
         justify-content: center;
       }
-      
-      .auth-btn {
-        padding: 5px 12px !important;
-        font-size: 11px !important;
-        border-radius: 6px !important;
-      }
-      
-      /* Hero section - Daraz style */
-      .hero-fullwidth {
-        min-height: auto !important;
-      }
-      
+      .auth-btn { padding: 5px 12px !important; font-size: 11px !important; border-radius: 6px !important; }
       .hero-inner {
         grid-template-columns: 1fr !important;
         padding: 0 12px !important;
         gap: 20px !important;
       }
-      
-      .hero-left {
-        padding: 20px 0 10px 0 !important;
-        border-right: none !important;
-      }
-      
+      .hero-left { padding: 20px 0 10px 0 !important; border-right: none !important; }
       .hero-eyebrow {
         font-size: 8px !important;
         letter-spacing: 3px !important;
         margin-bottom: 12px !important;
         gap: 8px !important;
       }
-      
-      .hero-eyebrow::before {
-        width: 20px !important;
-      }
-      
-      /* FIXED: Mobile alignment for Meets under T */
-      .hero-title {
-        font-size: 1.8rem !important;
-        line-height: 1.2 !important;
-        margin-bottom: 16px !important;
-      }
-      
-      .hero-title .line2 {
-        margin-left: 0.9em !important;
-      }
-      
-      .hero-desc {
-        font-size: 0.85rem !important;
-        margin-bottom: 20px !important;
-        line-height: 1.5 !important;
-      }
-      
-      .hero-cta-row {
-        flex-direction: row !important;
-        gap: 10px !important;
-      }
-      
+      .hero-eyebrow::before { width: 20px !important; }
+      .hero-title { font-size: 1.8rem !important; line-height: 1.2 !important; margin-bottom: 16px !important; }
+      /* keep same indentation on mobile */
+      .hero-title .line3 { margin-left: 0.55em !important; }
+      .hero-desc { font-size: 0.85rem !important; margin-bottom: 20px !important; line-height: 1.5 !important; }
+      .hero-cta-row { flex-direction: row !important; gap: 10px !important; }
       .btn-primary, .btn-ghost {
         flex: 1 !important;
         text-align: center !important;
@@ -903,8 +812,6 @@
         font-size: 10px !important;
         border-radius: 6px !important;
       }
-      
-      /* Stats - Daraz style cards */
       .hero-stats {
         display: grid !important;
         grid-template-columns: repeat(2, 1fr) !important;
@@ -912,68 +819,22 @@
         margin-top: 20px !important;
         padding-top: 15px !important;
       }
-      
       .stat-item {
         background: rgba(255,255,255,0.03);
         padding: 10px;
         border-radius: 8px;
       }
-      
-      .stat-num {
-        font-size: 1.2rem !important;
-      }
-      
-      .stat-label {
-        font-size: 8px !important;
-        letter-spacing: 1px !important;
-      }
-      
-      .hero-right {
-        padding: 0 0 15px 0 !important;
-      }
-      
-      .hero-right-label {
-        font-size: 9px !important;
-        letter-spacing: 2px !important;
-        margin-bottom: 10px !important;
-      }
-      
-      /* Category Grid - Daraz style 2 columns */
-      .cat-grid {
-        grid-template-columns: repeat(2, 1fr) !important;
-        gap: 10px !important;
-      }
-      
-      .cat-card {
-        border-radius: 8px !important;
-        aspect-ratio: 4/3 !important;
-      }
-      
-      .cat-card-label {
-        font-size: 0.7rem !important;
-        letter-spacing: 1px !important;
-      }
-      
-      .cat-card-count {
-        font-size: 8px !important;
-      }
-      
-      .cat-card-body {
-        padding: 10px !important;
-      }
-      
-      /* Promise Band - Daraz style horizontal scroll */
-      .promise-band {
-        overflow-x: auto !important;
-        -webkit-overflow-scrolling: touch;
-      }
-      
-      .promise-inner {
-        grid-template-columns: repeat(4, 200px) !important;
-        gap: 12px !important;
-        padding: 16px;
-      }
-      
+      .stat-num { font-size: 1.2rem !important; }
+      .stat-label { font-size: 8px !important; letter-spacing: 1px !important; }
+      .hero-right { padding: 0 0 15px 0 !important; }
+      .hero-right-label { font-size: 9px !important; letter-spacing: 2px !important; margin-bottom: 10px !important; }
+      .cat-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 10px !important; }
+      .cat-card { border-radius: 8px !important; aspect-ratio: 4/3 !important; }
+      .cat-card-label { font-size: 0.7rem !important; letter-spacing: 1px !important; }
+      .cat-card-count { font-size: 8px !important; }
+      .cat-card-body { padding: 10px !important; }
+      .promise-band { overflow-x: auto !important; -webkit-overflow-scrolling: touch; }
+      .promise-inner { grid-template-columns: repeat(4, 200px) !important; gap: 12px !important; padding: 16px; }
       .promise-item {
         padding: 16px !important;
         flex-direction: row !important;
@@ -984,470 +845,106 @@
         background: var(--bg-panel);
         border-radius: 10px;
       }
-      
-      .promise-icon {
-        width: 36px !important;
-        height: 36px !important;
-        font-size: 16px !important;
-      }
-      
-      .promise-title {
-        font-size: 0.85rem !important;
-      }
-      
-      .promise-desc {
-        font-size: 9px !important;
-      }
-      
-      /* Featured Section */
-      .featured-strip, .recent-section {
-        padding: 25px 12px !important;
-      }
-      
-      .section-header {
-        flex-direction: row !important;
-        justify-content: space-between !important;
-        margin-bottom: 16px !important;
-      }
-      
-      .section-title {
-        font-size: 1rem !important;
-        letter-spacing: 1px;
-      }
-      
-      .section-title span {
-        width: 18px !important;
-        height: 2px !important;
-        margin-right: 8px !important;
-      }
-      
-      .see-all-btn {
-        padding: 5px 12px !important;
-        font-size: 9px !important;
-        border-radius: 6px !important;
-      }
-      
-      .featured-grid {
-        grid-template-columns: repeat(2, 1fr) !important;
-        gap: 12px !important;
-      }
-      
-      .feat-card {
-        border-radius: 10px !important;
-      }
-      
-      .feat-card-img {
-        height: 130px !important;
-      }
-      
-      .feat-card-body {
-        padding: 10px !important;
-      }
-      
-      .feat-card-cat {
-        font-size: 8px !important;
-        letter-spacing: 1px !important;
-      }
-      
-      .feat-card-name {
-        font-size: 0.85rem !important;
-        margin-bottom: 4px !important;
-      }
-      
-      .feat-card-stars {
-        font-size: 9px !important;
-        margin-bottom: 6px !important;
-      }
-      
-      .feat-card-price {
-        font-size: 1rem !important;
-        margin-bottom: 8px !important;
-      }
-      
-      .btn-buynow {
-        padding: 8px 10px !important;
-        font-size: 9px !important;
-        border-radius: 6px !important;
-      }
-      
-      /* Shop Page - Daraz style */
-      #shop .container {
-        padding: 15px 12px !important;
-      }
-      
-      .shop-layout {
-        grid-template-columns: 1fr !important;
-        gap: 16px !important;
-      }
-      
+      .promise-icon { width: 36px !important; height: 36px !important; font-size: 16px !important; }
+      .promise-title { font-size: 0.85rem !important; }
+      .promise-desc { font-size: 9px !important; }
+      .featured-strip, .recent-section { padding: 25px 12px !important; }
+      .section-header { flex-direction: row !important; justify-content: space-between !important; margin-bottom: 16px !important; }
+      .section-title { font-size: 1rem !important; letter-spacing: 1px; }
+      .section-title span { width: 18px !important; height: 2px !important; margin-right: 8px !important; }
+      .see-all-btn { padding: 5px 12px !important; font-size: 9px !important; border-radius: 6px !important; }
+      .featured-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 12px !important; }
+      .feat-card { border-radius: 10px !important; }
+      .feat-card-img { height: 130px !important; }
+      .feat-card-body { padding: 10px !important; }
+      .feat-card-cat { font-size: 8px !important; letter-spacing: 1px !important; }
+      .feat-card-name { font-size: 0.85rem !important; margin-bottom: 4px !important; }
+      .feat-card-stars { font-size: 9px !important; margin-bottom: 6px !important; }
+      .feat-card-price { font-size: 1rem !important; margin-bottom: 8px !important; }
+      .btn-buynow { padding: 8px 10px !important; font-size: 9px !important; border-radius: 6px !important; }
+      #shop .container { padding: 15px 12px !important; }
+      .shop-layout { grid-template-columns: 1fr !important; gap: 16px !important; }
       .filter-sidebar {
         position: static !important;
         background: var(--bg-panel);
         padding: 12px;
         border-radius: 10px;
-        margin-bottom: 0 !important;
       }
-      
-      .filter-group h4 {
-        font-size: 13px !important;
-        margin-bottom: 10px !important;
-      }
-      
-      .filter-option {
-        font-size: 11px !important;
-        gap: 8px !important;
-      }
-      
-      .products-grid {
-        grid-template-columns: repeat(2, 1fr) !important;
-        gap: 12px !important;
-      }
-      
-      .product-card {
-        padding: 10px !important;
-        border-radius: 10px !important;
-      }
-      
-      .card-img {
-        height: 120px !important;
-        margin-bottom: 8px !important;
-        border-radius: 8px !important;
-      }
-      
-      .product-card h3 {
-        font-size: 0.8rem !important;
-      }
-      
-      .product-card p {
-        font-size: 10px !important;
-      }
-      
-      .product-card .btn {
-        padding: 8px !important;
-        font-size: 9px !important;
-        margin-top: 8px !important;
-        border-radius: 6px !important;
-      }
-      
-      /* About Page */
-      #about .container {
-        padding: 25px 15px !important;
-      }
-      
-      #about h1 {
-        font-size: 1.8rem !important;
-        margin-bottom: 15px !important;
-      }
-      
-      #about p {
-        font-size: 0.85rem !important;
-        line-height: 1.5 !important;
-      }
-      
-      #about div[style*="height:450px"] {
-        height: 200px !important;
-        margin: 25px 0 !important;
-        border-radius: 12px !important;
-      }
-      
-      /* Contact Page */
-      #contact .container {
-        padding: 25px 15px !important;
-      }
-      
-      #contact h1 {
-        font-size: 1.8rem !important;
-      }
-      
-      #contact .container > div:first-of-type {
-        grid-template-columns: 1fr !important;
-        gap: 20px !important;
-      }
-      
-      .contact-form {
-        padding: 16px !important;
-        border-radius: 12px !important;
-      }
-      
-      .form-group.double {
-        grid-template-columns: 1fr !important;
-        gap: 12px !important;
-      }
-      
-      .form-input, .form-textarea {
-        padding: 10px 12px !important;
-        font-size: 13px !important;
-        border-radius: 8px !important;
-      }
-      
-      .contact-info {
-        padding: 16px !important;
-        border-radius: 12px !important;
-      }
-      
-      .contact-item {
-        font-size: 12px !important;
-        gap: 10px !important;
-      }
-      
-      .contact-icon {
-        width: 28px !important;
-        height: 28px !important;
-        font-size: 14px !important;
-      }
-      
-      /* Cart Sidebar */
-      #cartSidebar {
-        width: 100% !important;
-        right: -100% !important;
-        padding: 20px 15px !important;
-      }
-      
-      .cart-header h2 {
-        font-size: 1.2rem !important;
-      }
-      
-      .cart-item-info h4 {
-        font-size: 0.9rem !important;
-      }
-      
-      /* Modals */
-      .modal-overlay, .payment-modal-overlay, .auth-modal-overlay {
-        padding: 12px !important;
-      }
-      
-      .modal-content {
-        grid-template-columns: 1fr !important;
-        max-height: 85vh !important;
-        overflow-y: auto !important;
-        border-radius: 16px !important;
-      }
-      
-      .modal-content > div:last-child {
-        padding: 15px !important;
-      }
-      
-      .modal-content h2 {
-        font-size: 1.2rem !important;
-      }
-      
-      .close-modal {
-        width: 32px !important;
-        height: 32px !important;
-        font-size: 20px !important;
-        top: 10px !important;
-        right: 10px !important;
-      }
-      
-      .auth-modal {
-        width: 95% !important;
-        padding: 20px 15px !important;
-        border-radius: 16px !important;
-      }
-      
-      .auth-modal h2 {
-        font-size: 1.4rem !important;
-      }
-      
-      .auth-modal input {
-        padding: 10px !important;
-        font-size: 13px !important;
-        margin-bottom: 12px !important;
-        border-radius: 8px !important;
-      }
-      
-      .payment-modal-content {
-        max-width: 100% !important;
-        padding: 20px 15px !important;
-        border-radius: 16px !important;
-      }
-      
-      .payment-method-btn {
-        padding: 12px !important;
-        font-size: 0.8rem !important;
-        border-radius: 10px !important;
-      }
-      
-      .card-row {
-        grid-template-columns: 1fr !important;
-        gap: 10px !important;
-      }
-      
-      /* Footer */
-      footer {
-        padding: 25px 15px 20px !important;
-      }
-      
-      .footer-grid {
-        grid-template-columns: 1fr !important;
-        gap: 25px !important;
-        text-align: left !important;
-        margin-bottom: 25px !important;
-      }
-      
-      .footer-col h4 {
-        font-size: 1rem !important;
-        margin-bottom: 15px !important;
-      }
-      
-      .footer-col a {
-        font-size: 12px !important;
-        margin-bottom: 8px !important;
-      }
-      
-      .footer-contact-box {
-        padding: 12px !important;
-        text-align: left !important;
-        border-radius: 10px !important;
-      }
-      
-      .footer-contact-number {
-        font-size: 14px !important;
-      }
-      
-      /* Success Page */
-      .success-wrap {
-        padding: 40px 15px !important;
-      }
-      
-      .track-card {
-        padding: 20px !important;
-        margin: 20px 0 !important;
-        border-radius: 12px !important;
-      }
-      
-      .track-num {
-        font-size: 0.85rem !important;
-        letter-spacing: 1px;
-        word-break: break-all !important;
-      }
-      
-      /* Images */
-      img {
-        max-width: 100% !important;
-        height: auto !important;
-        display: block;
-        object-fit: cover;
-      }
-      
-      .feat-card-img img, .card-img img, .cat-card img, .modal-main-image {
-        width: 100% !important;
-        height: 100% !important;
-        object-fit: cover !important;
-      }
-      
-      .container, .nav-container, .hero-inner {
-        padding-left: 12px !important;
-        padding-right: 12px !important;
-      }
-      
-      /* Mega menu for mobile */
-      .mega-menu {
-        position: fixed !important;
-        top: auto !important;
-        left: 10px !important;
-        right: 10px !important;
-        width: auto !important;
-        max-width: calc(100% - 20px) !important;
-        z-index: 1001 !important;
-        padding: 15px !important;
-        gap: 15px !important;
-        border-radius: 12px !important;
-      }
+      .filter-group h4 { font-size: 13px !important; margin-bottom: 10px !important; }
+      .filter-option { font-size: 11px !important; gap: 8px !important; }
+      .products-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 12px !important; }
+      .product-card { padding: 10px !important; border-radius: 10px !important; }
+      .card-img { height: 120px !important; margin-bottom: 8px !important; border-radius: 8px !important; }
+      .product-card h3 { font-size: 0.8rem !important; }
+      .product-card p { font-size: 10px !important; }
+      .product-card .btn { padding: 8px !important; font-size: 9px !important; margin-top: 8px !important; border-radius: 6px !important; }
+      #about .container { padding: 25px 15px !important; }
+      #about h1 { font-size: 1.8rem !important; margin-bottom: 15px !important; }
+      #about p { font-size: 0.85rem !important; line-height: 1.5 !important; }
+      #about div[style*="height:450px"] { height: 200px !important; margin: 25px 0 !important; border-radius: 12px !important; }
+      #contact .container { padding: 25px 15px !important; }
+      #contact h1 { font-size: 1.8rem !important; }
+      #contact .container > div:first-of-type { grid-template-columns: 1fr !important; gap: 20px !important; }
+      .contact-form { padding: 16px !important; border-radius: 12px !important; }
+      .form-group.double { grid-template-columns: 1fr !important; gap: 12px !important; }
+      .form-input, .form-textarea { padding: 10px 12px !important; font-size: 13px !important; border-radius: 8px !important; }
+      .contact-info { padding: 16px !important; border-radius: 12px !important; }
+      .contact-item { font-size: 12px !important; gap: 10px !important; }
+      .contact-icon { width: 28px !important; height: 28px !important; font-size: 14px !important; }
+      #cartSidebar { width: 100% !important; right: -100% !important; padding: 20px 15px !important; }
+      .cart-header h2 { font-size: 1.2rem !important; }
+      .cart-item-info h4 { font-size: 0.9rem !important; }
+      .modal-overlay, .payment-modal-overlay, .auth-modal-overlay { padding: 12px !important; }
+      .modal-content { grid-template-columns: 1fr !important; max-height: 85vh !important; overflow-y: auto !important; border-radius: 16px !important; }
+      .modal-content > div:last-child { padding: 15px !important; }
+      .modal-content h2 { font-size: 1.2rem !important; }
+      .close-modal { width: 32px !important; height: 32px !important; font-size: 20px !important; top: 10px !important; right: 10px !important; }
+      .auth-modal { width: 95% !important; padding: 20px 15px !important; border-radius: 16px !important; }
+      .auth-modal h2 { font-size: 1.4rem !important; }
+      .auth-modal input { padding: 10px !important; font-size: 13px !important; margin-bottom: 12px !important; border-radius: 8px !important; }
+      .payment-modal-content { max-width: 100% !important; padding: 20px 15px !important; border-radius: 16px !important; }
+      .payment-method-btn { padding: 12px !important; font-size: 0.8rem !important; border-radius: 10px !important; }
+      .card-row { grid-template-columns: 1fr !important; gap: 10px !important; }
+      footer { padding: 25px 15px 20px !important; }
+      .footer-grid { grid-template-columns: 1fr !important; gap: 25px !important; text-align: left !important; margin-bottom: 25px !important; }
+      .footer-col h4 { font-size: 1rem !important; margin-bottom: 15px !important; }
+      .footer-col a { font-size: 12px !important; margin-bottom: 8px !important; }
+      .footer-contact-box { padding: 12px !important; text-align: left !important; border-radius: 10px !important; }
+      .footer-contact-number { font-size: 14px !important; }
+      .success-wrap { padding: 40px 15px !important; }
+      .track-card { padding: 20px !important; margin: 20px 0 !important; border-radius: 12px !important; }
+      .track-num { font-size: 0.85rem !important; letter-spacing: 1px; word-break: break-all !important; }
+      img { max-width: 100% !important; height: auto !important; display: block; object-fit: cover; }
+      .feat-card-img img, .card-img img, .cat-card img, .modal-main-image { width: 100% !important; height: 100% !important; object-fit: cover !important; }
+      .container, .nav-container, .hero-inner { padding-left: 12px !important; padding-right: 12px !important; }
+      .mega-menu { position: fixed !important; top: auto !important; left: 10px !important; right: 10px !important; width: auto !important; max-width: calc(100% - 20px) !important; z-index: 1001 !important; padding: 15px !important; gap: 15px !important; border-radius: 12px !important; }
     }
-    
-    /* Small phones */
+
     @media screen and (max-width: 480px) {
-      .hero-title {
-        font-size: 1.4rem !important;
-      }
-      
-      .featured-grid, .products-grid {
-        grid-template-columns: 1fr !important;
-        gap: 12px !important;
-      }
-      
-      .cat-grid {
-        grid-template-columns: 1fr !important;
-      }
-      
-      .hero-cta-row {
-        flex-direction: column !important;
-      }
-      
-      .btn-primary, .btn-ghost {
-        width: 100% !important;
-      }
+      .hero-title { font-size: 1.4rem !important; }
+      .featured-grid, .products-grid { grid-template-columns: 1fr !important; gap: 12px !important; }
+      .cat-grid { grid-template-columns: 1fr !important; }
+      .hero-cta-row { flex-direction: column !important; }
+      .btn-primary, .btn-ghost { width: 100% !important; }
     }
-    
-    /* Landscape mode */
+
     @media screen and (max-width: 900px) and (orientation: landscape) {
-      .hero-fullwidth {
-        min-height: auto !important;
-      }
-      
-      .hero-inner {
-        grid-template-columns: 1fr 1fr !important;
-        gap: 15px !important;
-      }
-      
-      .hero-title {
-        font-size: 1.2rem !important;
-      }
-      
-      .featured-grid, .products-grid {
-        grid-template-columns: repeat(2, 1fr) !important;
-      }
-      
-      .cat-grid {
-        grid-template-columns: repeat(2, 1fr) !important;
-      }
+      .hero-fullwidth { min-height: auto !important; }
+      .hero-inner { grid-template-columns: 1fr 1fr !important; gap: 15px !important; }
+      .hero-title { font-size: 1.2rem !important; }
+      .featured-grid, .products-grid { grid-template-columns: repeat(2, 1fr) !important; }
+      .cat-grid { grid-template-columns: repeat(2, 1fr) !important; }
     }
-    
-    /* Modal thumbnails */
-    .modal-thumbnails {
-      display: flex;
-      gap: 10px;
-      margin-top: 15px;
-      flex-wrap: wrap;
-    }
-    
-    .modal-thumbnail {
-      width: 60px;
-      height: 60px;
-      cursor: pointer;
-      border: 2px solid transparent;
-      transition: 0.2s;
-      border-radius: 8px;
-      overflow: hidden;
-    }
-    
-    .modal-thumbnail.active {
-      border-color: var(--gold);
-    }
-    
-    .modal-thumbnail img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-    
-    .modal-main-image {
-      width: 100%;
-      height: auto;
-      max-height: 400px;
-      object-fit: contain;
-      background: #000;
-      border-radius: 12px;
-    }
-    
-    /* Safe area support */
+
+    .modal-thumbnails { display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap; }
+    .modal-thumbnail { width: 60px; height: 60px; cursor: pointer; border: 2px solid transparent; transition: 0.2s; border-radius: 8px; overflow: hidden; }
+    .modal-thumbnail.active { border-color: var(--gold); }
+    .modal-thumbnail img { width: 100%; height: 100%; object-fit: cover; }
+    .modal-main-image { width: 100%; height: auto; max-height: 400px; object-fit: contain; background: #000; border-radius: 12px; }
+
     @supports (padding: max(0px)) {
       @media screen and (max-width: 768px) {
-        .nav-container, .container, .hero-inner {
-          padding-left: max(12px, env(safe-area-inset-left)) !important;
-          padding-right: max(12px, env(safe-area-inset-right)) !important;
-        }
+        .nav-container, .container, .hero-inner { padding-left: max(12px, env(safe-area-inset-left)) !important; padding-right: max(12px, env(safe-area-inset-right)) !important; }
       }
     }
   </style>
