@@ -317,27 +317,31 @@
       content: ''; display: block;
       width: 40px; height: 1px; background: var(--gold);
     }
-    /* Hero title - precise alignment */
-    .hero-title {
-      font-family: 'Barlow Condensed'; font-weight: 800;
-      font-size: clamp(4rem, 7vw, 6.5rem);
-      line-height: 0.88;
-      letter-spacing: -1px;
-      margin-bottom: 32px;
-      text-transform: uppercase;
-      display: flex;
-      flex-direction: column;
-    }
-    .hero-title .line1,
-    .hero-title .line2,
-    .hero-title .line3 {
-      display: block;
-    }
-    /* TECHNOLOGY stays left-aligned, MEETS indented under the 'T' */
-    .hero-title .line3 {
-      margin-left: 0.55em;   /* width of uppercase 'T' in this font */
-    }
-    .hero-title em { color: var(--gold); font-style: normal; }
+/* Hero title - exact alignment */
+.hero-title {
+  font-family: 'Barlow Condensed'; font-weight: 800;
+  font-size: clamp(4rem, 7vw, 6.5rem);
+  line-height: 0.88;
+  letter-spacing: -1px;
+  margin-bottom: 32px;
+  text-transform: uppercase;
+  display: flex;
+  flex-direction: column;
+}
+.hero-title .line1,
+.hero-title .line2,
+.hero-title .line3 {
+  display: block;
+}
+/* TECHNOLOGY stays left-aligned */
+.hero-title .line2 {
+  margin-left: 0;
+}
+/* MEETS PRECISION starts under the letter 'T' of TECHNOLOGY */
+.hero-title .line3 {
+  margin-left: 0.55em;  /* This pushes it exactly under the 'T' */
+}
+.hero-title em { color: var(--gold); font-style: normal; }
 
     .hero-desc {
       color: var(--text-dim); font-size: 1.1rem;
