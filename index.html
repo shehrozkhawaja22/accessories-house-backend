@@ -103,7 +103,7 @@
       background: #c5a357;
     }
     
-    /* Mega menu */
+    /* Mega menu - Updated for click toggle */
     .mega-menu {
       position: absolute;
       top: 90px;
@@ -123,7 +123,18 @@
       z-index: 1000;
     }
     
-    .nav-links li:hover .mega-menu {
+    /* Hover functionality for desktop */
+    @media (min-width: 769px) {
+      .nav-links li:hover .mega-menu {
+        display: grid;
+        opacity: 1;
+        transform: translateY(0);
+        pointer-events: auto;
+      }
+    }
+    
+    /* Click toggle functionality */
+    .nav-links li.show-mega .mega-menu {
       display: grid;
       opacity: 1;
       transform: translateY(0);
@@ -409,7 +420,7 @@
       <nav class="w-full overflow-x-auto md:overflow-visible">
         <ul class="nav-links flex flex-row gap-4 md:gap-8 py-2 min-w-max md:min-w-0 justify-center md:justify-end">
           <li class="cursor-pointer font-barlow-condensed font-semibold text-xs md:text-sm whitespace-nowrap" onclick="navigateTo('home')">HOME</li>
-          <li class="cursor-pointer font-barlow-condensed font-semibold text-xs md:text-sm whitespace-nowrap relative" onclick="navigateTo('shop')">
+          <li class="cursor-pointer font-barlow-condensed font-semibold text-xs md:text-sm whitespace-nowrap relative" id="shopMenuItem">
             SHOP ▼
             <div class="mega-menu" id="megaMenu"></div>
           </li>
@@ -593,6 +604,74 @@
     let selectedPaymentMethod = null, currentAuthMode = 'login', loggedInUser = null, directBuyProduct = null;
     let currentProductImages = [], currentImageIndex = 0;
 
+    // ========== MEGA MENU TOGGLE FUNCTIONALITY (CLICK TO HOLD) ==========
+    let isMegaMenuOpen = false;
+    
+    function initMegaMenu() {
+      const shopLi = document.getElementById('shopMenuItem');
+      if (!shopLi) return;
+      
+      // Remove existing listeners to avoid duplicates
+      shopLi.removeEventListener('click', handleMegaMenuClick);
+      shopLi.addEventListener('click', handleMegaMenuClick);
+    }
+    
+    function handleMegaMenuClick(event) {
+      // Don't close if clicking inside the mega menu itself
+      if (event.target.closest('.mega-menu')) {
+        return;
+      }
+      
+      const shopLi = event.currentTarget;
+      const isOpen = shopLi.classList.contains('show-mega');
+      
+      // Close all other mega menus (just in case)
+      document.querySelectorAll('.nav-links li').forEach(li => {
+        if (li !== shopLi) {
+          li.classList.remove('show-mega');
+        }
+      });
+      
+      // Toggle current mega menu
+      if (!isOpen) {
+        shopLi.classList.add('show-mega');
+        isMegaMenuOpen = true;
+      } else {
+        shopLi.classList.remove('show-mega');
+        isMegaMenuOpen = false;
+      }
+    }
+    
+    // Close mega menu when clicking outside
+    document.addEventListener('click', function(event) {
+      const shopLi = document.getElementById('shopMenuItem');
+      if (shopLi && !shopLi.contains(event.target)) {
+        shopLi.classList.remove('show-mega');
+        isMegaMenuOpen = false;
+      }
+    });
+    
+    // Keep hover functionality for desktop
+    function setupMegaMenuHover() {
+      const shopLi = document.getElementById('shopMenuItem');
+      if (!shopLi) return;
+      
+      shopLi.addEventListener('mouseenter', function() {
+        if (window.innerWidth > 768) {
+          this.classList.add('show-mega');
+        }
+      });
+      
+      shopLi.addEventListener('mouseleave', function() {
+        if (window.innerWidth > 768) {
+          // Don't auto-close if it was opened by click
+          if (!isMegaMenuOpen) {
+            this.classList.remove('show-mega');
+          }
+        }
+      });
+    }
+
     // Auth Functions
     function openAuthModal(mode) {
       currentAuthMode = mode;
@@ -680,6 +759,10 @@
       }
     }
     function navigateTo(pageId, addToHistory = true) {
+      // Close mega menu when navigating
+      const shopLi = document.getElementById('shopMenuItem');
+      if (shopLi) shopLi.classList.remove('show-mega');
+      
       document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
       document.getElementById(pageId).classList.add('active');
       updateActiveMenuItem(pageId);
@@ -873,7 +956,14 @@
     function toggleCompare(id) { const p = products.find(x => x._id === id || x.id === id); if (!p) return; const idx = compareList.findIndex(x => x._id === id || x.id === id); if (idx > -1) compareList.splice(idx, 1); else if (compareList.length < 3) compareList.push(p); const drawer = document.getElementById('compareDrawer'); document.getElementById('compareContainer').innerHTML = compareList.map(item => `<div class="bg-bg-card p-2 border border-border rounded-lg text-xs flex items-center gap-2"><img src="${getProductImage(item)}" class="w-5 h-5 object-cover rounded"> ${item.name}</div>`).join(''); compareList.length ? drawer.classList.add('open') : drawer.classList.remove('open'); }
 
     document.getElementById('productModal').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
-    document.addEventListener('DOMContentLoaded', async () => { checkStoredUser(); initializePageFromUrl(); await loadProducts(); await loadCategories(); });
+    document.addEventListener('DOMContentLoaded', async () => { 
+      checkStoredUser(); 
+      initializePageFromUrl(); 
+      await loadProducts(); 
+      await loadCategories();
+      initMegaMenu();
+      setupMegaMenuHover();
+    });
     renderFeatured(); renderProducts('shopGrid', []);
   </script>
 </body>
