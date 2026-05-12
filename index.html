@@ -103,7 +103,7 @@
       background: #c5a357;
     }
     
-    /* Mega menu - Updated for click toggle on desktop */
+    /* Mega menu - Updated for click toggle on arrow only */
     .mega-menu {
       position: absolute;
       top: 90px;
@@ -133,12 +133,39 @@
       }
     }
     
-    /* Click toggle functionality (works on both desktop and mobile) */
+    /* Click toggle functionality (only when arrow is clicked) */
     .nav-links li.show-mega .mega-menu {
       display: grid;
       opacity: 1;
       transform: translateY(0);
       pointer-events: auto;
+    }
+    
+    /* Shop button split styling */
+    .shop-split {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    
+    .shop-text {
+      cursor: pointer;
+    }
+    
+    .shop-arrow {
+      cursor: pointer;
+      font-size: 10px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      height: 20px;
+      border-radius: 4px;
+      transition: background 0.2s;
+    }
+    
+    .shop-arrow:hover {
+      background: rgba(197, 163, 87, 0.2);
     }
     
     @media (max-width: 768px) {
@@ -152,6 +179,9 @@
         padding: 16px !important;
         gap: 16px !important;
         border-radius: 16px !important;
+      }
+      .shop-split {
+        display: flex;
       }
     }
     
@@ -449,7 +479,10 @@
         <ul class="nav-links flex flex-row gap-4 md:gap-8 py-2 min-w-max md:min-w-0 justify-center md:justify-end">
           <li class="cursor-pointer font-barlow-condensed font-semibold text-xs md:text-sm whitespace-nowrap" onclick="navigateTo('home')">HOME</li>
           <li class="cursor-pointer font-barlow-condensed font-semibold text-xs md:text-sm whitespace-nowrap relative" id="shopMenuItem">
-            SHOP ▼
+            <div class="shop-split">
+              <span class="shop-text" onclick="navigateTo('shop')">SHOP</span>
+              <span class="shop-arrow" onclick="toggleShopMenu(event)">▼</span>
+            </div>
             <div class="mega-menu" id="megaMenu"></div>
           </li>
           <li class="cursor-pointer font-barlow-condensed font-semibold text-xs md:text-sm whitespace-nowrap" onclick="navigateTo('about')">ABOUT</li>
@@ -633,23 +666,10 @@
     let currentProductImages = [], currentImageIndex = 0;
     let isMegaMenuOpen = false;
 
-    // ========== MEGA MENU TOGGLE FUNCTIONALITY (CLICK TO HOLD ON ALL DEVICES) ==========
-    function initMegaMenu() {
+    // ========== SHOP BUTTON SPLIT FUNCTIONALITY ==========
+    function toggleShopMenu(event) {
+      event.stopPropagation();
       const shopLi = document.getElementById('shopMenuItem');
-      if (!shopLi) return;
-      
-      // Remove existing listeners to avoid duplicates
-      shopLi.removeEventListener('click', handleMegaMenuClick);
-      shopLi.addEventListener('click', handleMegaMenuClick);
-    }
-    
-    function handleMegaMenuClick(event) {
-      // Don't close if clicking inside the mega menu itself
-      if (event.target.closest('.mega-menu')) {
-        return;
-      }
-      
-      const shopLi = event.currentTarget;
       const isOpen = shopLi.classList.contains('show-mega');
       
       // Close all other mega menus (just in case)
@@ -669,16 +689,7 @@
       }
     }
     
-    // Close mega menu when clicking outside
-    document.addEventListener('click', function(event) {
-      const shopLi = document.getElementById('shopMenuItem');
-      if (shopLi && !shopLi.contains(event.target)) {
-        shopLi.classList.remove('show-mega');
-        isMegaMenuOpen = false;
-      }
-    });
-    
-    // Keep hover functionality for desktop
+    // Keep hover functionality for desktop (only opens, doesn't auto-close)
     function setupMegaMenuHover() {
       const shopLi = document.getElementById('shopMenuItem');
       if (!shopLi) return;
@@ -689,14 +700,8 @@
         }
       });
       
-      shopLi.addEventListener('mouseleave', function() {
-        if (window.innerWidth > 768) {
-          // Don't auto-close if it was opened by click
-          if (!isMegaMenuOpen) {
-            this.classList.remove('show-mega');
-          }
-        }
-      });
+      // Don't auto-close on mouse leave - keep menu open until arrow clicked again
+      // This ensures the menu stays open for client to select categories
     }
 
     // Auth Functions
@@ -927,7 +932,6 @@
         document.getElementById('paymentTotal').innerText = `₨${p.price}`;
         document.getElementById('paymentModal').style.display = 'flex';
         selectedPaymentMethod = null;
-        // Reset all payment method buttons and details
         document.querySelectorAll('.payment-method-btn').forEach(btn => btn.classList.remove('selected'));
         document.querySelectorAll('.payment-details').forEach(d => d.classList.add('hidden'));
       }
@@ -949,13 +953,9 @@
     }
     function selectPaymentMethod(method) {
       selectedPaymentMethod = method;
-      // Remove 'selected' class from all payment method buttons
       document.querySelectorAll('.payment-method-btn').forEach(btn => btn.classList.remove('selected'));
-      // Add 'selected' class to the clicked button
       event.target.classList.add('selected');
-      // Hide all payment details
       document.querySelectorAll('.payment-details').forEach(d => d.classList.add('hidden'));
-      // Show the selected payment details
       document.getElementById(`${method}Payment`).classList.remove('hidden');
     }
     function processPayment() {
@@ -988,7 +988,6 @@
       initializePageFromUrl(); 
       await loadProducts(); 
       await loadCategories();
-      initMegaMenu();
       setupMegaMenuHover();
     });
     renderFeatured(); renderProducts('shopGrid', []);
