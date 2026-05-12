@@ -210,6 +210,62 @@
       height: 2px;
       background: #c5a357;
     }
+    
+    /* ========== TWEAK 1: EMBOSSED BORDERS (LESS VISIBLE) ========== */
+    /* Replace harsh white lines with subtle embossed borders */
+    .hero-left,
+    .promise-item,
+    .hero-stats,
+    .section-header,
+    .filter-group,
+    .product-card,
+    .feat-card,
+    .cat-card,
+    .payment-method-btn,
+    .modal-content,
+    .contact-form,
+    .contact-info,
+    .footer-contact-box,
+    .border-border {
+      border-color: rgba(255, 255, 255, 0.04) !important;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.02), 0 1px 0 rgba(0,0,0,0.2);
+    }
+    
+    /* Specific borders on home page */
+    .hero-left {
+      border-right-color: rgba(197, 163, 87, 0.12) !important; /* slight gold tint */
+    }
+    
+    .hero-stats {
+      border-top-color: rgba(255, 255, 255, 0.04);
+    }
+    
+    .promise-item {
+      border-right-color: rgba(255, 255, 255, 0.03);
+    }
+    
+    /* ========== TWEAK 2: PAYMENT METHOD SELECTION (ONE AT A TIME) ========== */
+    .payment-method-btn.selected {
+      border-color: #c5a357 !important;
+      background: rgba(197, 163, 87, 0.2) !important;
+      box-shadow: 0 0 0 1px rgba(197, 163, 87, 0.3);
+    }
+    
+    .payment-details.active {
+      display: block !important;
+    }
+    
+    /* General */
+    .clip-path-polygon {
+      clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    }
+    .logo:hover .logo-text { color: #c5a357; }
+    .nav-links li:hover { color: #c5a357; }
+    .compare-drawer.open { transform: translateY(0) !important; }
+    .page { display: none; }
+    .page.active { display: block; animation: fadeIn 0.3s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .gallery-badge { position: absolute; bottom: 8px; right: 8px; background: rgba(0,0,0,0.6); padding: 2px 6px; border-radius: 4px; font-size: 10px; }
   </style>
 </head>
 <body class="bg-bg-deep text-text-main overflow-x-hidden">
@@ -531,21 +587,6 @@
     </div>
   </footer>
 
-  <style>
-    .clip-path-polygon {
-      clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-    }
-    .logo:hover .logo-text { color: #c5a357; }
-    .nav-links li:hover { color: #c5a357; }
-    .payment-details.active { display: block !important; }
-    .payment-method-btn.selected { border-color: #c5a357 !important; background: rgba(197,163,87,0.2) !important; }
-    .compare-drawer.open { transform: translateY(0) !important; }
-    .page { display: none; }
-    .page.active { display: block; animation: fadeIn 0.3s ease; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-    .gallery-badge { position: absolute; bottom: 8px; right: 8px; background: rgba(0,0,0,0.6); padding: 2px 6px; border-radius: 4px; font-size: 10px; }
-  </style>
-
   <script>
     const API_BASE = 'https://accessories-house-backend-production-b7a8.up.railway.app/api';
     let products = [], cart = [], recentlyViewed = [], compareList = [], currentCategory = 'all';
@@ -767,10 +808,46 @@
     function addToCart(id) { const p = products.find(x => x._id === id || x.id === id); if (p) { cart.push(p); updateCartUI(); if (!document.getElementById('cartSidebar').classList.contains('open')) toggleCart(); } }
     function updateCartUI() { document.getElementById('cartCount').innerText = cart.length; document.getElementById('cartItemsList').innerHTML = cart.map((p, i) => `<div class="cart-item flex justify-between items-center mb-4 pb-3 border-b border-border"><div><h4 class="font-barlow-condensed text-base">${p.name}</h4><p class="text-gold font-semibold">₨${p.price}</p></div><span class="text-red text-xs font-bold cursor-pointer" onclick="removeFromCart(${i})">REMOVE</span></div>`).join(''); document.getElementById('cartTotalPrice').innerText = `₨${cart.reduce((s, p) => s + p.price, 0)}`; }
     function removeFromCart(i) { cart.splice(i, 1); updateCartUI(); }
-    function buyNowDirect(id) { const p = products.find(x => x._id === id || x.id === id); if (p) { directBuyProduct = p; document.getElementById('paymentTotal').innerText = `₨${p.price}`; document.getElementById('paymentModal').style.display = 'flex'; selectedPaymentMethod = null; document.querySelectorAll('.payment-details').forEach(d => d.classList.add('hidden')); document.querySelectorAll('.payment-method-btn').forEach(btn => btn.classList.remove('selected')); } }
-    function showPaymentModal() { if (!cart.length) { alert("No items in cart"); return; } const total = cart.reduce((s, p) => s + p.price, 0); document.getElementById('paymentTotal').innerText = `₨${total}`; document.getElementById('paymentModal').style.display = 'flex'; }
-    function closePaymentModal() { document.getElementById('paymentModal').style.display = 'none'; selectedPaymentMethod = null; document.querySelectorAll('.payment-details').forEach(d => d.classList.add('hidden')); document.querySelectorAll('.payment-method-btn').forEach(btn => btn.classList.remove('selected')); }
-    function selectPaymentMethod(method) { selectedPaymentMethod = method; document.querySelectorAll('.payment-details').forEach(d => d.classList.add('hidden')); document.getElementById(`${method}Payment`).classList.remove('hidden'); event.target.classList.add('selected'); }
+    
+    // Updated payment methods: only one selected at a time
+    function buyNowDirect(id) {
+      const p = products.find(x => x._id === id || x.id === id);
+      if (p) {
+        directBuyProduct = p;
+        document.getElementById('paymentTotal').innerText = `₨${p.price}`;
+        document.getElementById('paymentModal').style.display = 'flex';
+        selectedPaymentMethod = null;
+        // Reset all payment method buttons and details
+        document.querySelectorAll('.payment-method-btn').forEach(btn => btn.classList.remove('selected'));
+        document.querySelectorAll('.payment-details').forEach(d => d.classList.add('hidden'));
+      }
+    }
+    function showPaymentModal() {
+      if (!cart.length) { alert("No items in cart"); return; }
+      const total = cart.reduce((s, p) => s + p.price, 0);
+      document.getElementById('paymentTotal').innerText = `₨${total}`;
+      document.getElementById('paymentModal').style.display = 'flex';
+      selectedPaymentMethod = null;
+      document.querySelectorAll('.payment-method-btn').forEach(btn => btn.classList.remove('selected'));
+      document.querySelectorAll('.payment-details').forEach(d => d.classList.add('hidden'));
+    }
+    function closePaymentModal() {
+      document.getElementById('paymentModal').style.display = 'none';
+      selectedPaymentMethod = null;
+      document.querySelectorAll('.payment-method-btn').forEach(btn => btn.classList.remove('selected'));
+      document.querySelectorAll('.payment-details').forEach(d => d.classList.add('hidden'));
+    }
+    function selectPaymentMethod(method) {
+      selectedPaymentMethod = method;
+      // Remove 'selected' class from all payment method buttons
+      document.querySelectorAll('.payment-method-btn').forEach(btn => btn.classList.remove('selected'));
+      // Add 'selected' class to the clicked button
+      event.target.classList.add('selected');
+      // Hide all payment details
+      document.querySelectorAll('.payment-details').forEach(d => d.classList.add('hidden'));
+      // Show the selected payment details
+      document.getElementById(`${method}Payment`).classList.remove('hidden');
+    }
     function processPayment() {
       if (!selectedPaymentMethod) { alert('Select payment method'); return; }
       let isValid = true, transactionId = null;
