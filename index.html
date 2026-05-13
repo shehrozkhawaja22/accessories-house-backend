@@ -757,14 +757,12 @@
       const shopLi = document.getElementById('shopMenuItem');
       const isOpen = shopLi.classList.contains('show-mega');
       
-      // Close all other mega menus (just in case)
       document.querySelectorAll('.nav-links li').forEach(li => {
         if (li !== shopLi) {
           li.classList.remove('show-mega');
         }
       });
       
-      // Toggle current mega menu
       if (!isOpen) {
         shopLi.classList.add('show-mega');
         isMegaMenuOpen = true;
@@ -774,11 +772,9 @@
       }
     }
     
-    // Keep hover functionality for desktop (only opens, doesn't auto-close)
     function setupMegaMenuHover() {
       const shopLi = document.getElementById('shopMenuItem');
       if (!shopLi) return;
-      
       shopLi.addEventListener('mouseenter', function() {
         if (window.innerWidth > 768) {
           this.classList.add('show-mega');
@@ -873,10 +869,8 @@
       }
     }
     function navigateTo(pageId, addToHistory = true) {
-      // Close mega menu when navigating
       const shopLi = document.getElementById('shopMenuItem');
       if (shopLi) shopLi.classList.remove('show-mega');
-      
       document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
       document.getElementById(pageId).classList.add('active');
       updateActiveMenuItem(pageId);
@@ -1006,7 +1000,7 @@
     function updateCartUI() { document.getElementById('cartCount').innerText = cart.length; document.getElementById('cartItemsList').innerHTML = cart.map((p, i) => `<div class="cart-item flex justify-between items-center mb-4 pb-3 border-b border-border"><div><h4 class="font-barlow-condensed text-base">${p.name}</h4><p class="text-gold font-semibold">₨${p.price}</p></div><span class="text-red text-xs font-bold cursor-pointer" onclick="removeFromCart(${i})">REMOVE</span></div>`).join(''); document.getElementById('cartTotalPrice').innerText = `₨${cart.reduce((s, p) => s + p.price, 0)}`; }
     function removeFromCart(i) { cart.splice(i, 1); updateCartUI(); }
     
-    // Updated payment methods: only one selected at a time
+    // Updated payment methods with proper tracking ID
     function buyNowDirect(id) {
       const p = products.find(x => x._id === id || x.id === id);
       if (p) {
@@ -1040,6 +1034,8 @@
       document.querySelectorAll('.payment-details').forEach(d => d.classList.add('hidden'));
       document.getElementById(`${method}Payment`).classList.remove('hidden');
     }
+
+    // UPDATED processPayment function with proper tracking ID
     function processPayment() {
       if (!selectedPaymentMethod) { alert('Select payment method'); return; }
       let isValid = true, transactionId = null;
@@ -1056,11 +1052,53 @@
       const name = prompt("Enter your name:") || "Guest";
       const email = prompt("Enter your email:") || "";
       const phone = prompt("Enter your phone number:") || "";
-      const trackingId = "AUR-" + Math.floor(Math.random() * 9000 + 1000) + "-" + Math.random().toString(36).substring(4, 9).toUpperCase();
-      document.getElementById('generatedTrackId').innerText = trackingId;
-      const orderData = { name, email, phone, address: prompt("Enter address:") || "Demo", total: orderItems.reduce((s, p) => s + p.price, 0), items: orderItems.map(p => ({ productId: p._id || p.id, name: p.name, price: p.price, quantity: 1 })), status: "paid", paymentMethod: selectedPaymentMethod, transactionId, trackingId };
-      fetch(`${API_BASE}/checkout`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(orderData) }).then(() => { alert(`Order confirmed! ID: ${trackingId}`); cart = []; directBuyProduct = null; updateCartUI(); closePaymentModal(); toggleCart(); navigateTo('success'); }).catch(err => alert('Order saved but check console'));
+      const address = prompt("Enter your complete delivery address:") || "Demo Address";
+      
+      // Generate a custom tracking ID (like AUR-5714-31202)
+      const customTrackingId = "AUR-" + Math.floor(Math.random() * 9000 + 1000) + "-" + Math.random().toString(36).substring(4, 9).toUpperCase();
+      
+      const orderData = { 
+        name, 
+        email, 
+        phone, 
+        address: address, 
+        total: orderItems.reduce((s, p) => s + p.price, 0), 
+        items: orderItems.map(p => ({ 
+          productId: p._id || p.id, 
+          name: p.name, 
+          price: p.price, 
+          quantity: 1 
+        })), 
+        status: "pending",
+        paymentMethod: selectedPaymentMethod, 
+        transactionId: transactionId, 
+        trackingId: customTrackingId
+      };
+      
+      fetch(`${API_BASE}/checkout`, { 
+        method: 'POST', 
+        headers: { 'Content-Type': 'application/json' }, 
+        body: JSON.stringify(orderData) 
+      })
+      .then(res => res.json())
+      .then(data => { 
+        // Display the tracking ID to customer
+        const displayOrderId = data.trackingId || customTrackingId || data.orderId;
+        document.getElementById('generatedTrackId').innerText = displayOrderId;
+        alert(`✅ ORDER CONFIRMED!\n\nOrder ID: ${displayOrderId}\n\nUse this ID to track your order.\nA confirmation email has been sent.`); 
+        cart = []; 
+        directBuyProduct = null; 
+        updateCartUI(); 
+        closePaymentModal(); 
+        toggleCart(); 
+        navigateTo('success'); 
+      })
+      .catch(err => { 
+        alert('Order placed but there was an issue. Please contact support with your transaction ID.'); 
+        console.error(err);
+      });
     }
+
     async function handleContactForm(e) { e.preventDefault(); const data = { name: document.getElementById('contactName').value, email: document.getElementById('contactEmail').value, subject: document.getElementById('contactSubject').value, message: document.getElementById('contactMessage').value }; try { const res = await fetch(`${API_BASE}/contact`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) }); if (res.ok) { alert('Message sent!'); document.getElementById('contactForm').reset(); } else alert('Failed'); } catch (err) { alert('Error sending message'); } }
     function toggleCompare(id) { const p = products.find(x => x._id === id || x.id === id); if (!p) return; const idx = compareList.findIndex(x => x._id === id || x.id === id); if (idx > -1) compareList.splice(idx, 1); else if (compareList.length < 3) compareList.push(p); const drawer = document.getElementById('compareDrawer'); document.getElementById('compareContainer').innerHTML = compareList.map(item => `<div class="bg-bg-card p-2 border border-border rounded-lg text-xs flex items-center gap-2"><img src="${getProductImage(item)}" class="w-5 h-5 object-cover rounded"> ${item.name}</div>`).join(''); compareList.length ? drawer.classList.add('open') : drawer.classList.remove('open'); }
 
@@ -1099,7 +1137,6 @@
       document.getElementById('trackingPaymentMethod').innerText = order.paymentMethod || '—';
       document.getElementById('trackingDate').innerHTML = `Placed: ${new Date(order.createdAt || Date.now()).toLocaleDateString()}`;
       
-      // Products list
       const productsHtml = (order.items || []).map(item => `
         <div class="flex justify-between items-center p-2 border-b border-border">
           <div>
@@ -1111,7 +1148,6 @@
       `).join('');
       document.getElementById('trackingProducts').innerHTML = productsHtml || '<p class="text-text-dim">No products found</p>';
       
-      // Status badge
       const statusMap = {
         'pending': { text: 'Order Received', color: 'bg-yellow-600 text-white' },
         'warehouse': { text: 'In Warehouse', color: 'bg-blue-600 text-white' },
@@ -1122,7 +1158,6 @@
       document.getElementById('trackingStatusBadge').innerHTML = status.text;
       document.getElementById('trackingStatusBadge').className = `px-4 py-2 rounded-full text-sm font-semibold inline-block ${status.color}`;
       
-      // Timeline steps
       const steps = ['pending', 'warehouse', 'shipped', 'delivered'];
       const currentStepIndex = steps.indexOf(order.status);
       
