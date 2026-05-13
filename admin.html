@@ -55,6 +55,9 @@
   th, td { padding: 12px; text-align: left; border-bottom: 1px solid #E8D58A; }
   th { background: #FBF0C9; font-weight: 600; font-size: 12px; color: #5A4A00; }
   .product-list { max-width: 250px; word-break: break-word; }
+  .stock-low { color: #e67e22; font-weight: bold; }
+  .stock-out { color: #e74c3c; font-weight: bold; }
+  .stock-good { color: #27ae60; font-weight: bold; }
 </style>
 </head>
 <body>
@@ -125,6 +128,21 @@
 
   <div id="toast">Message</div>
 
+  <!-- EDIT STOCK MODAL -->
+  <div class="modal-overlay" id="stockModal">
+    <div class="modal p-6">
+      <h2 class="text-2xl font-bold mb-4">Update Stock</h2>
+      <div class="mb-4">
+        <label class="block text-sm mb-1">Product: <span id="stockProductName" class="font-bold"></span></label>
+        <input type="number" id="stockQuantity" class="w-full border rounded-lg p-2" min="0">
+      </div>
+      <div class="flex gap-3">
+        <button onclick="saveStock()" class="flex-1 bg-[#D4A017] text-white py-2 rounded-lg">Update Stock</button>
+        <button onclick="closeStockModal()" class="flex-1 bg-gray-300 text-gray-700 py-2 rounded-lg">Cancel</button>
+      </div>
+    </div>
+  </div>
+
   <!-- LOGIN MODAL -->
   <div class="modal-overlay" id="loginModal">
     <div class="modal p-6">
@@ -137,17 +155,130 @@
     </div>
   </div>
 
+  <!-- EDIT PRODUCT MODAL (for full product edit) -->
+  <div class="modal-overlay" id="editProductModal">
+    <div class="modal p-6">
+      <h2 class="text-2xl font-bold mb-4">Edit Product</h2>
+      <input type="hidden" id="editProductId">
+      <div class="mb-3"><label class="block text-sm mb-1">Product Name</label><input type="text" id="editName" class="w-full border rounded-lg p-2"></div>
+      <div class="grid grid-cols-2 gap-3 mb-3"><div><label>Price (₨)</label><input type="number" id="editPrice" class="w-full border rounded-lg p-2"></div><div><label>Category</label><input type="text" id="editCategory" class="w-full border rounded-lg p-2"></div></div>
+      <div class="grid grid-cols-2 gap-3 mb-3"><div><label>Stock</label><input type="number" id="editStock" class="w-full border rounded-lg p-2"></div><div><label>Rating</label><input type="number" id="editRating" class="w-full border rounded-lg p-2" min="1" max="5"></div></div>
+      <div class="mb-3"><label>Main Image URL</label><input type="url" id="editImage" class="w-full border rounded-lg p-2"></div>
+      <div class="mb-3"><label>Specifications</label><textarea id="editSpecs" class="w-full border rounded-lg p-2" rows="3"></textarea></div>
+      <div class="flex gap-3">
+        <button onclick="saveProductEdit()" class="flex-1 bg-[#D4A017] text-white py-2 rounded-lg">Save Changes</button>
+        <button onclick="closeEditProductModal()" class="flex-1 bg-gray-300 text-gray-700 py-2 rounded-lg">Cancel</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     const API_BASE = 'https://accessories-house-backend-production-b7a8.up.railway.app/api';
     let products = [], orders = [], users = [], categories = [];
     let isAuthenticated = false;
     let currentUser = null;
+    let currentEditingProductId = null;
+    let currentStockProductId = null;
 
     function toggleMobileMenu() {
       document.getElementById('sidebar').classList.toggle('open');
       document.getElementById('mobileOverlay').classList.toggle('open');
     }
     function showToast(msg) { let t = document.getElementById('toast'); t.innerText = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3000); }
+
+    // Stock Modal Functions
+    function openStockModal(productId, productName, currentStock) {
+      currentStockProductId = productId;
+      document.getElementById('stockProductName').innerText = productName;
+      document.getElementById('stockQuantity').value = currentStock;
+      document.getElementById('stockModal').classList.add('open');
+    }
+    function closeStockModal() {
+      document.getElementById('stockModal').classList.remove('open');
+      currentStockProductId = null;
+    }
+    async function saveStock() {
+      if (!currentStockProductId) return;
+      const newStock = parseInt(document.getElementById('stockQuantity').value);
+      if (isNaN(newStock) || newStock < 0) {
+        showToast('Please enter a valid stock quantity');
+        return;
+      }
+      try {
+        const product = products.find(p => p._id === currentStockProductId);
+        if (!product) return;
+        product.stock = newStock;
+        const res = await fetch(`${API_BASE}/products/${currentStockProductId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(product)
+        });
+        if (res.ok) {
+          showToast('✅ Stock updated successfully');
+          closeStockModal();
+          await loadProducts();
+          if (document.getElementById('page-products').classList.contains('active')) renderProducts();
+          if (document.getElementById('page-inventory').classList.contains('active')) renderInventory();
+        } else {
+          showToast('❌ Error updating stock');
+        }
+      } catch (error) {
+        showToast('❌ Server error');
+        console.error(error);
+      }
+    }
+
+    // Edit Product Modal Functions
+    function openEdit(productId) {
+      const product = products.find(p => p._id === productId);
+      if (!product) return;
+      currentEditingProductId = productId;
+      document.getElementById('editProductId').value = productId;
+      document.getElementById('editName').value = product.name || '';
+      document.getElementById('editPrice').value = product.price || 0;
+      document.getElementById('editCategory').value = product.category || '';
+      document.getElementById('editStock').value = product.stock || 0;
+      document.getElementById('editRating').value = product.rating || 5;
+      document.getElementById('editImage').value = product.image || '';
+      document.getElementById('editSpecs').value = product.specs || '';
+      document.getElementById('editProductModal').classList.add('open');
+    }
+    function closeEditProductModal() {
+      document.getElementById('editProductModal').classList.remove('open');
+      currentEditingProductId = null;
+    }
+    async function saveProductEdit() {
+      if (!currentEditingProductId) return;
+      const updatedProduct = {
+        name: document.getElementById('editName').value,
+        price: parseFloat(document.getElementById('editPrice').value),
+        category: document.getElementById('editCategory').value,
+        stock: parseInt(document.getElementById('editStock').value),
+        rating: parseInt(document.getElementById('editRating').value),
+        image: document.getElementById('editImage').value,
+        specs: document.getElementById('editSpecs').value,
+        fast: false
+      };
+      try {
+        const res = await fetch(`${API_BASE}/products/${currentEditingProductId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(updatedProduct)
+        });
+        if (res.ok) {
+          showToast('✅ Product updated successfully');
+          closeEditProductModal();
+          await loadProducts();
+          if (document.getElementById('page-products').classList.contains('active')) renderProducts();
+          if (document.getElementById('page-inventory').classList.contains('active')) renderInventory();
+        } else {
+          showToast('❌ Error updating product');
+        }
+      } catch (error) {
+        showToast('❌ Server error');
+        console.error(error);
+      }
+    }
 
     // Authentication
     function checkAuth() {
@@ -204,13 +335,58 @@
         }).join('') || '<tr><td colspan="5">No orders</td></tr>'}</tbody></table></div></div>`;
     }
 
-    // Products Page
+    // Products Page - WITH ENHANCED STOCK COLUMN
     function renderProducts() {
       document.getElementById('pageContainer').innerHTML = `
-        <div class="bg-white p-4 rounded-xl shadow-md"><h3 class="font-bold mb-3">Product Catalog</h3><div class="overflow-x-auto"><table class="w-full text-sm"><thead><tr><th>Name</th><th>Price</th><th>Category</th><th>Stock</th></tr></thead><tbody>${products.map(p => `<tr><td>${p.name}</td><td>₨${p.price}</td><td>${p.category||'-'}</td><td>${p.stock}</td></tr>`).join('') || '<tr><td colspan="4">No products</td></tr>'}</tbody></table></div></div>`;
+        <div class="bg-white p-4 rounded-xl shadow-md">
+          <h3 class="font-bold mb-3">Product Catalog</h3>
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+              <thead>
+                <tr class="border-b">
+                  <th class="text-left py-3">Name</th>
+                  <th class="text-left py-3">Price</th>
+                  <th class="text-left py-3">Category</th>
+                  <th class="text-left py-3">Stock</th>
+                  <th class="text-left py-3">Status</th>
+                  <th class="text-left py-3">Action</th>
+                 </tr>
+              </thead>
+              <tbody>${products.map(p => {
+                let stockStatus = '';
+                let stockColor = '';
+                let statusBg = '';
+                if (p.stock === 0) {
+                  stockStatus = 'Out of Stock';
+                  stockColor = 'text-red-600 font-bold';
+                  statusBg = 'bg-red-100 text-red-700';
+                } else if (p.stock < 10) {
+                  stockStatus = 'Low Stock';
+                  stockColor = 'text-yellow-600';
+                  statusBg = 'bg-yellow-100 text-yellow-700';
+                } else {
+                  stockStatus = 'In Stock';
+                  stockColor = 'text-green-600';
+                  statusBg = 'bg-green-100 text-green-700';
+                }
+                return `<tr class="border-b">
+                  <td class="py-3 font-medium">${p.name}</td>
+                  <td class="py-3">₨${p.price}</td>
+                  <td class="py-3">${p.category || '-'}</td>
+                  <td class="py-3 ${stockColor} font-bold">${p.stock}</td>
+                  <td class="py-3"><span class="px-2 py-1 rounded-full text-xs ${statusBg}">${stockStatus}</span></td>
+                  <td class="py-3">
+                    <button class="bg-[#D4A017] text-white px-3 py-1 rounded text-xs mr-1" onclick="openEdit('${p._id}')">✏️ Edit</button>
+                    <button class="bg-blue-500 text-white px-3 py-1 rounded text-xs" onclick="openStockModal('${p._id}', '${p.name.replace(/'/g, "\\'")}', ${p.stock})">📦 Stock</button>
+                  </td>
+                </tr>`;
+              }).join('') || '<tr><td colspan="6" class="text-center py-8">No products found</td></tr>'}</tbody>
+            </table>
+          </div>
+        </div>`;
     }
 
-    // ORDERS PAGE - WITH STATUS DROPDOWN (UPDATED)
+    // ORDERS PAGE
     function renderOrders() {
       document.getElementById('pageContainer').innerHTML = `
         <div class="bg-white p-4 rounded-xl shadow-md"><h3 class="font-bold mb-3">All Orders</h3><div class="overflow-x-auto"><table class="w-full text-sm"><thead>
@@ -223,7 +399,7 @@
             <th class="text-left py-3 px-3">Date</th>
             <th class="text-left py-3 px-3">Status</th>
             <th class="text-left py-3 px-3">Actions</th>
-          </tr>
+           </tr>
         </thead><tbody>${
           orders.map(o => {
             let productNames = '';
@@ -231,8 +407,6 @@
               productNames = o.items.map(item => item.name || item.productName || 'Product').join(', ');
             } else if (o.productName) {
               productNames = o.productName;
-            } else if (o.products) {
-              productNames = o.products;
             } else {
               productNames = '—';
             }
@@ -245,8 +419,7 @@
               <td class="py-3 font-semibold">₨${o.total || 0}</td>
               <td class="py-3 text-[#9A8030] text-xs">${new Date(o.date || Date.now()).toLocaleDateString()}</td>
               <td class="py-3">
-                <select onchange="updateOrderStatus('${o._id}', this.value)" 
-                        class="border border-[#E8D58A] rounded-lg px-2 py-1 text-xs bg-[#FDFAF3]">
+                <select onchange="updateOrderStatus('${o._id}', this.value)" class="border border-[#E8D58A] rounded-lg px-2 py-1 text-xs bg-[#FDFAF3]">
                   <option value="pending" ${o.status === 'pending' ? 'selected' : ''}>📦 Pending</option>
                   <option value="warehouse" ${o.status === 'warehouse' ? 'selected' : ''}>🏭 In Warehouse</option>
                   <option value="shipped" ${o.status === 'shipped' ? 'selected' : ''}>🚚 Shipped</option>
@@ -263,7 +436,6 @@
         }</tbody></table></div></div>`;
     }
 
-    // Update order status function
     async function updateOrderStatus(orderId, newStatus) {
       try {
         const res = await fetch(`${API_BASE}/orders/${orderId}/status`, {
@@ -271,11 +443,10 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ status: newStatus })
         });
-        
         if (res.ok) {
           showToast(`✅ Order status updated to ${newStatus.toUpperCase()}`);
-          await loadOrders(); // Refresh orders data
-          renderOrders(); // Re-render orders page
+          await loadOrders();
+          renderOrders();
         } else {
           showToast('❌ Error updating status');
         }
@@ -288,7 +459,7 @@
     // Customers Page
     function renderCustomers() {
       document.getElementById('pageContainer').innerHTML = `
-        <div class="bg-white p-4 rounded-xl shadow-md"><h3 class="font-bold mb-3">Customer Directory</h3><div class="overflow-x-auto"><table class="w-full text-sm"><thead><tr><th>Username</th><th>Email</th><th>Role</th></tr></thead><tbody>${users.map(u => `<tr><td>${u.username}</td><td>${u.email||'-'}</td><td>${u.role||'Customer'}</td></tr>`).join('') || '<tr><td colspan="3">No users</td></tr>'}</tbody></table></div></div>`;
+        <div class="bg-white p-4 rounded-xl shadow-md"><h3 class="font-bold mb-3">Customer Directory</h3><div class="overflow-x-auto"><table class="w-full text-sm"><thead><tr><th>Username</th><th>Email</th><th>Role</th></tr></thead><tbody>${users.map(u => `<tr><td class="py-3">${u.username}</td><td class="py-3">${u.email||'-'}</td><td class="py-3">${u.role||'Customer'}</td></tr>`).join('') || '<tr><td colspan="3" class="text-center py-8">No users found</td></tr>'}</tbody><tr></div></div>`;
     }
 
     // Add Product Page
@@ -329,10 +500,51 @@
       } catch(e) { showToast('Error'); }
     }
 
-    // Inventory Page
+    // Inventory Page - WITH ENHANCED STOCK DISPLAY
     function renderInventory() {
       document.getElementById('pageContainer').innerHTML = `
-        <div class="bg-white p-4 rounded-xl shadow-md"><h3 class="font-bold mb-3">Inventory</h3><div class="overflow-x-auto"><table class="w-full text-sm"><thead><tr><th>Product</th><th>Stock</th><th>Status</th></tr></thead><tbody>${products.map(p => `<tr><td>${p.name}</td><td>${p.stock}</td><td class="${p.stock===0?'text-red-600':p.stock<10?'text-yellow-600':'text-green-600'}">${p.stock===0?'Out of Stock':p.stock<10?'Low Stock':'In Stock'}</td></tr>`).join('')}</tbody></table></div></div>`;
+        <div class="bg-white p-4 rounded-xl shadow-md">
+          <h3 class="font-bold mb-3">Inventory Overview</h3>
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+              <thead>
+                <tr class="border-b">
+                  <th class="text-left py-3">Product</th>
+                  <th class="text-left py-3">Current Stock</th>
+                  <th class="text-left py-3">Status</th>
+                  <th class="text-left py-3">Action</th>
+                 </tr>
+              </thead>
+              <tbody>${products.map(p => {
+                let statusIcon = '';
+                let statusColor = '';
+                let statusText = '';
+                if (p.stock === 0) {
+                  statusIcon = '❌';
+                  statusColor = 'text-red-600';
+                  statusText = 'Out of Stock';
+                } else if (p.stock < 10) {
+                  statusIcon = '⚠️';
+                  statusColor = 'text-yellow-600';
+                  statusText = 'Low Stock';
+                } else {
+                  statusIcon = '✅';
+                  statusColor = 'text-green-600';
+                  statusText = 'In Stock';
+                }
+                return `<tr class="border-b">
+                  <td class="py-3 font-medium">${p.name}</td>
+                  <td class="py-3 font-bold ${statusColor}">${p.stock} units</td>
+                  <td class="py-3 ${statusColor}">${statusIcon} ${statusText}</td>
+                  <td class="py-3">
+                    <button class="bg-blue-500 text-white px-3 py-1 rounded text-xs" onclick="openStockModal('${p._id}', '${p.name.replace(/'/g, "\\'")}', ${p.stock})">📦 Update Stock</button>
+                    <button class="bg-[#D4A017] text-white px-3 py-1 rounded text-xs ml-1" onclick="openEdit('${p._id}')">✏️ Edit</button>
+                  </td>
+                 </tr>`;
+              }).join('') || '<tr class="border-b"><td colspan="4" class="text-center py-8">No products found</td></tr>'}</tbody>
+             </table>
+          </div>
+        </div>`;
     }
 
     // Navigation Function
