@@ -210,10 +210,21 @@
         <div class="bg-white p-4 rounded-xl shadow-md"><h3 class="font-bold mb-3">Product Catalog</h3><div class="overflow-x-auto"><table class="w-full text-sm"><thead><tr><th>Name</th><th>Price</th><th>Category</th><th>Stock</th></tr></thead><tbody>${products.map(p => `<tr><td>${p.name}</td><td>₨${p.price}</td><td>${p.category||'-'}</td><td>${p.stock}</td></tr>`).join('') || '<tr><td colspan="4">No products</td></tr>'}</tbody></table></div></div>`;
     }
 
-    // ORDERS PAGE - NOW SHOWS PRODUCT NAMES (UPDATED)
+    // ORDERS PAGE - WITH STATUS DROPDOWN (UPDATED)
     function renderOrders() {
       document.getElementById('pageContainer').innerHTML = `
-        <div class="bg-white p-4 rounded-xl shadow-md"><h3 class="font-bold mb-3">All Orders</h3><div class="overflow-x-auto"><table class="w-full text-sm"><thead><tr><th>Order ID</th><th>Customer</th><th>Email</th><th>Products Ordered</th><th>Total</th><th>Date</th><th>Status</th></tr></thead><tbody>${
+        <div class="bg-white p-4 rounded-xl shadow-md"><h3 class="font-bold mb-3">All Orders</h3><div class="overflow-x-auto"><table class="w-full text-sm"><thead>
+          <tr class="border-b border-[#F5EDD5]">
+            <th class="text-left py-3 px-3">Order ID</th>
+            <th class="text-left py-3 px-3">Customer</th>
+            <th class="text-left py-3 px-3">Email</th>
+            <th class="text-left py-3 px-3">Products Ordered</th>
+            <th class="text-left py-3 px-3">Total</th>
+            <th class="text-left py-3 px-3">Date</th>
+            <th class="text-left py-3 px-3">Status</th>
+            <th class="text-left py-3 px-3">Actions</th>
+          </tr>
+        </thead><tbody>${
           orders.map(o => {
             let productNames = '';
             if (o.items && Array.isArray(o.items) && o.items.length > 0) {
@@ -233,16 +244,51 @@
               <td class="py-3 product-list max-w-[250px] break-words text-sm">${productNames}</td>
               <td class="py-3 font-semibold">₨${o.total || 0}</td>
               <td class="py-3 text-[#9A8030] text-xs">${new Date(o.date || Date.now()).toLocaleDateString()}</td>
-              <td class="py-3"><span class="px-2 py-1 rounded-full text-xs ${o.status === 'paid' ? 'bg-green-100 text-green-700' : 'bg-yellow-100'}">${o.status || 'pending'}</span></td>
+              <td class="py-3">
+                <select onchange="updateOrderStatus('${o._id}', this.value)" 
+                        class="border border-[#E8D58A] rounded-lg px-2 py-1 text-xs bg-[#FDFAF3]">
+                  <option value="pending" ${o.status === 'pending' ? 'selected' : ''}>📦 Pending</option>
+                  <option value="warehouse" ${o.status === 'warehouse' ? 'selected' : ''}>🏭 In Warehouse</option>
+                  <option value="shipped" ${o.status === 'shipped' ? 'selected' : ''}>🚚 Shipped</option>
+                  <option value="delivered" ${o.status === 'delivered' ? 'selected' : ''}>✅ Delivered</option>
+                </select>
+              </td>
+              <td class="py-3">
+                <button onclick="updateOrderStatus('${o._id}', 'warehouse')" class="bg-blue-100 text-blue-700 px-2 py-1 rounded text-xs mr-1">🏭</button>
+                <button onclick="updateOrderStatus('${o._id}', 'shipped')" class="bg-purple-100 text-purple-700 px-2 py-1 rounded text-xs mr-1">🚚</button>
+                <button onclick="updateOrderStatus('${o._id}', 'delivered')" class="bg-green-100 text-green-700 px-2 py-1 rounded text-xs">✅</button>
+              </td>
             </tr>`;
-          }).join('') || '<tr><td colspan="7" class="text-center py-8">No orders found</td></tr>'
+          }).join('') || '<tr><td colspan="8" class="text-center py-8">No orders found</td></tr>'
         }</tbody></table></div></div>`;
+    }
+
+    // Update order status function
+    async function updateOrderStatus(orderId, newStatus) {
+      try {
+        const res = await fetch(`${API_BASE}/orders/${orderId}/status`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status: newStatus })
+        });
+        
+        if (res.ok) {
+          showToast(`✅ Order status updated to ${newStatus.toUpperCase()}`);
+          await loadOrders(); // Refresh orders data
+          renderOrders(); // Re-render orders page
+        } else {
+          showToast('❌ Error updating status');
+        }
+      } catch (error) {
+        showToast('❌ Server error');
+        console.error(error);
+      }
     }
 
     // Customers Page
     function renderCustomers() {
       document.getElementById('pageContainer').innerHTML = `
-        <div class="bg-white p-4 rounded-xl shadow-md"><h3 class="font-bold mb-3">Customer Directory</h3><div class="overflow-x-auto"><table class="w-full text-sm"><thead></tr><th>Username</th><th>Email</th><th>Role</th></tr></thead><tbody>${users.map(u => `<tr><td>${u.username}</td><td>${u.email||'-'}</td><td>${u.role||'Customer'}</td></tr>`).join('') || '<tr><td colspan="3">No users</td></tr>'}</tbody></table></div></div>`;
+        <div class="bg-white p-4 rounded-xl shadow-md"><h3 class="font-bold mb-3">Customer Directory</h3><div class="overflow-x-auto"><table class="w-full text-sm"><thead><tr><th>Username</th><th>Email</th><th>Role</th></tr></thead><tbody>${users.map(u => `<tr><td>${u.username}</td><td>${u.email||'-'}</td><td>${u.role||'Customer'}</td></tr>`).join('') || '<tr><td colspan="3">No users</td></tr>'}</tbody></table></div></div>`;
     }
 
     // Add Product Page
@@ -289,20 +335,17 @@
         <div class="bg-white p-4 rounded-xl shadow-md"><h3 class="font-bold mb-3">Inventory</h3><div class="overflow-x-auto"><table class="w-full text-sm"><thead><tr><th>Product</th><th>Stock</th><th>Status</th></tr></thead><tbody>${products.map(p => `<tr><td>${p.name}</td><td>${p.stock}</td><td class="${p.stock===0?'text-red-600':p.stock<10?'text-yellow-600':'text-green-600'}">${p.stock===0?'Out of Stock':p.stock<10?'Low Stock':'In Stock'}</td></tr>`).join('')}</tbody></table></div></div>`;
     }
 
-    // Navigation Function - WORKS FOR ALL BUTTONS
+    // Navigation Function
     function showPage(pageId) {
       if (!isAuthenticated) { showLoginModal(); return; }
       
-      // Update active menu
       document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
       const activeNav = Array.from(document.querySelectorAll('.nav-item')).find(el => el.getAttribute('data-page') === pageId);
       if (activeNav) activeNav.classList.add('active');
       
-      // Update topbar title
       const titles = { dashboard:'Dashboard', products:'Products', orders:'Orders', customers:'Customers', addproduct:'Add Product', categories:'Categories', inventory:'Inventory' };
       document.getElementById('topbarTitle').innerText = titles[pageId] || 'Admin';
       
-      // Render page content
       if (pageId === 'dashboard') renderDashboard();
       else if (pageId === 'products') renderProducts();
       else if (pageId === 'orders') renderOrders();
@@ -311,11 +354,10 @@
       else if (pageId === 'categories') renderCategories();
       else if (pageId === 'inventory') renderInventory();
       
-      // Close mobile menu
       if (window.innerWidth <= 768) toggleMobileMenu();
     }
 
-    // Event Listeners for sidebar buttons
+    // Event Listeners
     document.querySelectorAll('.nav-item').forEach(el => {
       el.addEventListener('click', () => {
         const page = el.getAttribute('data-page');
