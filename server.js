@@ -73,6 +73,57 @@ async function sendCustomerStatusEmail(order, newStatus) {
   }
 }
 
+// ========== STOCK MANAGEMENT FUNCTIONS ==========
+
+// Function to deduct stock when order is placed
+async function deductStock(orderItems) {
+  const stockUpdates = [];
+  
+  for (const item of orderItems) {
+    // Find the product in database
+    const product = await Product.findById(item.productId);
+    
+    if (!product) {
+      console.log(`❌ Product not found: ${item.productId}`);
+      continue;
+    }
+    
+    // Calculate new stock quantity
+    const newStock = product.stock - item.quantity;
+    
+    if (newStock < 0) {
+      throw new Error(`Insufficient stock for product: ${product.name}. Available: ${product.stock}, Requested: ${item.quantity}`);
+    }
+    
+    // Update product stock
+    product.stock = newStock;
+    await product.save();
+    
+    stockUpdates.push({
+      name: product.name,
+      oldStock: product.stock + item.quantity,
+      newStock: newStock,
+      deducted: item.quantity
+    });
+    
+    console.log(`📦 Stock deducted: ${product.name} - Old: ${product.stock + item.quantity}, New: ${newStock}`);
+  }
+  
+  return stockUpdates;
+}
+
+// Function to revert stock (if order is cancelled/refunded)
+async function revertStock(orderItems) {
+  for (const item of orderItems) {
+    const product = await Product.findById(item.productId);
+    if (product) {
+      product.stock += item.quantity;
+      await product.save();
+      console.log(`🔄 Stock reverted: ${product.name} - New stock: ${product.stock}`);
+    }
+  }
+}
+
 // SCHEMAS
 const ProductSchema = new mongoose.Schema({
   name: String, 
@@ -101,7 +152,7 @@ const OrderSchema = new mongoose.Schema({
   items: Array, 
   status: { 
     type: String, 
-    enum: ['pending', 'warehouse', 'shipped', 'delivered'],
+    enum: ['pending', 'warehouse', 'shipped', 'delivered', 'cancelled'],
     default: 'pending'
   }, 
   trackingId: String,
@@ -231,18 +282,45 @@ app.delete("/api/cart/:id", async(req, res) => {
   try { await Cart.findByIdAndDelete(req.params.id); res.json({ message: "Removed" }); } catch(err) { res.status(500).json(err); } 
 });
 
-// Checkout
+// ========== UPDATED CHECKOUT WITH STOCK DEDUCTION ==========
 app.post("/api/checkout", async(req, res) => { 
   try { 
     const orderData = req.body;
+    
+    // 🔴 DEDUCT STOCK FIRST
+    try {
+      const stockUpdates = await deductStock(orderData.items);
+      console.log(`✅ Stock deducted for ${stockUpdates.length} products`);
+    } catch (stockError) {
+      console.error("Stock deduction failed:", stockError.message);
+      return res.status(400).json({ 
+        message: "Insufficient stock", 
+        error: stockError.message 
+      });
+    }
+    
+    // Create order
     orderData.status = 'pending';
-    orderData.statusHistory = [{ status: 'pending', message: 'Order received', timestamp: new Date() }];
+    orderData.statusHistory = [{
+      status: 'pending',
+      message: 'Order received and confirmed',
+      timestamp: new Date()
+    }];
+    
     const order = new Order(orderData); 
     await order.save(); 
+    
+    // Send email notification to admin
     await sendAdminEmailNotification(order);
-    res.json({ message: "Order placed", orderId: order._id }); 
+    
+    res.json({ 
+      message: "Order placed successfully", 
+      orderId: order._id, 
+      trackingId: order.trackingId 
+    }); 
   } catch(err) { 
-    res.status(500).json(err); 
+    console.error("Checkout error:", err);
+    res.status(500).json({ error: err.message }); 
   } 
 });
 
@@ -263,7 +341,7 @@ app.get("/api/orders/track/:id", async(req, res) => {
   } catch(err) { res.status(500).json(err); } 
 });
 
-// Update order status
+// Update order status (warehouse, shipped, delivered)
 app.put("/api/orders/:id/status", async(req, res) => { 
   try { 
     const order = await Order.findById(req.params.id);
@@ -274,6 +352,37 @@ app.put("/api/orders/:id/status", async(req, res) => {
     await sendCustomerStatusEmail(order, req.body.status);
     res.json(order);
   } catch(err) { res.status(500).json(err); } 
+});
+
+// ========== NEW: Cancel order and revert stock ==========
+app.put("/api/orders/:id/cancel", async(req, res) => { 
+  try { 
+    const order = await Order.findById(req.params.id);
+    if (!order) {
+      return res.status(404).json({ message: 'Order not found' });
+    }
+    
+    if (order.status === 'cancelled') {
+      return res.status(400).json({ message: 'Order already cancelled' });
+    }
+    
+    // Revert stock
+    await revertStock(order.items);
+    
+    // Update order status
+    order.status = 'cancelled';
+    order.statusHistory.push({
+      status: 'cancelled',
+      message: 'Order has been cancelled',
+      timestamp: new Date()
+    });
+    
+    await order.save();
+    
+    res.json({ message: 'Order cancelled and stock restored', order: order }); 
+  } catch(err) { 
+    res.status(500).json(err); 
+  } 
 });
 
 // Users API
