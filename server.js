@@ -49,7 +49,7 @@ async function sendAdminEmailNotification(order) {
       from: 'your-email@gmail.com',
       to: 'admin@accessorieshouse.com',
       subject: `🆕 NEW ORDER #${order.trackingId || order._id}`,
-      html: `<div><h2>New Order!</h2><p>Order ID: ${order._id}</p><p>Customer: ${order.name}</p><p>Total: ₨${order.total}</p><ul>${productList}</ul></div>`
+      html: `<div><h2>New Order!</h2><p>Order ID: ${order.trackingId || order._id}</p><p>Customer: ${order.name}</p><p>Total: ₨${order.total}</p><ul>${productList}</ul></div>`
     });
     console.log('✅ Admin email sent');
   } catch (error) {
@@ -333,12 +333,27 @@ app.put("/api/orders/:id", async(req, res) => {
   try { res.json(await Order.findByIdAndUpdate(req.params.id, { status: req.body.status }, { new: true })); } catch(err) { res.status(500).json(err); } 
 });
 
-// Track order
+// ========== UPDATED TRACK ORDER - FIXED TO HANDLE BOTH ID FORMATS ==========
 app.get("/api/orders/track/:id", async(req, res) => { 
   try { 
-    const order = await Order.findOne({ $or: [{ trackingId: req.params.id }, { _id: req.params.id }] });
-    order ? res.json(order) : res.status(404).json({ message: 'Order not found' });
-  } catch(err) { res.status(500).json(err); } 
+    const searchId = req.params.id;
+    
+    // Try to find by custom trackingId first, then by MongoDB _id
+    let order = await Order.findOne({ trackingId: searchId });
+    
+    if (!order) {
+      // If not found by trackingId, try by MongoDB _id
+      order = await Order.findById(searchId);
+    }
+    
+    if (order) {
+      res.json(order);
+    } else {
+      res.status(404).json({ message: 'Order not found' });
+    }
+  } catch(err) { 
+    res.status(500).json(err); 
+  } 
 });
 
 // Update order status (warehouse, shipped, delivered)
