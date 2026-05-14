@@ -962,27 +962,29 @@
       mega.innerHTML = html;
     }
     
-    // ========== UPDATED: Category Grid with FIXED IMAGES for HEADPHONES & MONITORS ==========
+    // ========== FIXED: Category Grid with WORKING HEADPHONES IMAGE ==========
     function updateCategoryGrid(categories) {
       const grid = document.getElementById('categoryGrid');
       if (!grid) return;
       const display = categories.slice(0, 4);
-      const images = { 
-        'Keyboards': 'https://images.pexels.com/photos/2115257/pexels-photo-2115257.jpeg?w=400',
-        'HEADPHONES': 'https://img.sanishtech.com/u/0928e12f53dd531877afc32d4e216370.jpg',
-        'Mice': 'https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?w=400',
-        'Cable': 'https://images.unsplash.com/photo-1583391733956-6c27b5d88e6a?w=400',
-        'Drones': 'https://images.unsplash.com/photo-1508614589041-895b88991e3e?w=400',
-        'Monitors': 'https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=400',
-        'Speakers': 'https://images.unsplash.com/photo-1545454675-3531b543be5d?w=400',
-        'Gaming Chairs': 'https://images.unsplash.com/photo-1598550476439-6847785fcea6?w=400'
-      };
+      
+      function getCategoryImage(catName) {
+        const name = catName.toLowerCase();
+        if (name.includes('keyboard')) return 'https://images.pexels.com/photos/2115257/pexels-photo-2115257.jpeg?w=400';
+        if (name.includes('headphone') || name.includes('earphone')) return 'https://images.pexels.com/photos/3394659/pexels-photo-3394659.jpeg?w=400';
+        if (name.includes('mouse') || name.includes('mice')) return 'https://images.pexels.com/photos/2115256/pexels-photo-2115256.jpeg?w=400';
+        if (name.includes('monitor')) return 'https://images.pexels.com/photos/276517/pexels-photo-276517.jpeg?w=400';
+        if (name.includes('cable')) return 'https://images.pexels.com/photos/34077/usb-cable-data-transfer-charge.jpg?w=400';
+        if (name.includes('drone')) return 'https://images.pexels.com/photos/2101823/pexels-photo-2101823.jpeg?w=400';
+        return 'https://images.pexels.com/photos/2115257/pexels-photo-2115257.jpeg?w=400';
+      }
+      
       grid.innerHTML = display.map(cat => { 
-        const img = images[cat.name] || 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=400'; 
+        const img = getCategoryImage(cat.name);
         const count = products.filter(p => p.category === cat.name).length; 
         return `<div class="cat-card relative overflow-hidden aspect-[4/3] cursor-pointer border border-white/10 rounded-xl transition-all hover:border-gold hover:-translate-y-1" onclick="quickFilter('${cat.name}')">
           <span class="absolute top-2 right-2 text-gold text-sm opacity-0 transition-opacity group-hover:opacity-100">↗</span>
-          <img src="${img}" class="w-full h-full object-cover brightness-[0.45] saturate-50 transition-all group-hover:brightness-[0.6] group-hover:saturate-80 group-hover:scale-105">
+          <img src="${img}" class="w-full h-full object-cover brightness-[0.45] saturate-50 transition-all group-hover:brightness-[0.6] group-hover:saturate-80 group-hover:scale-105" onerror="this.src='https://placehold.co/600x400/1a1a1c/c5a357?text=HEADPHONES'">
           <div class="absolute inset-0 flex flex-col justify-end p-3 bg-gradient-to-t from-black via-transparent">
             <div class="cat-card-label text-white font-barlow-condensed font-bold text-xs uppercase">${cat.name.toUpperCase()}</div>
             <div class="cat-card-count text-gold text-[9px] tracking-wide mt-1">${count} MODULES</div>
