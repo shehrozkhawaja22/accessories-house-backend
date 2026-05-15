@@ -281,7 +281,6 @@
     }
     
     /* ========== TWEAK 1: EMBOSSED BORDERS (LESS VISIBLE) ========== */
-    /* Replace harsh white lines with subtle embossed borders */
     .hero-left,
     .promise-item,
     .hero-stats,
@@ -300,9 +299,8 @@
       box-shadow: inset 0 1px 0 rgba(255,255,255,0.02), 0 1px 0 rgba(0,0,0,0.2);
     }
     
-    /* Specific borders on home page */
     .hero-left {
-      border-right-color: rgba(197, 163, 87, 0.12) !important; /* slight gold tint */
+      border-right-color: rgba(197, 163, 87, 0.12) !important;
     }
     
     .hero-stats {
@@ -313,7 +311,6 @@
       border-right-color: rgba(255, 255, 255, 0.03);
     }
     
-    /* ========== TWEAK 2: PAYMENT METHOD SELECTION (ONE AT A TIME) ========== */
     .payment-method-btn.selected {
       border-color: #c5a357 !important;
       background: rgba(197, 163, 87, 0.2) !important;
@@ -322,6 +319,39 @@
     
     .payment-details.active {
       display: block !important;
+    }
+    
+    /* Loading overlay for instant order feedback */
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.85);
+      z-index: 10000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .loading-spinner {
+      width: 60px;
+      height: 60px;
+      border: 4px solid #c5a357;
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    .loading-text {
+      color: #c5a357;
+      font-family: 'Barlow Condensed';
+      font-size: 1.2rem;
+      letter-spacing: 2px;
     }
     
     /* General */
@@ -338,6 +368,12 @@
   </style>
 </head>
 <body class="bg-bg-deep text-text-main overflow-x-hidden">
+
+  <!-- LOADING OVERLAY -->
+  <div id="loadingOverlay" class="loading-overlay">
+    <div class="loading-spinner"></div>
+    <div class="loading-text">PROCESSING ORDER...</div>
+  </div>
 
   <!-- AUTH MODAL -->
   <div class="auth-modal-overlay" id="authModal">
@@ -370,58 +406,72 @@
     </div>
   </div>
 
-  <!-- PAYMENT MODAL -->
+  <!-- UPDATED PAYMENT MODAL - Credit/Debit Card REMOVED -->
   <div class="payment-modal-overlay" id="paymentModal">
     <div class="bg-bg-card border border-border rounded-2xl max-w-md w-full p-5 relative max-h-[90vh] overflow-y-auto">
       <span class="absolute top-4 right-5 text-3xl cursor-pointer text-text-dim" onclick="closePaymentModal()">&times;</span>
-      <h2 class="font-barlow-condensed text-2xl mb-4">PAYMENT OPTIONS</h2>
+      <h2 class="font-barlow-condensed text-2xl mb-4">COMPLETE ORDER</h2>
       <p class="text-text-dim mb-4">Total Amount: <strong id="paymentTotal">₨0</strong></p>
+      
+      <!-- Customer Details Section -->
+      <div class="mb-5">
+        <h3 class="text-gold text-sm font-semibold mb-3">CONTACT INFORMATION</h3>
+        <input type="text" id="orderName" placeholder="Full Name" class="w-full bg-bg-deep border border-border rounded-lg p-3 mb-3 text-white">
+        <input type="email" id="orderEmail" placeholder="Email Address" class="w-full bg-bg-deep border border-border rounded-lg p-3 mb-3 text-white">
+        <input type="tel" id="orderPhone" placeholder="Phone Number" class="w-full bg-bg-deep border border-border rounded-lg p-3 mb-3 text-white">
+        <input type="text" id="orderAddress" placeholder="Delivery Address" class="w-full bg-bg-deep border border-border rounded-lg p-3 text-white">
+      </div>
+      
+      <h3 class="text-gold text-sm font-semibold mb-3">PAYMENT METHOD</h3>
       <div class="grid gap-3 mb-6">
-        <div class="payment-method-btn bg-bg-panel border-2 border-border p-3 text-center rounded-xl cursor-pointer hover:border-gold transition" onclick="selectPaymentMethod('card')">💳 Credit/Debit Card</div>
+        <!-- Credit/Debit Card option REMOVED -->
         <div class="payment-method-btn bg-bg-panel border-2 border-border p-3 text-center rounded-xl cursor-pointer hover:border-gold transition" onclick="selectPaymentMethod('jazzcash')">📱 JazzCash</div>
         <div class="payment-method-btn bg-bg-panel border-2 border-border p-3 text-center rounded-xl cursor-pointer hover:border-gold transition" onclick="selectPaymentMethod('easypaisa')">📱 EasyPaisa</div>
         <div class="payment-method-btn bg-bg-panel border-2 border-border p-3 text-center rounded-xl cursor-pointer hover:border-gold transition" onclick="selectPaymentMethod('bank')">🏦 Bank Transfer</div>
         <div class="payment-method-btn bg-bg-panel border-2 border-border p-3 text-center rounded-xl cursor-pointer hover:border-gold transition" onclick="selectPaymentMethod('cod')">💰 Cash on Delivery</div>
       </div>
-      <div id="cardPayment" class="payment-details hidden">
-        <div class="bg-bg-deep p-3 rounded-lg mb-4 text-sm">
-          <strong>🔒 Bank Details:</strong><br/>Standard Chartered Bank<br/>Account: 01039362001
-        </div>
-        <input type="text" id="cardNumber" placeholder="Card Number" class="w-full bg-bg-deep border border-border rounded-lg p-3 mb-3 text-white">
-        <div class="grid grid-cols-2 gap-3 mb-3">
-          <input type="text" id="cardExpiry" placeholder="MM/YY" class="bg-bg-deep border border-border rounded-lg p-3 text-white">
-          <input type="password" id="cardCvv" placeholder="CVV" class="bg-bg-deep border border-border rounded-lg p-3 text-white">
-        </div>
-        <input type="text" id="cardName" placeholder="Cardholder Name" class="w-full bg-bg-deep border border-border rounded-lg p-3 text-white">
-      </div>
+      
+      <!-- JazzCash Payment Details -->
       <div id="jazzcashPayment" class="payment-details hidden">
         <div class="bg-bg-deep p-4 rounded-lg text-center">
           <p class="mb-2">📱 JazzCash: <strong>0300 1234567</strong></p>
+          <p class="text-xs text-text-dim mb-2">Account Title: The Accessories House</p>
           <input type="text" id="jazzcashTransactionId" placeholder="Transaction ID" class="w-full bg-bg-deep border border-border rounded-lg p-3 mt-3 text-white">
         </div>
       </div>
+      
+      <!-- EasyPaisa Payment Details -->
       <div id="easypaisaPayment" class="payment-details hidden">
         <div class="bg-bg-deep p-4 rounded-lg text-center">
           <p class="mb-2">📱 EasyPaisa: <strong>0345 7654321</strong></p>
+          <p class="text-xs text-text-dim mb-2">Account Title: The Accessories House</p>
           <input type="text" id="easypaisaTransactionId" placeholder="Transaction ID" class="w-full bg-bg-deep border border-border rounded-lg p-3 mt-3 text-white">
         </div>
       </div>
+      
+      <!-- Bank Transfer Payment Details -->
       <div id="bankPayment" class="payment-details hidden">
         <div class="bg-bg-deep p-4 rounded-lg">
           <p><strong>Bank:</strong> Standard Chartered</p>
           <p><strong>Account:</strong> 01039362001</p>
           <p><strong>IBAN:</strong> PK72SCBL0000001039362001</p>
+          <p><strong>Account Title:</strong> Shayan Tahir</p>
           <input type="text" id="bankReference" placeholder="Reference Number" class="w-full bg-bg-deep border border-border rounded-lg p-3 mt-3 text-white">
         </div>
       </div>
+      
+      <!-- Cash on Delivery Payment Details -->
       <div id="codPayment" class="payment-details hidden">
         <div class="bg-bg-deep p-4 rounded-lg">
           <p class="text-center mb-3">🚚 <strong>Cash on Delivery</strong></p>
+          <p class="text-xs text-text-dim text-center mb-2">✓ No advance payment required</p>
           <input type="text" id="codAddress" placeholder="Complete Delivery Address" class="w-full bg-bg-deep border border-border rounded-lg p-3 mb-2 text-white">
           <input type="text" id="codLandmark" placeholder="Landmark (Optional)" class="w-full bg-bg-deep border border-border rounded-lg p-3 text-white">
         </div>
       </div>
-      <button class="w-full bg-gold text-black font-barlow-condensed font-bold py-3 rounded-lg mt-6 hover:bg-white transition" onclick="processPayment()">CONFIRM PAYMENT</button>
+      
+      <!-- PLACE ORDER BUTTON -->
+      <button class="w-full bg-gold text-black font-barlow-condensed font-bold py-3 rounded-lg mt-6 hover:bg-white transition" id="placeOrderBtn" onclick="placeOrder()">PLACE ORDER</button>
     </div>
   </div>
 
@@ -460,7 +510,6 @@
   <!-- HEADER -->
   <header class="sticky top-0 z-[1000] bg-bg-deep/98 backdrop-blur-md border-b border-border">
     <div class="px-4 py-3 md:px-12 md:py-0 md:h-[90px] flex flex-col md:flex-row md:items-center md:justify-between gap-2">
-      <!-- Logo -->
       <div class="logo flex items-center justify-center md:justify-start gap-2 cursor-pointer" onclick="navigateTo('home')">
         <div class="logo-badge w-8 h-8 md:w-12 md:h-12 bg-gradient-to-br from-gold to-amber-800 flex items-center justify-center relative clip-path-polygon">
           <span class="font-barlow-condensed font-extrabold text-sm text-black relative z-10">TAH</span>
@@ -468,13 +517,11 @@
         <span class="logo-text font-barlow-condensed font-extrabold text-base md:text-[1.7rem] tracking-wide whitespace-normal text-center md:whitespace-nowrap">THE ACCESSORIES HOUSE</span>
       </div>
       
-      <!-- Search -->
       <div class="search-wrapper flex bg-bg-panel border border-border rounded-lg overflow-hidden w-full md:w-[36%] h-10 md:h-12">
         <select class="search-cat bg-[#252527] text-text-dim border-none px-2 md:px-4 text-xs" id="searchCategory"><option value="all">All</option></select>
         <input type="text" class="search-input bg-transparent border-none px-3 text-white flex-1 outline-none text-sm" id="globalSearch" placeholder="Search inventory..." onkeyup="handleSearch(event)">
       </div>
       
-      <!-- Navigation -->
       <nav class="w-full overflow-x-auto md:overflow-visible">
         <ul class="nav-links flex flex-row gap-4 md:gap-8 py-2 min-w-max md:min-w-0 justify-center md:justify-end">
           <li class="cursor-pointer font-barlow-condensed font-semibold text-xs md:text-sm whitespace-nowrap" onclick="navigateTo('home')">HOME</li>
@@ -492,7 +539,6 @@
         </ul>
       </nav>
       
-      <!-- Auth Buttons -->
       <div class="auth-buttons flex flex-row justify-center gap-2 mt-1 md:mt-0" id="authButtonsContainer">
         <button class="auth-btn border border-border text-text-main px-3 py-1 md:px-5 md:py-2 rounded-md text-xs font-semibold hover:border-gold hover:text-gold transition" onclick="openAuthModal('login')">LOGIN</button>
         <button class="auth-btn bg-gold text-black px-3 py-1 md:px-5 md:py-2 rounded-md text-xs font-semibold hover:bg-white transition" onclick="openAuthModal('signup')">SIGN UP</button>
@@ -541,7 +587,6 @@
       </div>
     </div>
     
-    <!-- Promise Band -->
     <div class="promise-band border-y border-border w-full overflow-x-auto">
       <div class="promise-inner flex md:grid md:grid-cols-4 w-max md:w-full gap-3 p-4">
         <div class="promise-item flex items-center gap-3 p-3 md:p-8 border-r border-border min-w-[200px] md:min-w-0"><div class="promise-icon w-8 h-8 md:w-10 md:h-10 border border-gold flex items-center justify-center rounded-full">🚀</div><div><div class="promise-title font-barlow-condensed text-sm md:text-base font-bold">PRIME DISPATCH</div><div class="promise-desc text-[10px] md:text-xs text-text-dim">48-hour order processing</div></div></div>
@@ -551,7 +596,6 @@
       </div>
     </div>
     
-    <!-- Featured -->
     <div class="featured-strip px-4 md:px-12 py-6 md:py-20">
       <div class="section-header flex flex-row justify-between items-center mb-4 md:mb-12">
         <div class="section-title font-barlow-condensed font-extrabold text-lg md:text-3xl uppercase tracking-wide"><span class="inline-block w-4 h-0.5 bg-gold align-middle mr-2"></span>FEATURED GEAR</div>
@@ -560,7 +604,6 @@
       <div class="featured-grid grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6" id="featuredGrid"></div>
     </div>
     
-    <!-- Recent -->
     <div class="recent-section px-4 md:px-12 py-6 md:py-20" id="recentSection" style="display:none;">
       <div class="section-header mb-4 md:mb-12"><div class="section-title font-barlow-condensed font-extrabold text-lg md:text-3xl uppercase tracking-wide"><span class="inline-block w-4 h-0.5 bg-gold align-middle mr-2"></span>RECENTLY ACCESSED</div></div>
       <div class="products-grid grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6" id="recentGrid"></div>
@@ -649,58 +692,29 @@
       <h1 class="font-barlow-condensed text-3xl md:text-5xl text-center mb-4">Track Your Order</h1>
       <p class="text-text-dim text-center mb-8">Enter your Order ID to get real-time status updates</p>
       
-      <!-- Search Order -->
       <div class="bg-bg-card border border-border rounded-xl p-6 shadow-lg mb-8">
         <div class="flex flex-col sm:flex-row gap-3">
-          <input type="text" id="trackingOrderId" placeholder="Enter Order ID (e.g., AUR-1234-ABCD)" 
-                 class="flex-1 border border-border rounded-lg p-3 bg-bg-deep text-white">
-          <button onclick="trackOrder()" class="bg-gold text-black px-6 py-3 rounded-lg font-semibold hover:bg-white transition">
-            Track Order →
-          </button>
+          <input type="text" id="trackingOrderId" placeholder="Enter Order ID (e.g., AUR-1234-ABCD)" class="flex-1 border border-border rounded-lg p-3 bg-bg-deep text-white">
+          <button onclick="trackOrder()" class="bg-gold text-black px-6 py-3 rounded-lg font-semibold hover:bg-white transition">Track Order →</button>
         </div>
       </div>
       
-      <!-- Order Status Display -->
       <div id="trackingResult" style="display: none;">
         <div class="bg-bg-card border border-border rounded-xl p-6 shadow-lg">
           <div class="flex flex-wrap justify-between items-center mb-6 pb-4 border-b border-border">
-            <div>
-              <h2 class="font-barlow-condensed text-2xl">Order Status</h2>
-              <p class="text-text-dim text-sm" id="trackingOrderIdDisplay"></p>
-            </div>
-            <div class="text-right">
-              <div id="trackingStatusBadge" class="px-4 py-2 rounded-full text-sm font-semibold inline-block"></div>
-              <p class="text-text-dim text-xs mt-2" id="trackingDate"></p>
-            </div>
+            <div><h2 class="font-barlow-condensed text-2xl">Order Status</h2><p class="text-text-dim text-sm" id="trackingOrderIdDisplay"></p></div>
+            <div class="text-right"><div id="trackingStatusBadge" class="px-4 py-2 rounded-full text-sm font-semibold inline-block"></div><p class="text-text-dim text-xs mt-2" id="trackingDate"></p></div>
           </div>
           
-          <!-- Status Timeline -->
           <div class="relative mb-8 overflow-x-auto">
             <div class="flex justify-between min-w-[500px] md:min-w-0">
-              <div class="text-center flex-1" id="stepPending">
-                <div class="w-10 h-10 rounded-full bg-gray-600 flex items-center justify-center mx-auto mb-2 text-white">📦</div>
-                <div class="font-semibold text-sm">Order Placed</div>
-                <div class="text-xs text-text-dim" id="stepPendingDate"></div>
-              </div>
-              <div class="text-center flex-1" id="stepWarehouse">
-                <div class="w-10 h-10 rounded-full bg-gray-600 flex items-center justify-center mx-auto mb-2 text-white">🏭</div>
-                <div class="font-semibold text-sm">In Warehouse</div>
-                <div class="text-xs text-text-dim" id="stepWarehouseDate"></div>
-              </div>
-              <div class="text-center flex-1" id="stepShipped">
-                <div class="w-10 h-10 rounded-full bg-gray-600 flex items-center justify-center mx-auto mb-2 text-white">🚚</div>
-                <div class="font-semibold text-sm">Shipped</div>
-                <div class="text-xs text-text-dim" id="stepShippedDate"></div>
-              </div>
-              <div class="text-center flex-1" id="stepDelivered">
-                <div class="w-10 h-10 rounded-full bg-gray-600 flex items-center justify-center mx-auto mb-2 text-white">🏠</div>
-                <div class="font-semibold text-sm">Delivered</div>
-                <div class="text-xs text-text-dim" id="stepDeliveredDate"></div>
-              </div>
+              <div class="text-center flex-1" id="stepPending"><div class="w-10 h-10 rounded-full bg-gray-600 flex items-center justify-center mx-auto mb-2 text-white">📦</div><div class="font-semibold text-sm">Order Placed</div><div class="text-xs text-text-dim" id="stepPendingDate"></div></div>
+              <div class="text-center flex-1" id="stepWarehouse"><div class="w-10 h-10 rounded-full bg-gray-600 flex items-center justify-center mx-auto mb-2 text-white">🏭</div><div class="font-semibold text-sm">In Warehouse</div><div class="text-xs text-text-dim" id="stepWarehouseDate"></div></div>
+              <div class="text-center flex-1" id="stepShipped"><div class="w-10 h-10 rounded-full bg-gray-600 flex items-center justify-center mx-auto mb-2 text-white">🚚</div><div class="font-semibold text-sm">Shipped</div><div class="text-xs text-text-dim" id="stepShippedDate"></div></div>
+              <div class="text-center flex-1" id="stepDelivered"><div class="w-10 h-10 rounded-full bg-gray-600 flex items-center justify-center mx-auto mb-2 text-white">🏠</div><div class="font-semibold text-sm">Delivered</div><div class="text-xs text-text-dim" id="stepDeliveredDate"></div></div>
             </div>
           </div>
           
-          <!-- Order Details -->
           <div class="bg-bg-panel rounded-lg p-4 mb-4">
             <h3 class="font-semibold mb-2 text-gold">Order Details</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
@@ -712,18 +726,12 @@
             </div>
           </div>
           
-          <div>
-            <h3 class="font-semibold mb-2 text-gold">Products Ordered:</h3>
-            <div id="trackingProducts" class="space-y-2"></div>
-          </div>
-          
+          <div><h3 class="font-semibold mb-2 text-gold">Products Ordered:</h3><div id="trackingProducts" class="space-y-2"></div></div>
           <div id="trackingMessage" class="mt-4 p-3 bg-gold/10 rounded-lg text-sm border border-gold/30"></div>
         </div>
       </div>
       
-      <div id="trackingError" class="bg-red-500/10 border border-red-500/30 rounded-xl p-4 text-center text-red-400" style="display: none;">
-        ❌ Order not found. Please check your Order ID and try again.
-      </div>
+      <div id="trackingError" class="bg-red-500/10 border border-red-500/30 rounded-xl p-4 text-center text-red-400" style="display: none;">❌ Order not found. Please check your Order ID and try again.</div>
     </div>
   </main>
 
@@ -750,36 +758,22 @@
     let selectedPaymentMethod = null, currentAuthMode = 'login', loggedInUser = null, directBuyProduct = null;
     let currentProductImages = [], currentImageIndex = 0;
     let isMegaMenuOpen = false;
+    let isSubmitting = false;
 
     // ========== SHOP BUTTON SPLIT FUNCTIONALITY ==========
     function toggleShopMenu(event) {
       event.stopPropagation();
       const shopLi = document.getElementById('shopMenuItem');
       const isOpen = shopLi.classList.contains('show-mega');
-      
-      document.querySelectorAll('.nav-links li').forEach(li => {
-        if (li !== shopLi) {
-          li.classList.remove('show-mega');
-        }
-      });
-      
-      if (!isOpen) {
-        shopLi.classList.add('show-mega');
-        isMegaMenuOpen = true;
-      } else {
-        shopLi.classList.remove('show-mega');
-        isMegaMenuOpen = false;
-      }
+      document.querySelectorAll('.nav-links li').forEach(li => { if (li !== shopLi) li.classList.remove('show-mega'); });
+      if (!isOpen) { shopLi.classList.add('show-mega'); isMegaMenuOpen = true; } 
+      else { shopLi.classList.remove('show-mega'); isMegaMenuOpen = false; }
     }
     
     function setupMegaMenuHover() {
       const shopLi = document.getElementById('shopMenuItem');
       if (!shopLi) return;
-      shopLi.addEventListener('mouseenter', function() {
-        if (window.innerWidth > 768) {
-          this.classList.add('show-mega');
-        }
-      });
+      shopLi.addEventListener('mouseenter', function() { if (window.innerWidth > 768) this.classList.add('show-mega'); });
     }
 
     // Auth Functions
@@ -962,7 +956,6 @@
       mega.innerHTML = html;
     }
     
-    // ========== FIXED: Category Grid with WORKING HEADPHONES IMAGE ==========
     function updateCategoryGrid(categories) {
       const grid = document.getElementById('categoryGrid');
       if (!grid) return;
@@ -1025,7 +1018,6 @@
     function updateCartUI() { document.getElementById('cartCount').innerText = cart.length; document.getElementById('cartItemsList').innerHTML = cart.map((p, i) => `<div class="cart-item flex justify-between items-center mb-4 pb-3 border-b border-border"><div><h4 class="font-barlow-condensed text-base">${p.name}</h4><p class="text-gold font-semibold">₨${p.price}</p></div><span class="text-red text-xs font-bold cursor-pointer" onclick="removeFromCart(${i})">REMOVE</span></div>`).join(''); document.getElementById('cartTotalPrice').innerText = `₨${cart.reduce((s, p) => s + p.price, 0)}`; }
     function removeFromCart(i) { cart.splice(i, 1); updateCartUI(); }
     
-    // Updated payment methods with proper tracking ID
     function buyNowDirect(id) {
       const p = products.find(x => x._id === id || x.id === id);
       if (p) {
@@ -1038,8 +1030,8 @@
       }
     }
     function showPaymentModal() {
-      if (!cart.length) { alert("No items in cart"); return; }
-      const total = cart.reduce((s, p) => s + p.price, 0);
+      if (!cart.length && !directBuyProduct) { alert("No items in cart"); return; }
+      const total = directBuyProduct ? directBuyProduct.price : cart.reduce((s, p) => s + p.price, 0);
       document.getElementById('paymentTotal').innerText = `₨${total}`;
       document.getElementById('paymentModal').style.display = 'flex';
       selectedPaymentMethod = null;
@@ -1060,158 +1052,155 @@
       document.getElementById(`${method}Payment`).classList.remove('hidden');
     }
 
-    // UPDATED processPayment function with proper tracking ID
-    function processPayment() {
-      if (!selectedPaymentMethod) { alert('Select payment method'); return; }
-      let isValid = true, transactionId = null;
-      switch (selectedPaymentMethod) {
-        case 'card': transactionId = 'CARD-' + Math.random().toString(36).substring(4, 9).toUpperCase(); break;
-        case 'jazzcash': transactionId = document.getElementById('jazzcashTransactionId').value; if (!transactionId) { alert('Enter JazzCash transaction ID'); isValid = false; } break;
-        case 'easypaisa': transactionId = document.getElementById('easypaisaTransactionId').value; if (!transactionId) { alert('Enter EasyPaisa transaction ID'); isValid = false; } break;
-        case 'bank': transactionId = document.getElementById('bankReference').value; if (!transactionId) { alert('Enter bank reference number'); isValid = false; } break;
-        case 'cod': const addr = document.getElementById('codAddress').value; if (!addr) { alert('Enter delivery address'); isValid = false; } else transactionId = 'COD-' + Math.random().toString(36).substring(4, 9).toUpperCase(); break;
-      }
-      if (!isValid) return;
-      let orderItems = directBuyProduct ? [directBuyProduct] : [...cart];
-      if (!orderItems.length) { alert('No items'); return; }
-      const name = prompt("Enter your name:") || "Guest";
-      const email = prompt("Enter your email:") || "";
-      const phone = prompt("Enter your phone number:") || "";
-      const address = prompt("Enter your complete delivery address:") || "Demo Address";
+    // placeOrder function - instant order placement without prompts (Credit Card removed)
+    function placeOrder() {
+      if (isSubmitting) return;
       
-      // Generate a custom tracking ID (like AUR-5714-31202)
-      const customTrackingId = "AUR-" + Math.floor(Math.random() * 9000 + 1000) + "-" + Math.random().toString(36).substring(4, 9).toUpperCase();
+      // Validate customer details
+      const name = document.getElementById('orderName')?.value.trim();
+      const email = document.getElementById('orderEmail')?.value.trim();
+      const phone = document.getElementById('orderPhone')?.value.trim();
+      let address = document.getElementById('orderAddress')?.value.trim();
+      
+      if (!name) { alert('Please enter your full name'); return; }
+      if (!email || !email.includes('@')) { alert('Please enter a valid email address'); return; }
+      if (!phone || phone.length < 10) { alert('Please enter a valid phone number'); return; }
+      if (!address) { alert('Please enter your delivery address'); return; }
+      
+      if (!selectedPaymentMethod) { alert('Please select a payment method'); return; }
+      
+      // Validate payment method specific fields (Card removed)
+      let isValid = true;
+      let transactionId = null;
+      let finalAddress = address;
+      let paymentStatus = "paid";
+      
+      switch (selectedPaymentMethod) {
+        case 'jazzcash':
+          transactionId = document.getElementById('jazzcashTransactionId')?.value.trim();
+          if (!transactionId) { alert('Please enter JazzCash transaction ID'); isValid = false; }
+          break;
+        case 'easypaisa':
+          transactionId = document.getElementById('easypaisaTransactionId')?.value.trim();
+          if (!transactionId) { alert('Please enter EasyPaisa transaction ID'); isValid = false; }
+          break;
+        case 'bank':
+          transactionId = document.getElementById('bankReference')?.value.trim();
+          if (!transactionId) { alert('Please enter bank reference number'); isValid = false; }
+          break;
+        case 'cod':
+          const codAddr = document.getElementById('codAddress')?.value.trim();
+          if (!codAddr) { alert('Please enter your complete delivery address for COD'); isValid = false; }
+          else {
+            finalAddress = codAddr + (document.getElementById('codLandmark')?.value.trim() ? ` (Landmark: ${document.getElementById('codLandmark').value.trim()})` : '');
+            transactionId = 'COD-' + Math.random().toString(36).substring(4,9).toUpperCase();
+            paymentStatus = "pending_cod";
+          }
+          break;
+      }
+      if (!isValid || !transactionId) return;
+      
+      let orderItems = directBuyProduct ? [directBuyProduct] : [...cart];
+      if (!orderItems.length) { alert('No items to order'); return; }
+      
+      const customTrackingId = "AUR-" + Math.floor(Math.random() * 9000 + 1000) + "-" + Math.random().toString(36).substring(4,9).toUpperCase();
       
       const orderData = { 
-        name, 
-        email, 
-        phone, 
-        address: address, 
-        total: orderItems.reduce((s, p) => s + p.price, 0), 
-        items: orderItems.map(p => ({ 
-          productId: p._id || p.id, 
-          name: p.name, 
-          price: p.price, 
-          quantity: 1 
-        })), 
-        status: "pending",
-        paymentMethod: selectedPaymentMethod, 
-        transactionId: transactionId, 
+        name, email, phone,
+        address: finalAddress,
+        total: orderItems.reduce((s, p) => s + p.price, 0),
+        items: orderItems.map(p => ({ productId: p._id || p.id, name: p.name, price: p.price, quantity: 1 })),
+        status: paymentStatus === "pending_cod" ? "pending_cod" : "pending",
+        paymentMethod: selectedPaymentMethod,
+        transactionId: transactionId,
         trackingId: customTrackingId
       };
       
+      // Show loading overlay and disable button
+      isSubmitting = true;
+      const loadingOverlay = document.getElementById('loadingOverlay');
+      const placeBtn = document.getElementById('placeOrderBtn');
+      loadingOverlay.style.display = 'flex';
+      if (placeBtn) placeBtn.disabled = true;
+      
       fetch(`${API_BASE}/checkout`, { 
-        method: 'POST', 
-        headers: { 'Content-Type': 'application/json' }, 
-        body: JSON.stringify(orderData) 
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(orderData)
       })
       .then(res => res.json())
-      .then(data => { 
-        // Display the tracking ID to customer
-        const displayOrderId = data.trackingId || customTrackingId || data.orderId;
+      .then(data => {
+        loadingOverlay.style.display = 'none';
+        isSubmitting = false;
+        if (placeBtn) placeBtn.disabled = false;
+        
+        const displayOrderId = data.trackingId || customTrackingId;
         document.getElementById('generatedTrackId').innerText = displayOrderId;
-        alert(`✅ ORDER CONFIRMED!\n\nOrder ID: ${displayOrderId}\n\nUse this ID to track your order.\nA confirmation email has been sent.`); 
-        cart = []; 
-        directBuyProduct = null; 
-        updateCartUI(); 
-        closePaymentModal(); 
-        toggleCart(); 
-        navigateTo('success'); 
+        
+        if (selectedPaymentMethod === 'cod') {
+          alert(`✅ ORDER CONFIRMED - Cash on Delivery!\n\nOrder ID: ${displayOrderId}\nTransaction ID: ${transactionId}\n\n📦 Delivery within 3-5 business days.\n💰 Keep exact cash ready.\n\nConfirmation sent to ${phone}`);
+        } else {
+          alert(`✅ ORDER CONFIRMED!\n\nOrder ID: ${displayOrderId}\nTransaction ID: ${transactionId}\n\nUse this ID to track your order.\nConfirmation sent to ${email}`);
+        }
+        
+        cart = [];
+        directBuyProduct = null;
+        updateCartUI();
+        closePaymentModal();
+        toggleCart();
+        navigateTo('success');
       })
-      .catch(err => { 
-        alert('Order placed but there was an issue. Please contact support with your transaction ID.'); 
+      .catch(err => {
+        loadingOverlay.style.display = 'none';
+        isSubmitting = false;
+        if (placeBtn) placeBtn.disabled = false;
         console.error(err);
+        alert('⚠️ Order could not be processed. Please check your connection and try again.\nYour payment has not been charged.');
       });
     }
 
     async function handleContactForm(e) { e.preventDefault(); const data = { name: document.getElementById('contactName').value, email: document.getElementById('contactEmail').value, subject: document.getElementById('contactSubject').value, message: document.getElementById('contactMessage').value }; try { const res = await fetch(`${API_BASE}/contact`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) }); if (res.ok) { alert('Message sent!'); document.getElementById('contactForm').reset(); } else alert('Failed'); } catch (err) { alert('Error sending message'); } }
     function toggleCompare(id) { const p = products.find(x => x._id === id || x.id === id); if (!p) return; const idx = compareList.findIndex(x => x._id === id || x.id === id); if (idx > -1) compareList.splice(idx, 1); else if (compareList.length < 3) compareList.push(p); const drawer = document.getElementById('compareDrawer'); document.getElementById('compareContainer').innerHTML = compareList.map(item => `<div class="bg-bg-card p-2 border border-border rounded-lg text-xs flex items-center gap-2"><img src="${getProductImage(item)}" class="w-5 h-5 object-cover rounded"> ${item.name}</div>`).join(''); compareList.length ? drawer.classList.add('open') : drawer.classList.remove('open'); }
 
-    // ========== ORDER TRACKING FUNCTIONS ==========
     async function trackOrder() {
       const orderId = document.getElementById('trackingOrderId').value.trim();
-      if (!orderId) {
-        alert('Please enter your Order ID');
-        return;
-      }
-      
+      if (!orderId) { alert('Please enter your Order ID'); return; }
       try {
         const res = await fetch(`${API_BASE}/orders/track/${orderId}`);
         const order = await res.json();
-        
         if (res.ok && order) {
-          displayOrderTracking(order);
+          document.getElementById('trackingError').style.display = 'none';
+          document.getElementById('trackingResult').style.display = 'block';
+          document.getElementById('trackingOrderIdDisplay').innerHTML = `<strong>ID:</strong> ${order.trackingId || order._id}`;
+          document.getElementById('trackingCustomerName').innerText = order.name || 'Guest';
+          document.getElementById('trackingCustomerPhone').innerText = order.phone || '—';
+          document.getElementById('trackingCustomerAddress').innerText = order.address || '—';
+          document.getElementById('trackingTotal').innerText = `₨${order.total || 0}`;
+          document.getElementById('trackingPaymentMethod').innerText = order.paymentMethod || '—';
+          document.getElementById('trackingDate').innerHTML = `Placed: ${new Date(order.createdAt || Date.now()).toLocaleDateString()}`;
+          const productsHtml = (order.items || []).map(item => `<div class="flex justify-between items-center p-2 border-b border-border"><div><span class="font-medium">${item.name}</span><span class="text-text-dim text-sm"> x ${item.quantity}</span></div><span class="font-semibold">₨${(item.price * item.quantity)}</span></div>`).join('');
+          document.getElementById('trackingProducts').innerHTML = productsHtml || '<p class="text-text-dim">No products found</p>';
+          const statusMap = { 'pending': { text: 'Order Received', color: 'bg-yellow-600 text-white' }, 'warehouse': { text: 'In Warehouse', color: 'bg-blue-600 text-white' }, 'shipped': { text: 'Shipped', color: 'bg-purple-600 text-white' }, 'delivered': { text: 'Delivered', color: 'bg-green-600 text-white' } };
+          const status = statusMap[order.status] || statusMap['pending'];
+          document.getElementById('trackingStatusBadge').innerHTML = status.text;
+          document.getElementById('trackingStatusBadge').className = `px-4 py-2 rounded-full text-sm font-semibold inline-block ${status.color}`;
+          const steps = ['pending', 'warehouse', 'shipped', 'delivered'];
+          const currentStepIndex = steps.indexOf(order.status);
+          steps.forEach((step, index) => {
+            const stepId = `step${step.charAt(0).toUpperCase() + step.slice(1)}`;
+            const stepElement = document.getElementById(stepId);
+            if (stepElement) {
+              const circle = stepElement.querySelector('.w-10');
+              if (index <= currentStepIndex && circle) { circle.classList.remove('bg-gray-600'); circle.classList.add('bg-green-500'); }
+            }
+          });
+          const messages = { 'pending': '✅ Your order has been confirmed and is being processed.', 'warehouse': '🏭 Your order is currently in the warehouse. Our team is packing your items carefully.', 'shipped': '🚚 Your order has left the warehouse and is on the way to your address!', 'delivered': '🏠 Your order has been delivered. We hope you enjoy your purchase!' };
+          document.getElementById('trackingMessage').innerHTML = messages[order.status] || messages['pending'];
         } else {
           document.getElementById('trackingResult').style.display = 'none';
           document.getElementById('trackingError').style.display = 'block';
         }
-      } catch (error) {
-        alert('Error tracking order. Please try again.');
-      }
-    }
-
-    function displayOrderTracking(order) {
-      document.getElementById('trackingError').style.display = 'none';
-      document.getElementById('trackingResult').style.display = 'block';
-      
-      document.getElementById('trackingOrderIdDisplay').innerHTML = `<strong>ID:</strong> ${order.trackingId || order._id}`;
-      document.getElementById('trackingCustomerName').innerText = order.name || 'Guest';
-      document.getElementById('trackingCustomerPhone').innerText = order.phone || '—';
-      document.getElementById('trackingCustomerAddress').innerText = order.address || '—';
-      document.getElementById('trackingTotal').innerText = `₨${order.total || 0}`;
-      document.getElementById('trackingPaymentMethod').innerText = order.paymentMethod || '—';
-      document.getElementById('trackingDate').innerHTML = `Placed: ${new Date(order.createdAt || Date.now()).toLocaleDateString()}`;
-      
-      const productsHtml = (order.items || []).map(item => `
-        <div class="flex justify-between items-center p-2 border-b border-border">
-          <div>
-            <span class="font-medium">${item.name}</span>
-            <span class="text-text-dim text-sm"> x ${item.quantity}</span>
-          </div>
-          <span class="font-semibold">₨${(item.price * item.quantity)}</span>
-        </div>
-      `).join('');
-      document.getElementById('trackingProducts').innerHTML = productsHtml || '<p class="text-text-dim">No products found</p>';
-      
-      const statusMap = {
-        'pending': { text: 'Order Received', color: 'bg-yellow-600 text-white' },
-        'warehouse': { text: 'In Warehouse', color: 'bg-blue-600 text-white' },
-        'shipped': { text: 'Shipped', color: 'bg-purple-600 text-white' },
-        'delivered': { text: 'Delivered', color: 'bg-green-600 text-white' }
-      };
-      const status = statusMap[order.status] || statusMap['pending'];
-      document.getElementById('trackingStatusBadge').innerHTML = status.text;
-      document.getElementById('trackingStatusBadge').className = `px-4 py-2 rounded-full text-sm font-semibold inline-block ${status.color}`;
-      
-      const steps = ['pending', 'warehouse', 'shipped', 'delivered'];
-      const currentStepIndex = steps.indexOf(order.status);
-      
-      steps.forEach((step, index) => {
-        const stepId = `step${step.charAt(0).toUpperCase() + step.slice(1)}`;
-        const stepElement = document.getElementById(stepId);
-        const dateElement = document.getElementById(`${stepId}Date`);
-        
-        if (stepElement) {
-          const circle = stepElement.querySelector('.w-10');
-          if (index <= currentStepIndex) {
-            circle.classList.remove('bg-gray-600');
-            circle.classList.add('bg-green-500');
-          }
-        }
-        
-        const historyEntry = order.statusHistory?.find(h => h.status === step);
-        if (dateElement && historyEntry) {
-          dateElement.innerText = new Date(historyEntry.timestamp).toLocaleDateString();
-        }
-      });
-      
-      const messages = {
-        'pending': '✅ Your order has been confirmed and is being processed.',
-        'warehouse': '🏭 Your order is currently in the warehouse. Our team is packing your items carefully.',
-        'shipped': '🚚 Your order has left the warehouse and is on the way to your address!',
-        'delivered': '🏠 Your order has been delivered. We hope you enjoy your purchase!'
-      };
-      document.getElementById('trackingMessage').innerHTML = messages[order.status] || messages['pending'];
+      } catch (error) { alert('Error tracking order. Please try again.'); }
     }
 
     document.getElementById('productModal').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
