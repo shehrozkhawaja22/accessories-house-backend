@@ -391,6 +391,18 @@
     </div>
   </div>
 
+  <!-- ADMIN LOGIN MODAL (Separate for admin only) -->
+  <div class="auth-modal-overlay" id="adminLoginModal" style="z-index: 6000;">
+    <div class="bg-bg-card border border-gold rounded-2xl max-w-md w-full p-6 relative max-h-[90vh] overflow-y-auto">
+      <span class="absolute top-4 right-5 text-3xl cursor-pointer text-text-dim hover:text-white" onclick="closeAdminLoginModal()">&times;</span>
+      <h2 class="font-barlow-condensed text-3xl text-gold text-center mb-6">ADMIN LOGIN</h2>
+      <input type="text" id="adminUsername" placeholder="Admin Username" class="w-full bg-bg-deep border border-border rounded-lg p-3 mb-4 text-white">
+      <input type="password" id="adminPassword" placeholder="Admin Password" class="w-full bg-bg-deep border border-border rounded-lg p-3 mb-4 text-white">
+      <button onclick="authenticateAdmin()" class="w-full bg-gold text-black font-barlow-condensed font-bold py-3 rounded-lg mb-4 hover:bg-white transition">LOGIN AS ADMIN</button>
+      <div class="text-center text-text-dim text-xs">Only authorized administrators can access this portal</div>
+    </div>
+  </div>
+
   <!-- CART SIDEBAR -->
   <div id="cartSidebar">
     <div class="flex justify-between items-center pb-5 border-b border-border mb-6">
@@ -406,7 +418,7 @@
     </div>
   </div>
 
-  <!-- UPDATED PAYMENT MODAL - Credit/Debit Card REMOVED -->
+  <!-- PAYMENT MODAL - Credit/Debit Card REMOVED -->
   <div class="payment-modal-overlay" id="paymentModal">
     <div class="bg-bg-card border border-border rounded-2xl max-w-md w-full p-5 relative max-h-[90vh] overflow-y-auto">
       <span class="absolute top-4 right-5 text-3xl cursor-pointer text-text-dim" onclick="closePaymentModal()">&times;</span>
@@ -424,14 +436,12 @@
       
       <h3 class="text-gold text-sm font-semibold mb-3">PAYMENT METHOD</h3>
       <div class="grid gap-3 mb-6">
-        <!-- Credit/Debit Card option REMOVED -->
         <div class="payment-method-btn bg-bg-panel border-2 border-border p-3 text-center rounded-xl cursor-pointer hover:border-gold transition" onclick="selectPaymentMethod('jazzcash')">📱 JazzCash</div>
         <div class="payment-method-btn bg-bg-panel border-2 border-border p-3 text-center rounded-xl cursor-pointer hover:border-gold transition" onclick="selectPaymentMethod('easypaisa')">📱 EasyPaisa</div>
         <div class="payment-method-btn bg-bg-panel border-2 border-border p-3 text-center rounded-xl cursor-pointer hover:border-gold transition" onclick="selectPaymentMethod('bank')">🏦 Bank Transfer</div>
         <div class="payment-method-btn bg-bg-panel border-2 border-border p-3 text-center rounded-xl cursor-pointer hover:border-gold transition" onclick="selectPaymentMethod('cod')">💰 Cash on Delivery</div>
       </div>
       
-      <!-- JazzCash Payment Details -->
       <div id="jazzcashPayment" class="payment-details hidden">
         <div class="bg-bg-deep p-4 rounded-lg text-center">
           <p class="mb-2">📱 JazzCash: <strong>0300 1234567</strong></p>
@@ -440,7 +450,6 @@
         </div>
       </div>
       
-      <!-- EasyPaisa Payment Details -->
       <div id="easypaisaPayment" class="payment-details hidden">
         <div class="bg-bg-deep p-4 rounded-lg text-center">
           <p class="mb-2">📱 EasyPaisa: <strong>0345 7654321</strong></p>
@@ -449,7 +458,6 @@
         </div>
       </div>
       
-      <!-- Bank Transfer Payment Details -->
       <div id="bankPayment" class="payment-details hidden">
         <div class="bg-bg-deep p-4 rounded-lg">
           <p><strong>Bank:</strong> Standard Chartered</p>
@@ -460,7 +468,6 @@
         </div>
       </div>
       
-      <!-- Cash on Delivery Payment Details -->
       <div id="codPayment" class="payment-details hidden">
         <div class="bg-bg-deep p-4 rounded-lg">
           <p class="text-center mb-3">🚚 <strong>Cash on Delivery</strong></p>
@@ -470,7 +477,6 @@
         </div>
       </div>
       
-      <!-- PLACE ORDER BUTTON -->
       <button class="w-full bg-gold text-black font-barlow-condensed font-bold py-3 rounded-lg mt-6 hover:bg-white transition" id="placeOrderBtn" onclick="placeOrder()">PLACE ORDER</button>
     </div>
   </div>
@@ -536,6 +542,8 @@
           <li class="cursor-pointer font-barlow-condensed font-semibold text-xs md:text-sm whitespace-nowrap" onclick="navigateTo('contact')">CONTACT</li>
           <li class="cursor-pointer font-barlow-condensed font-semibold text-xs md:text-sm whitespace-nowrap" onclick="navigateTo('tracking')">TRACK ORDER</li>
           <li class="cursor-pointer font-barlow-condensed font-semibold text-xs md:text-sm whitespace-nowrap text-gold" onclick="toggleCart()">CART [<span id="cartCount">0</span>]</li>
+          <!-- ADMIN PORTAL LINK - Only visible when admin is logged in -->
+          <li id="adminPortalNav" class="cursor-pointer font-barlow-condensed font-semibold text-xs md:text-sm whitespace-nowrap" style="display: none;" onclick="navigateTo('admin')">ADMIN</li>
         </ul>
       </nav>
       
@@ -735,6 +743,62 @@
     </div>
   </main>
 
+  <!-- ADMIN PORTAL PAGE (Only accessible by admin) -->
+  <main id="admin" class="page">
+    <div class="container max-w-6xl mx-auto px-4 py-10">
+      <div class="flex justify-between items-center mb-8">
+        <h1 class="font-barlow-condensed text-3xl md:text-5xl text-gold">Admin Portal</h1>
+        <button onclick="logoutFromAdmin()" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition">Logout from Admin</button>
+      </div>
+      
+      <!-- Stats Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+        <div class="bg-bg-card border border-border rounded-xl p-4">
+          <div class="text-text-dim text-sm">Total Orders</div>
+          <div class="text-3xl font-bold text-gold" id="adminTotalOrders">0</div>
+        </div>
+        <div class="bg-bg-card border border-border rounded-xl p-4">
+          <div class="text-text-dim text-sm">Pending Orders</div>
+          <div class="text-3xl font-bold text-yellow-500" id="adminPendingOrders">0</div>
+        </div>
+        <div class="bg-bg-card border border-border rounded-xl p-4">
+          <div class="text-text-dim text-sm">Shipped Orders</div>
+          <div class="text-3xl font-bold text-blue-500" id="adminShippedOrders">0</div>
+        </div>
+        <div class="bg-bg-card border border-border rounded-xl p-4">
+          <div class="text-text-dim text-sm">Delivered Orders</div>
+          <div class="text-3xl font-bold text-green-500" id="adminDeliveredOrders">0</div>
+        </div>
+      </div>
+      
+      <!-- Orders Table -->
+      <div class="bg-bg-card border border-border rounded-xl overflow-hidden">
+        <div class="p-4 border-b border-border">
+          <h2 class="font-barlow-condensed text-xl text-gold">All Orders</h2>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full">
+            <thead class="bg-bg-panel">
+              <tr>
+                <th class="px-4 py-3 text-left text-xs font-semibold text-text-dim">Order ID</th>
+                <th class="px-4 py-3 text-left text-xs font-semibold text-text-dim">Customer</th>
+                <th class="px-4 py-3 text-left text-xs font-semibold text-text-dim">Phone</th>
+                <th class="px-4 py-3 text-left text-xs font-semibold text-text-dim">Amount</th>
+                <th class="px-4 py-3 text-left text-xs font-semibold text-text-dim">Payment</th>
+                <th class="px-4 py-3 text-left text-xs font-semibold text-text-dim">Status</th>
+                <th class="px-4 py-3 text-left text-xs font-semibold text-text-dim">Date</th>
+                <th class="px-4 py-3 text-left text-xs font-semibold text-text-dim">Action</th>
+              </tr>
+            </thead>
+            <tbody id="adminOrdersTable">
+              <tr><td colspan="8" class="text-center py-8 text-text-dim">Loading orders...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+
   <!-- FOOTER -->
   <footer class="bg-[#1A1A1B] border-t border-border mt-0 py-8 md:py-16">
     <div class="container px-4 md:px-12">
@@ -759,6 +823,135 @@
     let currentProductImages = [], currentImageIndex = 0;
     let isMegaMenuOpen = false;
     let isSubmitting = false;
+    let isAdminLoggedIn = false;
+
+    // ========== ADMIN AUTHENTICATION ==========
+    function openAdminLoginModal() {
+      document.getElementById('adminLoginModal').style.display = 'flex';
+      document.getElementById('adminUsername').value = '';
+      document.getElementById('adminPassword').value = '';
+    }
+    
+    function closeAdminLoginModal() {
+      document.getElementById('adminLoginModal').style.display = 'none';
+    }
+    
+    function authenticateAdmin() {
+      const username = document.getElementById('adminUsername').value.trim();
+      const password = document.getElementById('adminPassword').value;
+      
+      if (username === 'admin' && password === 'admin123') {
+        isAdminLoggedIn = true;
+        sessionStorage.setItem('adminLoggedIn', 'true');
+        closeAdminLoginModal();
+        showAdminPortal();
+        alert('Welcome Admin! You now have access to the Admin Portal.');
+      } else {
+        alert('Invalid admin credentials! Only authorized administrators can access the portal.');
+      }
+    }
+    
+    function showAdminPortal() {
+      // Show admin nav link
+      const adminNav = document.getElementById('adminPortalNav');
+      if (adminNav) adminNav.style.display = 'flex';
+      
+      // Load admin data
+      loadAdminOrders();
+      
+      // Navigate to admin page
+      navigateTo('admin');
+    }
+    
+    function logoutFromAdmin() {
+      isAdminLoggedIn = false;
+      sessionStorage.removeItem('adminLoggedIn');
+      const adminNav = document.getElementById('adminPortalNav');
+      if (adminNav) adminNav.style.display = 'none';
+      alert('Logged out from Admin Portal');
+      navigateTo('home');
+    }
+    
+    function checkAdminSession() {
+      const stored = sessionStorage.getItem('adminLoggedIn');
+      if (stored === 'true') {
+        isAdminLoggedIn = true;
+        const adminNav = document.getElementById('adminPortalNav');
+        if (adminNav) adminNav.style.display = 'flex';
+      }
+    }
+    
+    async function loadAdminOrders() {
+      try {
+        const res = await fetch(`${API_BASE}/orders`);
+        const orders = await res.json();
+        
+        // Calculate stats
+        const total = orders.length;
+        const pending = orders.filter(o => o.status === 'pending' || o.status === 'pending_cod').length;
+        const shipped = orders.filter(o => o.status === 'warehouse' || o.status === 'shipped').length;
+        const delivered = orders.filter(o => o.status === 'delivered').length;
+        
+        document.getElementById('adminTotalOrders').innerText = total;
+        document.getElementById('adminPendingOrders').innerText = pending;
+        document.getElementById('adminShippedOrders').innerText = shipped;
+        document.getElementById('adminDeliveredOrders').innerText = delivered;
+        
+        // Render orders table
+        const tableBody = document.getElementById('adminOrdersTable');
+        if (orders.length === 0) {
+          tableBody.innerHTML = '<tr><td colspan="8" class="text-center py-8 text-text-dim">No orders found</td></tr>';
+          return;
+        }
+        
+        tableBody.innerHTML = orders.map(order => `
+          <tr class="border-b border-border hover:bg-bg-panel/50 transition">
+            <td class="px-4 py-3 text-sm font-mono">${order.trackingId || order._id?.slice(-8) || 'N/A'}</td>
+            <td class="px-4 py-3 text-sm">${order.name || 'Guest'}</td>
+            <td class="px-4 py-3 text-sm">${order.phone || '—'}</td>
+            <td class="px-4 py-3 text-sm font-semibold text-gold">₨${order.total || 0}</td>
+            <td class="px-4 py-3 text-sm capitalize">${order.paymentMethod || '—'}</td>
+            <td class="px-4 py-3">
+              <select onchange="updateOrderStatus('${order._id}', this.value)" class="bg-bg-deep border border-border rounded-lg px-2 py-1 text-xs">
+                <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>🟡 Pending</option>
+                <option value="warehouse" ${order.status === 'warehouse' ? 'selected' : ''}>🔵 In Warehouse</option>
+                <option value="shipped" ${order.status === 'shipped' ? 'selected' : ''}>🟣 Shipped</option>
+                <option value="delivered" ${order.status === 'delivered' ? 'selected' : ''}>🟢 Delivered</option>
+              </select>
+            </td>
+            <td class="px-4 py-3 text-xs text-text-dim">${new Date(order.createdAt || Date.now()).toLocaleDateString()}</td>
+            <td class="px-4 py-3">
+              <button onclick="viewOrderDetails('${order._id}')" class="text-gold hover:text-white transition text-xs">View</button>
+            </td>
+          </tr>
+        `).join('');
+      } catch (error) {
+        console.error('Error loading orders:', error);
+        document.getElementById('adminOrdersTable').innerHTML = '<tr><td colspan="8" class="text-center py-8 text-red-400">Error loading orders</td></tr>';
+      }
+    }
+    
+    async function updateOrderStatus(orderId, newStatus) {
+      try {
+        const res = await fetch(`${API_BASE}/orders/${orderId}/status`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status: newStatus })
+        });
+        if (res.ok) {
+          alert(`Order status updated to ${newStatus}`);
+          loadAdminOrders(); // Refresh the table
+        } else {
+          alert('Failed to update status');
+        }
+      } catch (error) {
+        alert('Error updating status');
+      }
+    }
+    
+    function viewOrderDetails(orderId) {
+      alert(`Order details feature coming soon. Order ID: ${orderId}`);
+    }
 
     // ========== SHOP BUTTON SPLIT FUNCTIONALITY ==========
     function toggleShopMenu(event) {
@@ -776,7 +969,7 @@
       shopLi.addEventListener('mouseenter', function() { if (window.innerWidth > 768) this.classList.add('show-mega'); });
     }
 
-    // Auth Functions
+    // Auth Functions (Regular user - no admin access)
     function openAuthModal(mode) {
       currentAuthMode = mode;
       const modal = document.getElementById('authModal');
@@ -836,7 +1029,12 @@
         } catch (err) { alert('Server error'); }
       }
     }
-    function logout() { loggedInUser = null; localStorage.removeItem('loggedInUser'); updateAuthUI(); alert('Logged out'); }
+    function logout() { 
+      loggedInUser = null; 
+      localStorage.removeItem('loggedInUser'); 
+      updateAuthUI(); 
+      alert('Logged out successfully');
+    }
     function updateAuthUI() {
       const authBtns = document.getElementById('authButtonsContainer');
       const userGreeting = document.getElementById('userGreeting');
@@ -854,7 +1052,7 @@
     // Navigation
     function updateActiveMenuItem(pageId) {
       document.querySelectorAll('.nav-links li').forEach(li => li.classList.remove('active'));
-      const map = { home: 'HOME', shop: 'SHOP', about: 'ABOUT', contact: 'CONTACT', tracking: 'TRACK ORDER' };
+      const map = { home: 'HOME', shop: 'SHOP', about: 'ABOUT', contact: 'CONTACT', tracking: 'TRACK ORDER', admin: 'ADMIN' };
       const target = map[pageId];
       if (target) {
         document.querySelectorAll('.nav-links li').forEach(li => {
@@ -863,6 +1061,12 @@
       }
     }
     function navigateTo(pageId, addToHistory = true) {
+      // Check if trying to access admin page without admin login
+      if (pageId === 'admin' && !isAdminLoggedIn) {
+        openAdminLoginModal();
+        return;
+      }
+      
       const shopLi = document.getElementById('shopMenuItem');
       if (shopLi) shopLi.classList.remove('show-mega');
       document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -1052,11 +1256,10 @@
       document.getElementById(`${method}Payment`).classList.remove('hidden');
     }
 
-    // placeOrder function - instant order placement without prompts (Credit Card removed)
+    // placeOrder function
     function placeOrder() {
       if (isSubmitting) return;
       
-      // Validate customer details
       const name = document.getElementById('orderName')?.value.trim();
       const email = document.getElementById('orderEmail')?.value.trim();
       const phone = document.getElementById('orderPhone')?.value.trim();
@@ -1069,7 +1272,6 @@
       
       if (!selectedPaymentMethod) { alert('Please select a payment method'); return; }
       
-      // Validate payment method specific fields (Card removed)
       let isValid = true;
       let transactionId = null;
       let finalAddress = address;
@@ -1116,7 +1318,6 @@
         trackingId: customTrackingId
       };
       
-      // Show loading overlay and disable button
       isSubmitting = true;
       const loadingOverlay = document.getElementById('loadingOverlay');
       const placeBtn = document.getElementById('placeOrderBtn');
@@ -1149,6 +1350,11 @@
         closePaymentModal();
         toggleCart();
         navigateTo('success');
+        
+        // Refresh admin orders if admin is logged in
+        if (isAdminLoggedIn) {
+          loadAdminOrders();
+        }
       })
       .catch(err => {
         loadingOverlay.style.display = 'none';
@@ -1206,6 +1412,7 @@
     document.getElementById('productModal').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
     document.addEventListener('DOMContentLoaded', async () => { 
       checkStoredUser(); 
+      checkAdminSession();
       initializePageFromUrl(); 
       await loadProducts(); 
       await loadCategories();
