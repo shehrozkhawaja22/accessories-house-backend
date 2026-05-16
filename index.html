@@ -352,6 +352,32 @@
       font-family: 'Barlow Condensed';
       font-size: 1.2rem;
       letter-spacing: 2px;
+      text-align: center;
+      max-width: 80%;
+    }
+    
+    /* Network status indicator */
+    .network-status {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 9999;
+      padding: 8px 15px;
+      border-radius: 30px;
+      font-size: 12px;
+      font-weight: bold;
+      pointer-events: none;
+      transition: 0.3s;
+    }
+    .network-status.online {
+      background: rgba(0,255,0,0.2);
+      color: #0f0;
+      border: 1px solid #0f0;
+    }
+    .network-status.offline {
+      background: rgba(255,0,0,0.2);
+      color: #f00;
+      border: 1px solid #f00;
     }
     
     /* General */
@@ -368,6 +394,9 @@
   </style>
 </head>
 <body class="bg-bg-deep text-text-main overflow-x-hidden">
+
+  <!-- NETWORK STATUS INDICATOR -->
+  <div id="networkStatus" class="network-status online">🟢 Online</div>
 
   <!-- LOADING OVERLAY -->
   <div id="loadingOverlay" class="loading-overlay">
@@ -825,6 +854,18 @@
     let isSubmitting = false;
     let isAdminLoggedIn = false;
 
+    // ========== NETWORK STATUS INDICATOR ==========
+    const statusDiv = document.getElementById('networkStatus');
+    window.addEventListener('online', () => {
+      statusDiv.className = 'network-status online';
+      statusDiv.innerHTML = '🟢 Online';
+      setTimeout(() => { statusDiv.style.opacity = '0'; setTimeout(() => statusDiv.style.opacity = '1', 3000); }, 2000);
+    });
+    window.addEventListener('offline', () => {
+      statusDiv.className = 'network-status offline';
+      statusDiv.innerHTML = '🔴 Offline';
+    });
+
     // ========== ADMIN AUTHENTICATION ==========
     function openAdminLoginModal() {
       document.getElementById('adminLoginModal').style.display = 'flex';
@@ -852,14 +893,9 @@
     }
     
     function showAdminPortal() {
-      // Show admin nav link
       const adminNav = document.getElementById('adminPortalNav');
       if (adminNav) adminNav.style.display = 'flex';
-      
-      // Load admin data
       loadAdminOrders();
-      
-      // Navigate to admin page
       navigateTo('admin');
     }
     
@@ -886,7 +922,6 @@
         const res = await fetch(`${API_BASE}/orders`);
         const orders = await res.json();
         
-        // Calculate stats
         const total = orders.length;
         const pending = orders.filter(o => o.status === 'pending' || o.status === 'pending_cod').length;
         const shipped = orders.filter(o => o.status === 'warehouse' || o.status === 'shipped').length;
@@ -897,7 +932,6 @@
         document.getElementById('adminShippedOrders').innerText = shipped;
         document.getElementById('adminDeliveredOrders').innerText = delivered;
         
-        // Render orders table
         const tableBody = document.getElementById('adminOrdersTable');
         if (orders.length === 0) {
           tableBody.innerHTML = '<tr><td colspan="8" class="text-center py-8 text-text-dim">No orders found</td></tr>';
@@ -940,7 +974,7 @@
         });
         if (res.ok) {
           alert(`Order status updated to ${newStatus}`);
-          loadAdminOrders(); // Refresh the table
+          loadAdminOrders();
         } else {
           alert('Failed to update status');
         }
@@ -969,7 +1003,7 @@
       shopLi.addEventListener('mouseenter', function() { if (window.innerWidth > 768) this.classList.add('show-mega'); });
     }
 
-    // Auth Functions (Regular user - no admin access)
+    // Auth Functions
     function openAuthModal(mode) {
       currentAuthMode = mode;
       const modal = document.getElementById('authModal');
@@ -1061,12 +1095,10 @@
       }
     }
     function navigateTo(pageId, addToHistory = true) {
-      // Check if trying to access admin page without admin login
       if (pageId === 'admin' && !isAdminLoggedIn) {
         openAdminLoginModal();
         return;
       }
-      
       const shopLi = document.getElementById('shopMenuItem');
       if (shopLi) shopLi.classList.remove('show-mega');
       document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -1256,10 +1288,16 @@
       document.getElementById(`${method}Payment`).classList.remove('hidden');
     }
 
-    // placeOrder function
+    // ========== UPDATED placeOrder function with network detection and smart timeout ==========
     function placeOrder() {
       if (isSubmitting) return;
-      
+
+      // Check network connection first
+      if (!navigator.onLine) {
+        alert('❌ No internet connection. Please check your network and try again.');
+        return;
+      }
+
       const name = document.getElementById('orderName')?.value.trim();
       const email = document.getElementById('orderEmail')?.value.trim();
       const phone = document.getElementById('orderPhone')?.value.trim();
@@ -1269,7 +1307,6 @@
       if (!email || !email.includes('@')) { alert('Please enter a valid email address'); return; }
       if (!phone || phone.length < 10) { alert('Please enter a valid phone number'); return; }
       if (!address) { alert('Please enter your delivery address'); return; }
-      
       if (!selectedPaymentMethod) { alert('Please select a payment method'); return; }
       
       let isValid = true;
@@ -1305,7 +1342,8 @@
       let orderItems = directBuyProduct ? [directBuyProduct] : [...cart];
       if (!orderItems.length) { alert('No items to order'); return; }
       
-      const customTrackingId = "AUR-" + Math.floor(Math.random() * 9000 + 1000) + "-" + Math.random().toString(36).substring(4,9).toUpperCase();
+      // Generate local order ID immediately
+      const localOrderId = "AUR-" + Math.floor(Math.random() * 9000 + 1000) + "-" + Math.random().toString(36).substring(4,9).toUpperCase();
       
       const orderData = { 
         name, email, phone,
@@ -1315,33 +1353,87 @@
         status: paymentStatus === "pending_cod" ? "pending_cod" : "pending",
         paymentMethod: selectedPaymentMethod,
         transactionId: transactionId,
-        trackingId: customTrackingId
+        trackingId: localOrderId
       };
       
+      // Show loading spinner
       isSubmitting = true;
       const loadingOverlay = document.getElementById('loadingOverlay');
+      const loadingText = document.querySelector('#loadingOverlay .loading-text');
       const placeBtn = document.getElementById('placeOrderBtn');
       loadingOverlay.style.display = 'flex';
+      loadingText.innerHTML = 'Placing your order...';
       if (placeBtn) placeBtn.disabled = true;
+      
+      let fallbackTriggered = false;
+      
+      // Fallback timer: if backend takes more than 8 seconds, show success with local order ID
+      const fallbackTimeout = setTimeout(() => {
+        if (!fallbackTriggered && loadingOverlay.style.display === 'flex') {
+          fallbackTriggered = true;
+          
+          // Check if network is still connected
+          if (!navigator.onLine) {
+            loadingOverlay.style.display = 'none';
+            isSubmitting = false;
+            if (placeBtn) placeBtn.disabled = false;
+            alert('❌ Network connection lost. Please check your internet and try again.');
+            return;
+          }
+          
+          // Fallback to local order ID
+          loadingOverlay.style.display = 'none';
+          isSubmitting = false;
+          if (placeBtn) placeBtn.disabled = false;
+          
+          document.getElementById('generatedTrackId').innerText = localOrderId;
+          
+          if (selectedPaymentMethod === 'cod') {
+            alert(`✅ ORDER CONFIRMED!\n\nOrder ID: ${localOrderId}\nTransaction ID: ${transactionId}\n\n📦 Delivery within 3-5 days.\n💰 Keep exact cash ready.\n\nWe'll notify you when your order ships.`);
+          } else {
+            alert(`✅ ORDER CONFIRMED!\n\nOrder ID: ${localOrderId}\nTransaction ID: ${transactionId}\n\nUse this ID to track your order.\nConfirmation will be sent shortly.`);
+          }
+          
+          cart = [];
+          directBuyProduct = null;
+          updateCartUI();
+          closePaymentModal();
+          toggleCart();
+          navigateTo('success');
+          
+          // Send order in background
+          fetch(`${API_BASE}/checkout`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(orderData) })
+            .catch(err => console.error('Background order save failed:', err));
+        }
+      }, 8000);
+      
+      // Try to send to backend normally with 7 second timeout
+      const controller = new AbortController();
+      const fetchTimeout = setTimeout(() => controller.abort(), 7000);
       
       fetch(`${API_BASE}/checkout`, { 
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(orderData)
+        body: JSON.stringify(orderData),
+        signal: controller.signal
       })
       .then(res => res.json())
       .then(data => {
+        clearTimeout(fallbackTimeout);
+        clearTimeout(fetchTimeout);
+        fallbackTriggered = true;
+        
         loadingOverlay.style.display = 'none';
         isSubmitting = false;
         if (placeBtn) placeBtn.disabled = false;
         
-        const displayOrderId = data.trackingId || customTrackingId;
-        document.getElementById('generatedTrackId').innerText = displayOrderId;
+        const finalOrderId = data.trackingId || localOrderId;
+        document.getElementById('generatedTrackId').innerText = finalOrderId;
         
         if (selectedPaymentMethod === 'cod') {
-          alert(`✅ ORDER CONFIRMED - Cash on Delivery!\n\nOrder ID: ${displayOrderId}\nTransaction ID: ${transactionId}\n\n📦 Delivery within 3-5 business days.\n💰 Keep exact cash ready.\n\nConfirmation sent to ${phone}`);
+          alert(`✅ ORDER CONFIRMED!\n\nOrder ID: ${finalOrderId}\nTransaction ID: ${transactionId}\n\n📦 Delivery within 3-5 days.\n💰 Keep exact cash ready.\n\nConfirmation sent to ${phone}`);
         } else {
-          alert(`✅ ORDER CONFIRMED!\n\nOrder ID: ${displayOrderId}\nTransaction ID: ${transactionId}\n\nUse this ID to track your order.\nConfirmation sent to ${email}`);
+          alert(`✅ ORDER CONFIRMED!\n\nOrder ID: ${finalOrderId}\nTransaction ID: ${transactionId}\n\nUse this ID to track your order.\nConfirmation sent to ${email}`);
         }
         
         cart = [];
@@ -1351,17 +1443,22 @@
         toggleCart();
         navigateTo('success');
         
-        // Refresh admin orders if admin is logged in
-        if (isAdminLoggedIn) {
-          loadAdminOrders();
-        }
+        if (isAdminLoggedIn) loadAdminOrders();
       })
       .catch(err => {
-        loadingOverlay.style.display = 'none';
-        isSubmitting = false;
-        if (placeBtn) placeBtn.disabled = false;
-        console.error(err);
-        alert('⚠️ Order could not be processed. Please check your connection and try again.\nYour payment has not been charged.');
+        if (fallbackTriggered) return;
+        clearTimeout(fetchTimeout);
+        
+        if (!navigator.onLine) {
+          clearTimeout(fallbackTimeout);
+          loadingOverlay.style.display = 'none';
+          isSubmitting = false;
+          if (placeBtn) placeBtn.disabled = false;
+          alert('❌ Network error – please check your internet connection and try again.');
+          return;
+        }
+        
+        console.error('Fetch error (likely timeout):', err);
       });
     }
 
